@@ -22,7 +22,7 @@ export abstract class BaseFindOptionsDto {
   })
   readonly pageSize = 10;
 
-  readonly sortBy: string
+  readonly sortBy: string;
 
   @IsEnum(Order, { each: true })
   @IsOptional()

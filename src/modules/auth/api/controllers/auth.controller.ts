@@ -11,6 +11,6 @@ export class AuthController {
 
   @Post('signup')
   async signUp(@Body() signUpDto: SignUpDto) {
-    await this.commandBus.execute<SignupCommand, void>(new SignupCommand());
+    return this.commandBus.execute<SignupCommand, void>(new SignupCommand());
   }
 }

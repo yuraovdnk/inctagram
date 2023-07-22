@@ -1,5 +1,7 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { AuthRepository } from '../../../infrastructure/repository/auth.repository';
+import { MailService } from '../../../../mailer/mail.service';
+import { v4 as uuidv4 } from 'uuid';
 
 export class PasswordRecoveryCommand {
   constructor(public email: string) {}
@@ -10,7 +12,8 @@ export class PasswordRecoveryCommandHandler
   implements ICommandHandler<PasswordRecoveryCommand>
 {
   constructor(
-    private readonly authRepository: AuthRepository, // private readonly mailService: MailService, // private userQueryRepository: UsersQueryTypeormRepository,
+    private readonly authRepository: AuthRepository,
+    private readonly mailService: MailService, // private userQueryRepository: UsersQueryTypeormRepository,
   ) {}
   async execute(command: PasswordRecoveryCommand): Promise<boolean> {
     try {
@@ -21,14 +24,20 @@ export class PasswordRecoveryCommandHandler
       // if (!userModel) {
       //   return false;
       // }
-      // const recoveryCode = userModel.generateNewPasswordRecoveryCode();
-      // await Promise.all([
-      //   await this.userRepository.save(userModel),
-      //   await this.mailService.sendPasswordRecoveryEmail(email, recoveryCode),
-      // ]);
+      const recoveryCode = uuidv4();
+      await Promise.all([
+        //   await this.userRepository.save(userModel),
+        await this.mailService.sendEmail(
+          email,
+          'Password recovery email',
+          'password-recovery',
+          { recoveryCode },
+        ),
+      ]);
+      console.log(`[mailService]: email has been sent`);
       return true;
     } catch (e) {
-      console.log(e);
+      console.error(`[mailService]: email sending error:`, e);
       return false;
     }
   }

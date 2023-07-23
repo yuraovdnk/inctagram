@@ -6,9 +6,9 @@ export class SignupCommand {
 }
 
 @CommandHandler(SignupCommand)
-class SignupCommandHandler implements ICommandHandler {
+export class SignupCommandHandler implements ICommandHandler {
   constructor(private authRepository: AuthRepository) {}
-  async execute(command: SignupCommand): Promise<any> {
+  async execute(command: SignupCommand): Promise<any> {}
     ///
   }
 }

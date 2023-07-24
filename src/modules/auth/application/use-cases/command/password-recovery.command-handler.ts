@@ -13,7 +13,7 @@ export class PasswordRecoveryCommandHandler
 {
   constructor(
     private readonly authRepository: AuthRepository,
-    private readonly mailService: MailService, // private userQueryRepository: UsersQueryTypeormRepository,
+    private readonly mailService: MailService, // private passwordRecoveryRepo: PasswordRecoveryRepository,
   ) {}
   async execute(command: PasswordRecoveryCommand): Promise<boolean> {
     try {
@@ -26,8 +26,8 @@ export class PasswordRecoveryCommandHandler
       // }
       const recoveryCode = uuidv4();
       await Promise.all([
-        //   await this.userRepository.save(userModel),
-        await this.mailService.sendEmail(
+        //this.passwordRecoveryRepo.create(passwordRecoveryEntity),
+        this.mailService.sendEmail(
           email,
           'Password recovery email',
           'password-recovery',
@@ -42,3 +42,4 @@ export class PasswordRecoveryCommandHandler
     }
   }
 }
+

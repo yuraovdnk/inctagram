@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { AuthModule } from './modules/auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
 import { getEnvConfig } from './core/common/config/env.config';
-import { PrismaModule } from './core/adapters/database/prisma/prisma.module';
+import { ThrottlerModule } from '@nestjs/throttler';
 
 @Module({
   imports: [
@@ -11,8 +11,11 @@ import { PrismaModule } from './core/adapters/database/prisma/prisma.module';
       envFilePath: ['.env'],
       isGlobal: true,
     }),
+    ThrottlerModule.forRoot({
+      ttl: 10,
+      limit: 5,
+    }),
     AuthModule,
-    PrismaModule,
   ],
   controllers: [],
   providers: [],

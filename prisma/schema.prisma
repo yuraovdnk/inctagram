@@ -17,3 +17,4 @@ model Users {
   email String
   createdAt DateTime @default(now())
 }
+}

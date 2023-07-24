@@ -5,7 +5,6 @@ import { swaggerSetup } from './core/adapters/swagger/swagger.setup';
 import { ValidationPipe } from '@nestjs/common';
 import { mapValidationErrors } from './core/common/exception/validator-errors';
 
-
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 

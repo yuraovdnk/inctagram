@@ -13,6 +13,6 @@ export class AuthRepository {
   getById() {}
 
   getAll() {
-    return this.prismaService.users.findMany();
+    return this.prismaService.user.findMany();
   }
 }

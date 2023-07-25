@@ -5,10 +5,7 @@ import { User } from '@prisma/client';
 import { UserMapper } from '../user.mapper';
 @Injectable()
 export class UsersRepository {
-  constructor(
-    private prismaService: PrismaService,
-    private readonly userMapper: UserMapper,
-  ) {}
+  constructor(private prismaService: PrismaService) {}
   async create(entity: UserEntity): Promise<string> {
     const user = await this.prismaService.user.create({
       data: entity,

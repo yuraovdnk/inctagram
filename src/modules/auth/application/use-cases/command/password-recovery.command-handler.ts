@@ -1,6 +1,5 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { AuthRepository } from '../../../infrastructure/repository/auth.repository';
-import { MailService } from '../../../../mailer/mail.service';
 import { v4 as uuidv4 } from 'uuid';
 import { EmailService } from '../../../../../core/adapters/mailer/mail.service';
 
@@ -13,8 +12,7 @@ export class PasswordRecoveryCommandHandler
   implements ICommandHandler<PasswordRecoveryCommand>
 {
   constructor(
-    private readonly authRepository: AuthRepository,
-    private readonly mailService: MailService, // private passwordRecoveryRepo: PasswordRecoveryRepository,
+    private readonly authRepository: AuthRepository, // private passwordRecoveryRepo: PasswordRecoveryRepository,
     private readonly emailService: EmailService,
   ) {}
   async execute(command: PasswordRecoveryCommand): Promise<boolean> {

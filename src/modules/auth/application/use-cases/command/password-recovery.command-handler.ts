@@ -27,12 +27,12 @@ export class PasswordRecoveryCommandHandler
       const recoveryCode = uuidv4();
       await Promise.all([
         //this.passwordRecoveryRepo.create(passwordRecoveryEntity),
-        this.mailService.sendEmail(
-          email,
-          'Password recovery email',
-          'password-recovery',
-          { recoveryCode },
-        ),
+        // this.mailService.sendEmail(
+        //   email,
+        //   'Password recovery email',
+        //   'password-recovery',
+        //   { recoveryCode },
+        // ),
       ]);
       console.log(`[mailService]: email has been sent`);
       return true;

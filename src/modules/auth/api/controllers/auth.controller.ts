@@ -8,7 +8,14 @@ import {
 } from '@nestjs/common';
 import { CommandBus } from '@nestjs/cqrs';
 import { SignUpDto } from '../../application/dto/signUp.dto';
-import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBadRequestResponse,
+  ApiBody,
+  ApiOkResponse,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { SignupCommand } from '../../application/use-cases/command/signup.command-handler';
 import { PasswordRecoveryDto } from '../../application/dto/password-recovery.dto';
 import { PasswordRecoveryCommand } from '../../application/use-cases/command/password-recovery.command-handler';
@@ -19,9 +26,22 @@ import { ThrottlerGuard } from '@nestjs/throttler';
 export class AuthController {
   constructor(private commandBus: CommandBus) {}
 
+  @ApiOkResponse({
+    description:
+      'Input data is accepted. Email with confirmation code will be send to passed email address',
+  })
+  @ApiBadRequestResponse({
+    description:
+      'If the inputModel has incorrect values (in particular if the user with the given email or password already exists)',
+  })
+  @ApiBody({ type: SignUpDto })
+  @ApiOperation({ summary: 'signup' })
+  @HttpCode(HttpStatus.NO_CONTENT)
   @Post('signup')
   async signUp(@Body() signUpDto: SignUpDto) {
-    return this.commandBus.execute<SignupCommand, void>(new SignupCommand());
+    return this.commandBus.execute<SignupCommand, void>(
+      new SignupCommand(signUpDto),
+    );
   }
 
   //Password recovery

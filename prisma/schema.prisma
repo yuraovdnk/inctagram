@@ -6,8 +6,26 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider          = "postgresql"
+  url               = env("DATABASE_URL")
+  shadowDatabaseUrl = env("SHADOW_DB_URL")
 }
 
-model Users
+model User {
+  id                    String                 @id @default(uuid())
+  username              String                 @unique
+  email                 String                 @unique
+  createdAt             DateTime               @default(now())
+  passwordHash          String
+  EmailConfirmationCode EmailConfirmationCode?
+}
+
+model EmailConfirmationCode {
+  userId    String   @id @unique
+  createdAt DateTime @default(now())
+  code      String
+  expireAt  DateTime
+  user      User?    @relation(fields: [userId], references: [id])
+
+  @@map("email_confirmation_codes")
+}

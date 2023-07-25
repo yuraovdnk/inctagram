@@ -3,9 +3,11 @@ import { AuthModule } from './modules/auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
 import { getEnvConfig } from './core/common/config/env.config';
 import { ThrottlerModule } from '@nestjs/throttler';
+import { PrismaModule } from './core/adapters/database/prisma/prisma.module';
 
 @Module({
   imports: [
+    PrismaModule,
     ConfigModule.forRoot({
       load: [getEnvConfig],
       envFilePath: ['.env'],

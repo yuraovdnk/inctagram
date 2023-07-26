@@ -2,14 +2,14 @@ import { v4 as uuidv4 } from 'uuid';
 import { add } from 'date-fns';
 
 export class PasswordRecoveryEntity {
-  recoveryCode: string;
-  expirationDate: Date;
-  email: string;
-  static create(email: string): PasswordRecoveryEntity {
-    const passwordRecoveryDomain = new PasswordRecoveryEntity();
-    passwordRecoveryDomain.email = email;
-    passwordRecoveryDomain.recoveryCode = uuidv4();
-    passwordRecoveryDomain.expirationDate = add(new Date(), { hours: 24 });
-    return passwordRecoveryDomain;
+  code: string;
+  expireAt: Date;
+  userId: string;
+  static create(userId: string): PasswordRecoveryEntity {
+    const entity = new PasswordRecoveryEntity();
+    entity.userId = userId;
+    entity.code = uuidv4();
+    entity.expireAt = add(new Date(), { hours: 1 });
+    return entity;
   }
 }

@@ -18,6 +18,7 @@ model User {
   createdAt             DateTime               @default(now())
   passwordHash          String
   EmailConfirmationCode EmailConfirmationCode?
+  PasswordRecoveryCode  PasswordRecoveryCode?
 }
 
 model EmailConfirmationCode {
@@ -28,4 +29,14 @@ model EmailConfirmationCode {
   user      User?    @relation(fields: [userId], references: [id])
 
   @@map("email_confirmation_codes")
+}
+
+model PasswordRecoveryCode {
+  userId    String   @id @unique
+  createdAt DateTime @default(now())
+  code      String
+  expireAt  DateTime
+  user      User?    @relation(fields: [userId], references: [id])
+
+  @@map("password_recovery_codes")
 }

@@ -21,8 +21,9 @@ export class PasswordRecoveryCommandHandler
     try {
       const { email } = command;
       const userEntity = await this.usersRepository.findByEmail(email);
+      //if (!userEntity || !userEntity.isEmailConfirmed) {
       if (!userEntity) {
-        console.log(
+        console.error(
           `[PasswordRecoveryCommand]: by email: ${email} user did not found`,
         );
         return;
@@ -37,9 +38,6 @@ export class PasswordRecoveryCommandHandler
           passwordRecoveryEntity.code,
         ),
       ]);
-      console.log(
-        `[PasswordRecoveryCommand]: on email: ${email} sent letter with password recovery code`,
-      );
     } catch (e) {
       console.error(`[mailService]: email sending error:`, e);
     }

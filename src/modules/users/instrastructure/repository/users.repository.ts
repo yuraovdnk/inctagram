@@ -13,6 +13,19 @@ export class UsersRepository {
     return user.id;
   }
 
+  async updatePassword(entity: UserEntity): Promise<User | null> {
+    try {
+      return await this.prismaService.user.update({
+        where: { id: entity.id },
+        data: {
+          passwordHash: entity.passwordHash,
+        },
+      });
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
   async findByEmail(email: string): Promise<UserEntity | null> {
     const user: User = await this.prismaService.user.findUnique({
       where: {
@@ -27,5 +40,14 @@ export class UsersRepository {
         username,
       },
     });
+  }
+
+  async findById(id: string): Promise<UserEntity | null> {
+    const user: User = await this.prismaService.user.findUnique({
+      where: {
+        id,
+      },
+    });
+    return user ? UserMapper.toEntity(user) : null;
   }
 }

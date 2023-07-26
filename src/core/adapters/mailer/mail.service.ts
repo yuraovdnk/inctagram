@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import nodemailer from 'nodemailer';
 import hbs from 'nodemailer-express-handlebars';
+import { th } from 'date-fns/locale';
 
 @Injectable()
 export class EmailService {
@@ -45,5 +46,14 @@ export class EmailService {
     } catch (e) {
       console.error('email sending error: ', e);
     }
+  }
+  async sendConfirmCode(username: string, email: string, code: string) {
+    await this.transporter.sendMail({
+      to: email,
+      from: this.configService.get('SMTP_USER'),
+      subject: 'Confirm Email',
+      template: 'confirm-email-code',
+      context: { confirmationCode: code, username },
+    });
   }
 }

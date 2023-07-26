@@ -10,15 +10,15 @@ import { EmailModule } from '../../core/adapters/mailer/mail.module';
 
 const commandHandlers = [PasswordRecoveryCommandHandler, SignupCommandHandler];
 const queryHandlers = [];
-const eventsHandler = [CreatedUserEventHandler];
+const eventHandlers = [CreatedUserEventHandler];
 @Module({
   imports: [CqrsModule, EmailModule, UserModule],
   controllers: [AuthController],
   providers: [
+    AuthRepository,
     ...commandHandlers,
     ...queryHandlers,
-    ...eventsHandler,
-    AuthRepository,
+    ...eventHandlers,
   ],
 })
 export class AuthModule {}

@@ -1,6 +1,5 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { AuthRepository } from '../../../infrastructure/repository/auth.repository';
-import { v4 as uuidv4 } from 'uuid';
 import { EmailService } from '../../../../../core/adapters/mailer/mail.service';
 import { UsersRepository } from '../../../../users/instrastructure/repository/users.repository';
 import { PasswordRecoveryEntity } from '../../../domain/entity/password-recovery.entity';
@@ -31,14 +30,11 @@ export class PasswordRecoveryCommandHandler
       const passwordRecoveryEntity = PasswordRecoveryEntity.create(
         userEntity.id,
       );
-      const recoveryCode = uuidv4();
       await Promise.all([
         this.authRepository.createPasswordRecoveryCode(passwordRecoveryEntity),
-        this.emailService.sendEmail(
+        this.emailService.sendPasswordRecoveryCodeEmail(
           email,
-          'Password recovery email',
-          'password-recovery',
-          { recoveryCode },
+          passwordRecoveryEntity.code,
         ),
       ]);
       console.log(

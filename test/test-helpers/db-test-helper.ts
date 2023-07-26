@@ -1,5 +1,5 @@
 import { PrismaService } from '../../src/core/adapters/database/prisma/prisma.service';
-import { SignUpDto } from '../../src/modules/auth/application/dto/signUp.dto';
+import { SignUpDto } from '../../src/modules/auth/application/dto/request/signUp.dto';
 import { v4 as uuidv4 } from 'uuid';
 import { User } from '@prisma/client';
 
@@ -14,15 +14,18 @@ export class DbTestHelper {
     >`SELECT tablename
       FROM pg_tables
       WHERE schemaname = 'public'`;
-
     const tables = tableNames
       .map(({ tablename }) => tablename)
       .filter((name) => name !== '_prisma_migrations')
       .map((name) => `"public"."${name}"`)
       .join(', ');
 
+    console.log(tables);
     try {
-      await this.prisma.$executeRawUnsafe(`TRUNCATE TABLE ${tables} CASCADE;`);
+      const res = await this.prisma.$executeRawUnsafe(
+        `TRUNCATE TABLE ${tables} CASCADE;`,
+      );
+      console.log(res);
     } catch (error) {
       console.log({ error });
     } finally {

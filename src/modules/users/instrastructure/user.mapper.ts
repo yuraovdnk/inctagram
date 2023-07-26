@@ -1,8 +1,6 @@
 import { UserEntity } from '../domain/entity/user.entity';
 import { User } from '@prisma/client';
-import { Injectable } from '@nestjs/common';
 
-@Injectable()
 export class UserMapper {
   static toEntity(user: User) {
     const entity = new UserEntity();

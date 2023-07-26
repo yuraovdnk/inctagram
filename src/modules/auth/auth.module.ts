@@ -7,8 +7,13 @@ import { SignupCommandHandler } from './application/use-cases/command/signup.com
 import { UserModule } from '../users/user.module';
 import { CreatedUserEventHandler } from './application/use-cases/events/created-user.event.handler';
 import { EmailModule } from '../../core/adapters/mailer/mail.module';
+import { NewPasswordCommandHandler } from './application/use-cases/command/new-password.command-handler';
 
-const commandHandlers = [PasswordRecoveryCommandHandler, SignupCommandHandler];
+const commandHandlers = [
+  PasswordRecoveryCommandHandler,
+  SignupCommandHandler,
+  NewPasswordCommandHandler,
+];
 const queryHandlers = [];
 const eventHandlers = [CreatedUserEventHandler];
 @Module({

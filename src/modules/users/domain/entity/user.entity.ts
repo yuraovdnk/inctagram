@@ -15,7 +15,7 @@ export class UserEntity extends AggregateRoot {
     user.username = username;
     user.passwordHash = passwordHash;
 
-    user.apply(new UserCreatedEvent(email, user.id));
+    user.apply(new UserCreatedEvent(user));
     return user;
   }
 }

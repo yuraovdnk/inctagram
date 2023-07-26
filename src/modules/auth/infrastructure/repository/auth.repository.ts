@@ -6,14 +6,18 @@ import { EmailConfirmationEntity } from '../../domain/entity/email-confirmation.
 export class AuthRepository {
   constructor(private readonly prismaService: PrismaService) {}
 
-  async createEmailConfirmCode(entity: EmailConfirmationEntity) {
-    const res = await this.prismaService.emailConfirmationCode.create({
+  async createEmailConfirmCode(
+    prisma: PrismaService,
+    entity: EmailConfirmationEntity,
+  ) {
+    const res = await prisma.emailConfirmationCode.create({
       data: {
         code: entity.code,
         userId: entity.userId,
         expireAt: entity.expireAt,
       },
     });
+
     return res;
   }
 }

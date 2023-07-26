@@ -7,7 +7,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { CommandBus } from '@nestjs/cqrs';
-import { SignUpDto } from '../../application/dto/signUp.dto';
+import { SignUpDto } from '../../application/dto/request/signUp.dto';
 import {
   ApiBadRequestResponse,
   ApiBody,
@@ -17,7 +17,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { SignupCommand } from '../../application/use-cases/command/signup.command-handler';
-import { PasswordRecoveryDto } from '../../application/dto/password-recovery.dto';
+import { PasswordRecoveryDto } from '../../application/dto/request/password-recovery.dto';
 import { PasswordRecoveryCommand } from '../../application/use-cases/command/password-recovery.command-handler';
 import { ThrottlerGuard } from '@nestjs/throttler';
 

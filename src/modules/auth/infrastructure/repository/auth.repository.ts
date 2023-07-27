@@ -2,6 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../../../core/adapters/database/prisma/prisma.service';
 import { EmailConfirmationEntity } from '../../domain/entity/email-confirmation.entity';
 import { PasswordRecoveryEntity } from '../../domain/entity/password-recovery.entity';
+import { PasswordRecoveryCode } from '@prisma/client';
+import { PasswordRecoveryMapper } from '../password-recovery.mapper';
 
 @Injectable()
 export class AuthRepository {
@@ -22,14 +24,24 @@ export class AuthRepository {
     return res;
   }
   async createPasswordRecoveryCode(entity: PasswordRecoveryEntity) {
-    const res = await this.prismaService.passwordRecoveryCode.create({
+    return this.prismaService.passwordRecoveryCode.create({
       data: {
         code: entity.code,
         userId: entity.userId,
         expireAt: entity.expireAt,
       },
     });
-    console.log('[AuthRepository]: createPasswordRecoveryCode result', res);
-    return res;
+  }
+
+  async findPasswordRecovery(
+    code: string,
+  ): Promise<PasswordRecoveryEntity | null> {
+    const passwordRecoveryCode: PasswordRecoveryCode =
+      await this.prismaService.passwordRecoveryCode.findFirst({
+        where: { code, expireAt: { gt: new Date() } },
+      });
+    return passwordRecoveryCode
+      ? PasswordRecoveryMapper.toEntity(passwordRecoveryCode)
+      : null;
   }
 }

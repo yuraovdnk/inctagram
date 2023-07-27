@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import nodemailer from 'nodemailer';
 import hbs from 'nodemailer-express-handlebars';
-import { th } from 'date-fns/locale';
 
 @Injectable()
 export class EmailService {
@@ -34,14 +33,14 @@ export class EmailService {
     );
   }
 
-  async sendEmail(to: string, subject: string, template: string, context: any) {
+  async sendPasswordRecoveryCodeEmail(email: string, recoveryCode: string) {
     try {
       await this.transporter.sendMail({
-        to,
+        to: email,
         from: this.configService.get('SMTP_USER'),
-        subject,
-        template,
-        context,
+        subject: 'Password recovery email',
+        template: 'password-recovery',
+        context: { recoveryCode },
       });
     } catch (e) {
       console.error('email sending error: ', e);

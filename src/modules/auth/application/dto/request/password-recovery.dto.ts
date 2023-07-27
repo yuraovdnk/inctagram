@@ -6,6 +6,7 @@ export class PasswordRecoveryDto {
     description: 'email',
     required: true,
     type: 'string',
+    pattern: '^[w-.]+@([w-]+.)+[w-]{2,4}$',
   })
   @IsEmail()
   @IsNotEmpty({ message: 'email is required' })

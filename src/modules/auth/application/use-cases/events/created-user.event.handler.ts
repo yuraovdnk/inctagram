@@ -24,8 +24,8 @@ export class CreatedUserEventHandler
     const codeEntity = EmailConfirmationEntity.create(user.id);
     await Promise.all([
       this.authRepository.createEmailConfirmCode(
-        this.prismaService,
         codeEntity,
+        this.prismaService,
       ),
       this.emailService.sendConfirmCode(
         user.username,

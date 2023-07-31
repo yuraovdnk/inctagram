@@ -1,7 +1,7 @@
 import { PrismaService } from '../../src/core/adapters/database/prisma/prisma.service';
-import { SignUpDto } from '../../src/modules/auth/application/dto/signUp.dto';
 import { v4 as uuidv4 } from 'uuid';
 import { User } from '@prisma/client';
+import { SignUpDto } from '../../src/modules/auth/application/dto/request/signUp.dto';
 
 export class DbTestHelper {
   private prisma: PrismaService;

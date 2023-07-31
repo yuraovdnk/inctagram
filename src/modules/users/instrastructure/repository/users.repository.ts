@@ -8,7 +8,12 @@ export class UsersRepository {
   constructor(private prismaService: PrismaService) {}
   async create(entity: UserEntity): Promise<string> {
     const user = await this.prismaService.user.create({
-      data: entity,
+      data: {
+        id: entity.id,
+        email: entity.email,
+        passwordHash: entity.passwordHash,
+        username: entity.username,
+      },
     });
     return user.id;
   }
@@ -25,6 +30,17 @@ export class UsersRepository {
     return this.prismaService.user.findUnique({
       where: {
         username,
+      },
+    });
+  }
+
+  async update(user: UserEntity) {
+    return this.prismaService.user.update({
+      where: {
+        id: user.id,
+      },
+      data: {
+        isEmailConfirmed: user.isConfirmedEmail,
       },
     });
   }

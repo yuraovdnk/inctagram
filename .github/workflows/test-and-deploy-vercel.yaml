@@ -26,11 +26,20 @@ jobs:
       - name: Checkout  # клонируем репозиторый
         uses: actions/checkout@v2
 
+      - uses: pnpm/action-setup@v2
+
+        name: Install pnpm
+        id: pnpm-install
+        with:
+          version: 7
+          run_install: false
+
       - name: Install dependencies
-        run: yarn # устанавливаем зависимости
+        run: pnpm install --no-frozen-lockfile # устанавливаем зависимости
 
       - name: Test
-        run: yarn test # запускаем скрипт тестами
+        run: pnpm test # запускаем скрипт тестами
+
 
   Deploy-Preview:
     runs-on: ubuntu-latest

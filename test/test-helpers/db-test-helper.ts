@@ -1,4 +1,6 @@
 import { PrismaService } from '../../src/core/adapters/database/prisma/prisma.service';
+import { v4 as uuidv4 } from 'uuid';
+import { User } from '@prisma/client';
 import { SignUpDto } from '../../src/modules/auth/application/dto/request/signUp.dto';
 import * as crypto from 'crypto';
 import { PasswordRecoveryCode, User } from '@prisma/client';

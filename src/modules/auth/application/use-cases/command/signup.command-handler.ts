@@ -17,6 +17,14 @@ export class SignupCommandHandler implements ICommandHandler<SignupCommand> {
   ) {}
 
   async execute(command: SignupCommand): Promise<void> {
+    if (command.signupDto.password !== command.signupDto.passwordConfirm) {
+      throw new BadRequestException(
+        mapErrors(
+          'Password confirmation must match the password',
+          'passwordConfirm',
+        ),
+      );
+    }
     const [userByEmail, userByUsername] = await Promise.all([
       this.authRepository.findByEmail(command.signupDto.email),
       this.authRepository.findByUsername(command.signupDto.username),
@@ -24,11 +32,14 @@ export class SignupCommandHandler implements ICommandHandler<SignupCommand> {
 
     if (userByEmail || userByUsername) {
       throw new BadRequestException(
-        mapErrors('user is exist', 'login or username'),
+        mapErrors(
+          'User with this email is already registered',
+          'login or username',
+        ),
       );
     }
 
-    const passwordHash = bcrypt.hashSync(command.signupDto.password, 10);
+    const passwordHash = bcrypt.hashSync(command.signupDto.password, 10); //TODO env
 
     const user = UserEntity.create(
       command.signupDto.username,

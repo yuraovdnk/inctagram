@@ -25,6 +25,7 @@ jobs:
     steps:
       - name: Checkout  # клонируем репозиторый
         uses: actions/checkout@v2
+
       - uses: pnpm/action-setup@v2
 
         name: Install pnpm
@@ -38,6 +39,7 @@ jobs:
 
       - name: Test
         run: pnpm test # запускаем скрипт тестами
+
 
   Deploy-Preview:
     runs-on: ubuntu-latest

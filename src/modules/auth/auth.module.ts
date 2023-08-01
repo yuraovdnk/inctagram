@@ -12,12 +12,14 @@ import { AuthService } from './application/service/auth.service';
 import { EmailConfirmCommandHandler } from './application/use-cases/command/email-confirm.command.handler';
 import { JwtService } from '@nestjs/jwt';
 import { CreateAuthSessionCommandHandler } from './application/use-cases/command/create-auth-session.command.handler';
+import { NewPasswordCommandHandler } from './application/use-cases/command/new-password.command-handler';
 
 const commandHandlers = [
   PasswordRecoveryCommandHandler,
   SignupCommandHandler,
   EmailConfirmCommandHandler,
   CreateAuthSessionCommandHandler,
+  NewPasswordCommandHandler,
 ];
 const queryHandlers = [];
 const eventHandlers = [CreatedUserEventHandler];

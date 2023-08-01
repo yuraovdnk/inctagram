@@ -1,23 +1,27 @@
 import {
-  IsEmail,
   IsNotEmpty,
+  IsStrongPassword,
   IsUUID,
   MaxLength,
-  MinLength,
 } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class NewPasswordDto {
   @ApiProperty({
-    description: 'new password',
+    description: 'new password. ',
     required: true,
     type: 'string',
     minLength: 6,
     maxLength: 20,
   })
-  @MinLength(6)
   @MaxLength(20)
-  @IsNotEmpty()
+  @IsStrongPassword({
+    minLength: 6,
+    minUppercase: 1,
+    minLowercase: 1,
+    minNumbers: 1,
+    minSymbols: 1,
+  })
   newPassword: string;
 
   @ApiProperty({

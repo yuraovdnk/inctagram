@@ -2,7 +2,6 @@ import { SignUpDto } from '../../src/modules/auth/application/dto/request/signUp
 import process from 'process';
 import { DbTestHelper } from './db-test-helper';
 import { User } from '@prisma/client';
-import { SignUpDto } from '../../src/modules/auth/application/dto/request/signUp.dto';
 
 export class UserTestHelper {
   private dbTestHelper;

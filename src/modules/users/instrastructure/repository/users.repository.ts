@@ -56,6 +56,7 @@ export class UsersRepository {
         isEmailConfirmed: user.isConfirmedEmail,
       },
     });
+  }
   async findById(id: string): Promise<UserEntity | null> {
     const user: User = await this.prismaService.user.findUnique({
       where: {

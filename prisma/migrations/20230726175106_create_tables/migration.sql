@@ -1,11 +1,14 @@
-/*
-  Warnings:
+-- CreateTable
+CREATE TABLE "User" (
+    "id" TEXT NOT NULL,
+    "username" TEXT NOT NULL,
+    "email" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "passwordHash" TEXT NOT NULL,
+    "isEmailConfirmed" BOOLEAN NOT NULL DEFAULT false,
 
-  - You are about to drop the `Users` table. If the table is not empty, all the data it contains will be lost.
-
-*/
--- DropTable
-DROP TABLE "Users";
+    CONSTRAINT "User_pkey" PRIMARY KEY ("id")
+);
 
 -- CreateTable
 CREATE TABLE "email_confirmation_codes" (
@@ -26,6 +29,12 @@ CREATE TABLE "password_recovery_codes" (
 
     CONSTRAINT "password_recovery_codes_pkey" PRIMARY KEY ("userId")
 );
+
+-- CreateIndex
+CREATE UNIQUE INDEX "User_username_key" ON "User"("username");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "email_confirmation_codes_userId_key" ON "email_confirmation_codes"("userId");

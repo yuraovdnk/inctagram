@@ -17,8 +17,10 @@ model User {
   email                 String                 @unique
   createdAt             DateTime               @default(now())
   passwordHash          String
+  isEmailConfirmed      Boolean                @default(false)
   EmailConfirmationCode EmailConfirmationCode?
   PasswordRecoveryCode  PasswordRecoveryCode?
+  AuthSession           AuthSession[]
 }
 
 model EmailConfirmationCode {
@@ -26,7 +28,7 @@ model EmailConfirmationCode {
   createdAt DateTime @default(now())
   code      String
   expireAt  DateTime
-  user      User?    @relation(fields: [userId], references: [id])
+  user      User     @relation(fields: [userId], references: [id])
 
   @@map("email_confirmation_codes")
 }
@@ -39,4 +41,17 @@ model PasswordRecoveryCode {
   user      User?    @relation(fields: [userId], references: [id])
 
   @@map("password_recovery_codes")
+}
+
+model AuthSession {
+  id         String   @id @default(uuid())
+  userId     String
+  deviceId   String   @unique
+  issuedAt   DateTime
+  expireAt   DateTime
+  deviceName String
+  ip         String
+  user       User?    @relation(fields: [userId], references: [id])
+
+  @@map("auth_sessions")
 }

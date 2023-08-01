@@ -3,18 +3,19 @@ import {
   Controller,
   HttpCode,
   HttpStatus,
+  ParseUUIDPipe,
   Post,
+  Res,
   UseGuards,
 } from '@nestjs/common';
 import { CommandBus } from '@nestjs/cqrs';
 import { SignUpDto } from '../../application/dto/request/signUp.dto';
+import { ApiTags } from '@nestjs/swagger';
 import {
   ApiBadRequestResponse,
   ApiBody,
   ApiNoContentResponse,
-  ApiOkResponse,
   ApiOperation,
-  ApiTags,
   ApiTooManyRequestsResponse,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
@@ -22,24 +23,36 @@ import { SignupCommand } from '../../application/use-cases/command/signup.comman
 import { PasswordRecoveryDto } from '../../application/dto/request/password-recovery.dto';
 import { PasswordRecoveryCommand } from '../../application/use-cases/command/password-recovery.command-handler';
 import { ThrottlerGuard } from '@nestjs/throttler';
+import { LocalAuthGuard } from '../../application/strategies/local.strategy';
+import { AuthService } from '../../application/service/auth.service';
+import { CurrentUser } from '../../../../core/common/decorators/current-user.decorator';
+import { Response } from 'express';
+import { EmailConfirmCommand } from '../../application/use-cases/command/email-confirm.command.handler';
+import {
+  DeviceInfoType,
+  DeviceMeta,
+} from '../../../../core/common/decorators/device-info.decorator';
+import { CreateAuthSessionCommand } from '../../application/use-cases/command/create-auth-session.command.handler';
+import { LoginRequired } from '../../application/dto/swagger/login-required.swagger.decorator';
+import { SignupRequired } from '../../application/dto/swagger/signup-required.swagger.decorator';
+import { RegistrationConfirmationRequired } from '../../application/dto/swagger/registration-confirmation-required.swagger.decorator';
+import { PasswordRecoveryRequired } from '../../application/dto/swagger/password-recovery.swagger.decorator';
+import { ConfigService } from '@nestjs/config';
+import { ConfigEnvType } from '../../../../core/common/config/env.config';
 import { NewPasswordDto } from '../../application/dto/request/new-password.dto';
 import { NewPasswordCommand } from '../../application/use-cases/command/new-password.command-handler';
 
 @ApiTags('AUTH')
 @Controller('auth')
 export class AuthController {
-  constructor(private commandBus: CommandBus) {}
+  constructor(
+    private commandBus: CommandBus,
+    private readonly authService: AuthService,
+    private configService: ConfigService<ConfigEnvType, boolean>,
+  ) {}
 
-  @ApiOkResponse({
-    description:
-      'Input data is accepted. Email with confirmation code will be send to passed email address',
-  })
-  @ApiBadRequestResponse({
-    description:
-      'If the inputModel has incorrect values (in particular if the user with the given email or password already exists)',
-  })
-  @ApiBody({ type: SignUpDto })
-  @ApiOperation({ summary: 'signup' })
+  //register in the system
+  @SignupRequired()
   @HttpCode(HttpStatus.NO_CONTENT)
   @Post('signup')
   async signUp(@Body() signUpDto: SignUpDto) {
@@ -48,22 +61,36 @@ export class AuthController {
     );
   }
 
+  //registration-confirmation
+  @RegistrationConfirmationRequired()
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @Post('registration-confirmation')
+  async confirmationEmail(@Body('code', ParseUUIDPipe) code: string) {
+    return this.commandBus.execute(new EmailConfirmCommand(code));
+  }
+
+  //login in the system
+  @LoginRequired()
+  @UseGuards(LocalAuthGuard)
+  @Post('login')
+  async login(
+    @Res() res: Response,
+    @CurrentUser() userId: string,
+    @DeviceMeta() deviceInfo: DeviceInfoType,
+  ) {
+    const tokens = this.authService.generateTokens(userId, deviceInfo.deviceId);
+    await this.commandBus.execute(
+      new CreateAuthSessionCommand(tokens.refreshToken, deviceInfo, userId),
+    );
+    res.cookie('refreshToken', tokens.refreshToken, {
+      httpOnly: true,
+      secure: true,
+    });
+    res.status(200).send({ accessToken: tokens.accessToken });
+  }
+
   //Password recovery
-  @ApiOperation({
-    summary:
-      'Password recovery via Email confirmation. Email should be sent with RecoveryCode inside',
-  })
-  @ApiNoContentResponse({
-    description:
-      "Even if current email is not registered (for prevent user's email detection)",
-  })
-  @ApiBadRequestResponse({
-    description: 'If the inputModel has invalid email',
-  })
-  @ApiTooManyRequestsResponse({
-    description: 'More than 5 attempts from one IP-address during 10 seconds',
-  })
-  @ApiBody({ type: PasswordRecoveryDto })
+  @PasswordRecoveryRequired()
   @UseGuards(ThrottlerGuard)
   @HttpCode(HttpStatus.NO_CONTENT)
   @Post('password-recovery')

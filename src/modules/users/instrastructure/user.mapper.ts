@@ -9,6 +9,8 @@ export class UserMapper {
     entity.passwordHash = user.passwordHash;
     entity.username = user.username;
     entity.createdAt = user.createdAt;
+    entity.isConfirmedEmail = user.isEmailConfirmed;
+
     return entity;
   }
 }

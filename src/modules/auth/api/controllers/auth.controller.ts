@@ -10,14 +10,13 @@ import {
 } from '@nestjs/common';
 import { CommandBus } from '@nestjs/cqrs';
 import { SignUpDto } from '../../application/dto/request/signUp.dto';
-import { ApiTags } from '@nestjs/swagger';
 import {
   ApiBadRequestResponse,
   ApiBody,
   ApiNoContentResponse,
   ApiOperation,
+  ApiTags,
   ApiTooManyRequestsResponse,
-  ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 import { SignupCommand } from '../../application/use-cases/command/signup.command-handler';
 import { PasswordRecoveryDto } from '../../application/dto/request/password-recovery.dto';
@@ -41,6 +40,8 @@ import { ConfigService } from '@nestjs/config';
 import { ConfigEnvType } from '../../../../core/common/config/env.config';
 import { NewPasswordDto } from '../../application/dto/request/new-password.dto';
 import { NewPasswordCommand } from '../../application/use-cases/command/new-password.command-handler';
+import { JwtCookieGuard } from '../../application/strategies/jwt-cookie.strategy';
+import { KillAuthSessionCommand } from '../../application/use-cases/command/kill-auth-session.command.handler';
 
 @ApiTags('AUTH')
 @Controller('auth')
@@ -83,8 +84,8 @@ export class AuthController {
       new CreateAuthSessionCommand(tokens.refreshToken, deviceInfo, userId),
     );
     res.cookie('refreshToken', tokens.refreshToken, {
-      httpOnly: true,
-      secure: true,
+      // httpOnly: true,
+      // secure: true,
     });
     res.status(200).send({ accessToken: tokens.accessToken });
   }
@@ -122,21 +123,15 @@ export class AuthController {
   }
 
   //Logout
-  @ApiOperation({
-    summary:
-      'In cookie client must send correct refreshToken that will be revoked',
-  })
-  @ApiNoContentResponse({
-    description:
-      'If the JWT refreshToken inside cookie is valid and user has been logged out',
-  })
-  @ApiUnauthorizedResponse({
-    description:
-      'If the JWT refreshToken inside cookie is missing, expired or incorrect',
-  })
+  @UseGuards(JwtCookieGuard)
   @HttpCode(HttpStatus.NO_CONTENT)
   @Post('logout')
-  async logout() {
-    return;
+  async logout(
+    @DeviceMeta() deviceInfo: DeviceInfoType,
+    @CurrentUser() user: string,
+  ) {
+    await this.commandBus.execute<KillAuthSessionCommand, void>(
+      new KillAuthSessionCommand(),
+    );
   }
 }

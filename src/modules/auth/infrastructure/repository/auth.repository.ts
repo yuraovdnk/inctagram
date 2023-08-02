@@ -5,7 +5,7 @@ import { PasswordRecoveryEntity } from '../../domain/entity/password-recovery.en
 import { EmailConfirmationCodeMapper } from '../mappers/email-confirmation-code.mapper';
 import { AuthSessionMapper } from '../mappers/auth-session.mapper';
 import { AuthSessionEntity } from '../../domain/entity/auth-session.entity';
-import { PasswordRecoveryCode } from '@prisma/client';
+import { AuthSession, PasswordRecoveryCode } from '@prisma/client';
 import { PasswordRecoveryMapper } from '../password-recovery.mapper';
 
 @Injectable()
@@ -64,6 +64,7 @@ export class AuthRepository {
       ? EmailConfirmationCodeMapper.toEntity(confirmCode)
       : null;
   }
+
   async findAuthSessionByIdAndUserId(
     deviceId: string,
     userId: string,
@@ -84,6 +85,7 @@ export class AuthRepository {
       data: authModel,
     });
   }
+
   async refreshAuthSession(
     deviceId: string,
     authEntity: AuthSessionEntity,
@@ -94,6 +96,14 @@ export class AuthRepository {
         id: model.id,
       },
       data: model,
+    });
+  }
+
+  async killSession(entity: AuthSession) {
+    this.prismaService.authSession.delete({
+      where: {
+        id: entity.id,
+      },
     });
   }
 }

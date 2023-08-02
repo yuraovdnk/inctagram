@@ -40,6 +40,9 @@ jobs:
       - name: Install dependencies
         run: pnpm install --no-frozen-lockfile # устанавливаем зависимости
 
+      - name: Prisma generate schemas
+        run: pnpm prisma generate --schema=prisma/schema.prisma
+
       - name: Test
         run: pnpm test # запускаем скрипт тестами
 

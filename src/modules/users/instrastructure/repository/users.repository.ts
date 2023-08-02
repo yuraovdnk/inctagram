@@ -39,6 +39,7 @@ export class UsersRepository {
     });
     return user ? UserMapper.toEntity(user) : null;
   }
+
   findByUsername(username: string) {
     return this.prismaService.user.findUnique({
       where: {

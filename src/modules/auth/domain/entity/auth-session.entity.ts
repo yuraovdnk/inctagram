@@ -1,6 +1,5 @@
 import { UserEntity } from '../../../users/domain/entity/user.entity';
 import { DeviceInfoType } from '../../../../core/common/decorators/device-info.decorator';
-import { getLogger } from 'nodemailer/lib/shared';
 
 export class AuthSessionEntity {
   id: string;
@@ -32,5 +31,11 @@ export class AuthSessionEntity {
     this.deviceId = deviceId;
     this.expireAt = timeToken.exp;
     this.issuedAt = timeToken.iat;
+  }
+  compare(expireAt: number, issuedAt: number): boolean {
+    return (
+      this.issuedAt.getTime() !== new Date(issuedAt * 1000).getTime() ||
+      this.expireAt.getTime() !== new Date(expireAt * 1000).getTime()
+    );
   }
 }

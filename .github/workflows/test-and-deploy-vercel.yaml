@@ -1,3 +1,82 @@
+#name: GitHub Actions Vercel Preview Deployment
+#env:
+#  VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+#  VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+#  VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+#  DATABASE_URL: ${{ secrets.DATABASE_URL }}
+#  SHADOW_DB_URL: ${{ secrets.SHADOW_DB_URL }}
+#  SMTP_USER: ${{ secrets.SMTP_USER }}
+#  SMTP_PASS: ${{ secrets.SMTP_PASS }}
+#  SMTP_HOST: ${{ secrets.SMTP_HOST }}
+#  EMAIL1: ${{ secrets.EMAIL1 }}
+#  EMAIL2: ${{ secrets.EMAIL2 }}
+#  SALT_HASH: ${{ secrets.SALT_HASH }}
+#
+#on:
+#  pull_request:
+#    types:
+#      - closed
+#    branches:
+#      - dev
+#  push:
+#    branches:
+#      - dev
+#jobs:
+#  Tests:
+#    name: Tests # название конктретной работы в pipeline
+#    runs-on: ubuntu-latest
+#    steps:
+#      - name: Checkout  # клонируем репозиторый
+#        uses: actions/checkout@v2
+#
+#      - uses: pnpm/action-setup@v2
+#
+#        name: Install pnpm
+#        id: pnpm-install
+#        with:
+#          version: latest
+#          run_install: false
+#
+#      - name: Install dependencies
+#        run: pnpm install --no-frozen-lockfile # устанавливаем зависимости
+#
+#      - name: Prisma generate schemas
+#        run: pnpm prisma generate --schema=prisma/schema.prisma
+#
+#      - name: Test
+#        run: pnpm test # запускаем скрипт тестами
+#
+#
+#  Deploy-Preview:
+#    runs-on: ubuntu-latest
+#    needs: Tests
+#    steps:
+#      - uses: pnpm/action-setup@v2
+#        name: Install pnpm
+#        id: pnpm-install
+#        with:
+#          version: latest
+#          run_install: false
+#
+#      - uses: actions/checkout@v2
+#      - name: Install Vercel CLI
+#        run: pnpm install --global vercel@latest
+#
+#      - name: Pull Vercel Environment Information
+#        run: vercel pull --yes --environment=preview --token=${{ secrets.VERCEL_TOKEN }}
+#
+#      - name: Build Project Artifacts
+#        run: vercel build --token=${{ secrets.VERCEL_TOKEN }}
+#
+#      - name: Deploy Project Artifacts to Vercel
+#        run: vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }}
+#
+#
+#
+#
+#
+#
+
 name: GitHub Actions Vercel Preview Deployment
 env:
   VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
@@ -51,16 +130,9 @@ jobs:
     runs-on: ubuntu-latest
     needs: Tests
     steps:
-      - uses: pnpm/action-setup@v2
-        name: Install pnpm
-        id: pnpm-install
-        with:
-          version: latest
-          run_install: false
-
       - uses: actions/checkout@v2
       - name: Install Vercel CLI
-        run: pnpm install --global vercel@latest
+        run: yarn install --global vercel@latest
 
       - name: Pull Vercel Environment Information
         run: vercel pull --yes --environment=preview --token=${{ secrets.VERCEL_TOKEN }}
@@ -70,4 +142,3 @@ jobs:
 
       - name: Deploy Project Artifacts to Vercel
         run: vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }}
-

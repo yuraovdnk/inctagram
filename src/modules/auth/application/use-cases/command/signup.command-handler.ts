@@ -3,7 +3,7 @@ import { CommandHandler, EventBus, ICommandHandler } from '@nestjs/cqrs';
 import { BadRequestException } from '@nestjs/common';
 import { UserEntity } from '../../../../users/domain/entity/user.entity';
 import { SignUpDto } from '../../dto/request/signUp.dto';
-import * as bcrypt from 'bcrypt';
+import bcrypt from 'bcrypt';
 import { UsersRepository } from '../../../../users/instrastructure/repository/users.repository';
 export class SignupCommand {
   constructor(public readonly signupDto: SignUpDto) {}

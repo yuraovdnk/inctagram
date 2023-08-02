@@ -2,7 +2,7 @@ import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { AuthRepository } from '../../../infrastructure/repository/auth.repository';
 import { UsersRepository } from '../../../../users/instrastructure/repository/users.repository';
 import { PasswordRecoveryEntity } from '../../../domain/entity/password-recovery.entity';
-import * as bcrypt from 'bcrypt';
+import bcrypt from 'bcrypt';
 import { ConfigService } from '@nestjs/config';
 import {
   BadRequestException,

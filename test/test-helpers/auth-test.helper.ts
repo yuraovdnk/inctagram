@@ -7,7 +7,7 @@ import { EmailConfirmationEntity } from '../../src/modules/auth/domain/entity/em
 import { AuthRepository } from '../../src/modules/auth/infrastructure/repository/auth.repository';
 import { EmailService } from '../../src/core/adapters/mailer/mail.service';
 import { v4 as uuid } from 'uuid';
-import * as bcrypt from 'bcrypt';
+import bcrypt from 'bcrypt';
 
 export class AuthTestHelper {
   private usersRepository: UsersRepository;

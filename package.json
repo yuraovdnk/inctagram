@@ -52,6 +52,7 @@
     "rimraf": "^3.0.2",
     "rxjs": "^7.8.1",
     "uuid": "^9.0.0",
+    "vercel": "^31.2.1",
     "webpack": "^5.88.2"
   },
   "devDependencies": {

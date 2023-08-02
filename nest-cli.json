@@ -6,6 +6,7 @@
     "assets": [
       "**/*.hbs"
     ],
+    "plugins": ["@nestjs/swagger"],
     "watchAssets": true
   }
 }

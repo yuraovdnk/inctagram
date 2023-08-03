@@ -4,9 +4,15 @@ import { ConfigModule } from '@nestjs/config';
 import { getEnvConfig } from './core/common/config/env.config';
 import { ThrottlerModule } from '@nestjs/throttler';
 import { PrismaModule } from './core/adapters/database/prisma/prisma.module';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
 
 @Module({
   imports: [
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', 'swagger-static'),
+      serveRoot: process.env.NODE_ENV === 'development' ? '/' : '/swagger',
+    }),
     PrismaModule,
     ConfigModule.forRoot({
       load: [getEnvConfig],

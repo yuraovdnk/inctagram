@@ -49,7 +49,6 @@ export class AuthController {
   constructor(
     private commandBus: CommandBus,
     private readonly authService: AuthService,
-    private configService: ConfigService<ConfigEnvType, boolean>,
   ) {}
 
   //register in the system

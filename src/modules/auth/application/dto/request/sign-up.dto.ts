@@ -1,4 +1,4 @@
-import { IsEmail, IsNotEmpty, MaxLength, MinLength } from 'class-validator';
+import { IsEmail, Matches, MaxLength, MinLength } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class SignUpDto {
@@ -11,7 +11,9 @@ export class SignUpDto {
   })
   @MinLength(6)
   @MaxLength(30)
-  @IsNotEmpty()
+  @Matches(/^[A-Za-z0-9]+$/, {
+    message: 'Username should only contain letters and numbers',
+  })
   username: string;
 
   @ApiProperty({
@@ -20,7 +22,6 @@ export class SignUpDto {
     type: 'string',
   })
   @IsEmail()
-  @IsNotEmpty({ message: 'email is required' })
   email: string;
 
   @ApiProperty({
@@ -30,7 +31,12 @@ export class SignUpDto {
   })
   @MinLength(6)
   @MaxLength(20)
-  @IsNotEmpty()
+  @Matches(
+    /^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?!.*\s)(?=.*[!"#$%&'()*+,-./:;<=>?@[\\\]^_`{|}~]).+$/,
+    {
+      message: 'newPassword is invalid',
+    },
+  )
   password: string;
 
   @ApiProperty({
@@ -41,7 +47,12 @@ export class SignUpDto {
     maxLength: 30,
   })
   @MinLength(6)
-  @MaxLength(30)
-  @IsNotEmpty()
+  @MaxLength(20)
+  @Matches(
+    /^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?!.*\s)(?=.*[!"#$%&'()*+,-./:;<=>?@[\\\]^_`{|}~]).+$/,
+    {
+      message: 'newPassword is invalid',
+    },
+  )
   passwordConfirm: string;
 }

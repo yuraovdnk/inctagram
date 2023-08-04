@@ -9,7 +9,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { CommandBus } from '@nestjs/cqrs';
-import { SignUpDto } from '../../application/dto/request/signUp.dto';
+import { SignUpDto } from '../../application/dto/request/sign-up.dto';
 import {
   ApiBadRequestResponse,
   ApiBody,

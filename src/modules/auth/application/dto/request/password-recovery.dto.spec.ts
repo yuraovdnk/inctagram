@@ -2,7 +2,7 @@ import { validate } from 'class-validator';
 import { PasswordRecoveryDto } from './password-recovery.dto';
 
 describe('PasswordRecoveryDto', () => {
-  it('should validate the email property if email is invalid', async () => {
+  it('should fail the email property if email is invalid', async () => {
     const passwordRecoveryDto = new PasswordRecoveryDto();
     passwordRecoveryDto.email = 'invalid-email'; // Set an invalid email address
 
@@ -14,7 +14,7 @@ describe('PasswordRecoveryDto', () => {
     );
   });
 
-  it('should validate the email property if email is empty', async () => {
+  it('should fail the email property if email is empty', async () => {
     const passwordRecoveryDto = new PasswordRecoveryDto();
     const errors = await validate(passwordRecoveryDto);
     expect(errors.length).toBeGreaterThan(0); // Expect errors to be greater than 0

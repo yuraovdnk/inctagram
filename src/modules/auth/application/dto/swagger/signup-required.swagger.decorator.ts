@@ -5,7 +5,7 @@ import {
   ApiOkResponse,
   ApiOperation,
 } from '@nestjs/swagger';
-import { SignUpDto } from '../request/signUp.dto';
+import { SignUpDto } from '../request/sign-up.dto';
 
 export const SignupRequired = () =>
   applyDecorators(

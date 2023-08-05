@@ -1,9 +1,4 @@
-import {
-  IsNotEmpty,
-  IsStrongPassword,
-  IsUUID,
-  MaxLength,
-} from 'class-validator';
+import { IsUUID, Matches, MaxLength, MinLength } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class NewPasswordDto {
@@ -15,13 +10,13 @@ export class NewPasswordDto {
     maxLength: 20,
   })
   @MaxLength(20)
-  @IsStrongPassword({
-    minLength: 6,
-    minUppercase: 1,
-    minLowercase: 1,
-    minNumbers: 1,
-    minSymbols: 1,
-  })
+  @MinLength(6)
+  @Matches(
+    /^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?!.*\s)(?=.*[!"#$%&'()*+,-./:;<=>?@[\\\]^_`{|}~]).+$/,
+    {
+      message: 'newPassword is invalid',
+    },
+  )
   newPassword: string;
 
   @ApiProperty({
@@ -30,6 +25,5 @@ export class NewPasswordDto {
     format: 'uuid',
   })
   @IsUUID()
-  @IsNotEmpty()
   recoveryCode: string;
 }

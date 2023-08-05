@@ -1,5 +1,5 @@
 import { PrismaService } from '../../src/core/adapters/database/prisma/prisma.service';
-import { SignUpDto } from '../../src/modules/auth/application/dto/request/signUp.dto';
+import { SignUpDto } from '../../src/modules/auth/application/dto/request/sign-up.dto';
 import * as crypto from 'crypto';
 import { PasswordRecoveryCode, User } from '@prisma/client';
 
@@ -35,8 +35,8 @@ export class DbTestHelper {
     const { email, username, password, passwordConfirm } = dto;
     const id = crypto.webcrypto.randomUUID();
     const query = `
-    INSERT INTO "User" (id, username, email, "createdAt", "passwordHash")
-    VALUES ('${id}', '${username}', '${email}', NOW(), '${'passwordHash'}');
+    INSERT INTO "User" (id, username, email, "createdAt", "passwordHash", "isEmailConfirmed")
+    VALUES ('${id}', '${username}', '${email}', NOW(), '${'passwordHash'}', true);
   `;
 
     try {

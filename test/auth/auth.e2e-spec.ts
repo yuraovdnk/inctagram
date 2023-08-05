@@ -9,7 +9,6 @@ import { AuthTestHelper } from '../test-helpers/auth-test.helper';
 import { EmailConfirmationEntity } from '../../src/modules/auth/domain/entity/email-confirmation.entity';
 import { v4 as uuid } from 'uuid';
 import { CommandBus } from '@nestjs/cqrs';
-import { EmailConfirmCommand } from '../../src/modules/auth/application/use-cases/command/email-confirm.command.handler';
 import * as crypto from 'crypto';
 import { setupApp } from '../../src/main';
 import { Test, TestingModule } from '@nestjs/testing';

@@ -180,10 +180,43 @@ window.onload = function() {
       "/auth/logout": {
         "post": {
           "operationId": "AuthController_logout",
+          "summary": "In cookie client must send correct refreshToken that will be revoked",
           "parameters": [],
           "responses": {
             "204": {
               "description": ""
+            },
+            "401": {
+              "description": "If the JWT refreshToken inside cookie is missing, expired or incorrect"
+            }
+          },
+          "tags": [
+            "AUTH"
+          ]
+        }
+      },
+      "/auth/refresh-token": {
+        "post": {
+          "operationId": "AuthController_refreshToken",
+          "summary": "Generate new pair of access and refresh tokens (in cookie client must send correct refreshToken that will be revoked after refreshing)",
+          "parameters": [],
+          "responses": {
+            "200": {
+              "description": "Returns JWT accessToken in body and JWT refreshToken in cookie (http-only, secure)",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "properties": {
+                      "accessToken": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "401": {
+              "description": "If the JWT refreshToken inside cookie is missing, expired or incorrect"
             }
           },
           "tags": [

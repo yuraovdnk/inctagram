@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { PrismaService } from '../../../../core/adapters/database/prisma/prisma.service';
 import { EmailConfirmationEntity } from '../../domain/entity/email-confirmation.entity';
 import { PasswordRecoveryEntity } from '../../domain/entity/password-recovery.entity';
@@ -7,10 +7,17 @@ import { AuthSessionMapper } from '../mappers/auth-session.mapper';
 import { AuthSessionEntity } from '../../domain/entity/auth-session.entity';
 import { AuthSession, PasswordRecoveryCode } from '@prisma/client';
 import { PasswordRecoveryMapper } from '../password-recovery.mapper';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
+import { Cache } from 'cache-manager';
+import { getLogger } from 'nodemailer/lib/shared';
+import { readableStreamLikeToAsyncGenerator } from 'rxjs/internal/util/isReadableStreamLike';
 
 @Injectable()
 export class AuthRepository {
-  constructor(private readonly prismaService: PrismaService) {}
+  constructor(
+    private readonly prismaService: PrismaService,
+    @Inject(CACHE_MANAGER) private cacheManager: Cache,
+  ) {}
 
   async createEmailConfirmCode(
     entity: EmailConfirmationEntity,
@@ -65,24 +72,32 @@ export class AuthRepository {
       : null;
   }
 
-  async findAuthSessionByIdAndUserId(
+  async findAuthSessionByDeviceId(
     deviceId: string,
-    userId: string,
   ): Promise<AuthSessionEntity | null> {
-    const session = await this.prismaService.authSession.findFirst({
-      where: {
-        userId,
-        deviceId,
-      },
-    });
+    let session: AuthSession = await this.cacheManager.get<AuthSession>(
+      deviceId,
+    );
+
+    if (!session) {
+      session = await this.prismaService.authSession.findFirst({
+        where: {
+          deviceId,
+        },
+      });
+
+      if (session) {
+        await this.cacheManager.set(deviceId, session);
+      }
+    }
 
     return session ? AuthSessionMapper.toEntity(session) : null;
   }
 
   async createAuthSession(authSession: AuthSessionEntity): Promise<void> {
-    const authModel = AuthSessionMapper.toModel(authSession);
+    const model = AuthSessionMapper.toModel(authSession);
     await this.prismaService.authSession.create({
-      data: authModel,
+      data: model,
     });
   }
 
@@ -93,17 +108,19 @@ export class AuthRepository {
     const model = AuthSessionMapper.toModel(authEntity);
     await this.prismaService.authSession.update({
       where: {
-        id: model.id,
+        deviceId: model.deviceId,
       },
       data: model,
     });
+    await this.cacheManager.set(model.deviceId, model);
   }
 
-  async killSession(entity: AuthSession) {
-    this.prismaService.authSession.delete({
+  async killAuthSession(deviceId: string): Promise<void> {
+    await this.prismaService.authSession.delete({
       where: {
-        id: entity.id,
+        deviceId,
       },
     });
+    await this.cacheManager.del(deviceId);
   }
 }

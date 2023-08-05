@@ -7,7 +7,6 @@ export class AuthSessionMapper {
       id: authSessionEntity.id,
       deviceId: authSessionEntity.deviceId,
       userId: authSessionEntity.userId,
-      deviceName: authSessionEntity.deviceName,
       issuedAt: authSessionEntity.issuedAt,
       expireAt: authSessionEntity.expireAt,
       ip: authSessionEntity.ip,
@@ -20,7 +19,7 @@ export class AuthSessionMapper {
     authSessionEntity.deviceId = authSessionModel.deviceId;
     authSessionEntity.expireAt = authSessionModel.expireAt;
     authSessionEntity.issuedAt = authSessionModel.issuedAt;
-    authSessionEntity.deviceName = authSessionModel.deviceName;
+    authSessionEntity.ip = authSessionModel.ip;
     return authSessionEntity;
   }
 }

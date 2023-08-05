@@ -2,14 +2,17 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import cookieParser from 'cookie-parser';
 import { SwaggerConfig } from './core/adapters/swagger/swagger.setup';
-import { BadRequestException, ValidationPipe } from '@nestjs/common';
+import {
+  BadRequestException,
+  INestApplication,
+  ValidationPipe,
+} from '@nestjs/common';
 import process from 'process';
+import { useContainer } from 'class-validator';
 
-async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
-
+export const setupApp = (app: INestApplication) => {
   app.use(cookieParser());
-  SwaggerConfig.setup(app);
+  useContainer(app.select(AppModule), { fallbackOnErrors: true });
   app.enableCors({
     origin: '*',
     methods: 'GET, HEAD, PUT, PATCH, POST, DELETE, OPTIONS',
@@ -35,6 +38,14 @@ async function bootstrap() {
       },
     }),
   );
+  return app;
+};
+
+async function bootstrap() {
+  let app = await NestFactory.create(AppModule);
+  app = setupApp(app);
+  SwaggerConfig.setup(app);
+
   await app.listen(process.env.PORT || 3000);
   SwaggerConfig.writeSwaggerFile();
 }

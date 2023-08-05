@@ -25,9 +25,13 @@ export class JwtCookieStrategy extends PassportStrategy(
     private configService: ConfigService<ConfigEnvType, boolean>,
   ) {
     super({
-      jwtFromRequest: (req) => {
+      jwtFromRequest: (req: Request) => {
+        if (!req.cookies?.refreshToken) {
+          return null;
+        }
         return req.cookies.refreshToken;
       },
+
       ignoreExpiration: false,
       secretOrKey: configService.get<string>('secrets.secretRefreshToken', {
         infer: true,
@@ -42,18 +46,18 @@ export class JwtCookieStrategy extends PassportStrategy(
       throw new UnauthorizedException();
     }
 
-    const session = await this.authRepository.findAuthSessionByIdAndUserId(
+    const session = await this.authRepository.findAuthSessionByDeviceId(
       payload.deviceId,
-      user.id,
     );
 
     if (!session) {
       throw new UnauthorizedException();
     }
+
     //if jwt passport to pass expired token, then throw error
     if (session.compare(payload.exp, payload.iat)) {
       throw new UnauthorizedException();
     }
-    return { userId: user.id, deviceId: payload.deviceId };
+    return { id: user.id, deviceId: payload.deviceId };
   }
 }

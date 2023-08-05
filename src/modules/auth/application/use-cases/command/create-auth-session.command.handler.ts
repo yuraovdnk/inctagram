@@ -25,9 +25,9 @@ export class CreateAuthSessionCommandHandler
       iat: new Date(decodedToken.iat * 1000),
       exp: new Date(decodedToken.exp * 1000),
     };
-    const authSession = await this.authRepository.findAuthSessionByIdAndUserId(
+
+    const authSession = await this.authRepository.findAuthSessionByDeviceId(
       command.deviceInfo.deviceId,
-      command.userId,
     );
 
     if (!authSession) {
@@ -39,6 +39,7 @@ export class CreateAuthSessionCommandHandler
       await this.authRepository.createAuthSession(session);
       return;
     }
+    //refresh token regenerate
 
     authSession.refreshSession(command.deviceInfo.deviceId, timeToken);
 

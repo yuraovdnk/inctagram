@@ -1,5 +1,5 @@
 import { INestApplication } from '@nestjs/common';
-import { IUserMock } from '../mocks/user-mock';
+import { IUserMock, userMock } from '../mocks/mocks';
 import { UsersRepository } from '../../src/modules/users/instrastructure/repository/users.repository';
 import { UserEntity } from '../../src/modules/users/domain/entity/user.entity';
 import { add } from 'date-fns';
@@ -7,7 +7,7 @@ import { EmailConfirmationEntity } from '../../src/modules/auth/domain/entity/em
 import { AuthRepository } from '../../src/modules/auth/infrastructure/repository/auth.repository';
 import { EmailService } from '../../src/core/adapters/mailer/mail.service';
 import { v4 as uuid } from 'uuid';
-import bcrypt from 'bcrypt';
+import * as bcrypt from 'bcrypt';
 
 export class AuthTestHelper {
   private usersRepository: UsersRepository;
@@ -19,13 +19,17 @@ export class AuthTestHelper {
     this.emailService = app.get(EmailService);
   }
 
-  async createUser(mockUser: IUserMock): Promise<UserEntity> {
+  async createUser(
+    mockUser: IUserMock,
+    confirmStatus = false,
+  ): Promise<UserEntity> {
     const passwordHash = bcrypt.hashSync(mockUser.password, 10);
     const userEntity = UserEntity.create(
       mockUser.username,
       mockUser.email,
       passwordHash,
     );
+    userEntity.isConfirmedEmail = confirmStatus; //for tests to don`t confirm every time
     await this.usersRepository.create(userEntity);
     return userEntity;
   }

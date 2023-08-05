@@ -21,6 +21,7 @@ export class PasswordRecoveryCommandHandler
     try {
       const { email } = command;
       const userEntity = await this.usersRepository.findByEmail(email);
+
       //if (!userEntity || !userEntity.isEmailConfirmed) {
       if (!userEntity) {
         console.error(

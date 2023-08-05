@@ -45,14 +45,13 @@ model PasswordRecoveryCode {
 }
 
 model AuthSession {
-  id         String   @id @default(uuid())
-  userId     String
-  deviceId   String   @unique
-  issuedAt   DateTime
-  expireAt   DateTime
-  deviceName String
-  ip         String
-  user       User?    @relation(fields: [userId], references: [id])
+  id       String   @id @default(uuid())
+  userId   String
+  deviceId String   @unique
+  issuedAt DateTime
+  expireAt DateTime
+  ip       String
+  user     User?    @relation(fields: [userId], references: [id])
 
   @@map("auth_sessions")
 }

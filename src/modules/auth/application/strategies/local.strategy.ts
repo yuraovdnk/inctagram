@@ -35,6 +35,7 @@ export class LocalStrategy extends PassportStrategy(Strategy, 'local') {
     });
 
     const candidate = await this.usersRepository.findByEmail(email);
+
     if (!candidate || !candidate.isConfirmedEmail) {
       throw new UnauthorizedException();
     }

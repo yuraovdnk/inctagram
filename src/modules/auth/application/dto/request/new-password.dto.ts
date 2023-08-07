@@ -1,4 +1,4 @@
-import { IsUUID, Matches, MaxLength, MinLength } from 'class-validator';
+import { IsUUID } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { IsStrongPassword } from '../decorators/is-strong-password.validate.decorator';
 

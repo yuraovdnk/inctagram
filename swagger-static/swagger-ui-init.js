@@ -247,6 +247,7 @@ window.onload = function() {
               "type": "string",
               "minLength": 6,
               "maxLength": 30,
+              "pattern": "/^[A-Za-z0-9]+$/",
               "description": "username"
             },
             "email": {
@@ -257,12 +258,14 @@ window.onload = function() {
               "type": "string",
               "minLength": 6,
               "maxLength": 20,
+              "pattern": "/^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?!.*\\s)(?=.*[!\"#$%&'()*+,-./:;<=>?@[\\\\\\]^_`{|}~]).+$/",
               "description": "password"
             },
             "passwordConfirm": {
               "type": "string",
               "minLength": 6,
               "maxLength": 30,
+              "pattern": "/^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?!.*\\s)(?=.*[!\"#$%&'()*+,-./:;<=>?@[\\\\\\]^_`{|}~]).+$/",
               "description": "password confirmation"
             }
           },
@@ -294,6 +297,7 @@ window.onload = function() {
             },
             "password": {
               "type": "string",
+              "pattern": "/^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?!.*\\s)(?=.*[!\"#$%&'()*+,-./:;<=>?@[\\\\\\]^_`{|}~]).+$/",
               "description": "password"
             }
           },
@@ -320,9 +324,10 @@ window.onload = function() {
           "properties": {
             "newPassword": {
               "type": "string",
+              "minLength": 6,
               "maxLength": 20,
-              "description": "new password. ",
-              "minLength": 6
+              "pattern": "/^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?!.*\\s)(?=.*[!\"#$%&'()*+,-./:;<=>?@[\\\\\\]^_`{|}~]).+$/",
+              "description": "new password. "
             },
             "recoveryCode": {
               "type": "string",

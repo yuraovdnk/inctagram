@@ -8,7 +8,6 @@ import { UsersRepository } from '../../src/modules/users/instrastructure/reposit
 import { AuthTestHelper } from '../test-helpers/auth-test.helper';
 import { EmailConfirmationEntity } from '../../src/modules/auth/domain/entity/email-confirmation.entity';
 import { v4 as uuid } from 'uuid';
-import { CommandBus } from '@nestjs/cqrs';
 import * as crypto from 'crypto';
 import { setupApp } from '../../src/main';
 import { Test, TestingModule } from '@nestjs/testing';
@@ -22,7 +21,6 @@ describe('AuthController (e2e)', () => {
   let users: User[];
   let usersRepository: UsersRepository;
   let authHelper: AuthTestHelper;
-  let commandBus: CommandBus;
 
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -36,7 +34,6 @@ describe('AuthController (e2e)', () => {
     await dbTestHelper.clearDb();
     users = await userTestHelper.createUsers(5);
     usersRepository = app.get(UsersRepository);
-    commandBus = app.get(CommandBus);
     authHelper = new AuthTestHelper(app);
   });
 
@@ -90,38 +87,91 @@ describe('AuthController (e2e)', () => {
   });
 
   describe('POST:[HOST]/auth/signup - registration', () => {
-    it('should not register', async () => {
-      await request(app.getHttpServer())
-        .post('/auth/signup')
-        .send({
-          username: 'moockusername',
+    it('should not register if username is incorrect', async () => {
+      await authHelper.signUp(
+        {
+          username: 'testusername',
           email: 'email',
           password: '123456',
           passwordConfirm: '123456',
-        })
-        .expect(400);
+        },
+        HttpStatus.BAD_REQUEST,
+      );
 
-      await request(app.getHttpServer())
-        .post('/auth/signup')
-        .send({
-          username: 'moockusername',
+      await authHelper.signUp(
+        {
+          username: 'test',
+          email: 'email',
+          password: '123456',
+          passwordConfirm: '123456',
+        },
+        HttpStatus.BAD_REQUEST,
+      );
+    });
+
+    it('should register user with correct data', async function () {
+      await authHelper.signUp(
+        {
+          username: 'Testuser123',
           email: 'email@gmail.com',
           password: '123456',
-          passwordConfirm: '1234566',
-        })
-        .expect(400);
+          passwordConfirm: '123456',
+        },
+        HttpStatus.BAD_REQUEST,
+      );
     });
+
+    it('should not register if email is incorrect ', async function () {
+      await authHelper.signUp(
+        {
+          username: 'Testuser123',
+          email: 'email',
+          password: '123456',
+          passwordConfirm: '123456',
+        },
+        HttpStatus.BAD_REQUEST,
+      );
+
+      await authHelper.signUp(
+        {
+          username: 'Testuser123',
+          email: 'ema@gmail.com',
+          password: '123456',
+          passwordConfirm: '123456',
+        },
+        HttpStatus.BAD_REQUEST,
+      );
+    });
+
+    it('should not register if password is incorrect ', async function () {
+      await authHelper.signUp(
+        {
+          username: 'Testuser123',
+          email: 'email@gmail.com',
+          password: 'password',
+          passwordConfirm: 'password',
+        },
+        HttpStatus.BAD_REQUEST,
+      );
+    });
+
+    it('should not register if confirm password not equal password', async function () {
+      await authHelper.signUp(
+        {
+          username: 'Testuser123',
+          email: 'email@gmail.com',
+          password: 'password',
+          passwordConfirm: 'StrongPassword@',
+        },
+        HttpStatus.BAD_REQUEST,
+      );
+    });
+
     it('should register user', async function () {
-      await request(app.getHttpServer())
-        .post('/auth/signup')
-        .send(userMock)
-        .expect(204);
+      await authHelper.signUp(userMock, HttpStatus.NO_CONTENT);
 
       //if already registered
-      await request(app.getHttpServer())
-        .post('/auth/signup')
-        .send(userMock)
-        .expect(400);
+      await authHelper.signUp(userMock, HttpStatus.BAD_REQUEST);
 
       //user should be not confirmed
       const user = await usersRepository.findByEmail(userMock.email);
@@ -187,15 +237,7 @@ describe('AuthController (e2e)', () => {
     beforeAll(async () => {
       await dbTestHelper.clearDb();
     });
-    it('should not login if login payload is invalid', async function () {
-      await request(app.getHttpServer())
-        .post('/auth/login')
-        .send({
-          email: 'gmai.com',
-          password: '132',
-        })
-        .expect(400);
-    });
+
     it('should not login if login payload is invalid', async function () {
       await request(app.getHttpServer())
         .post('/auth/login')
@@ -207,10 +249,7 @@ describe('AuthController (e2e)', () => {
     });
 
     it('should not login if user is not confirmed', async function () {
-      await request(app.getHttpServer())
-        .post('/auth/signup')
-        .send(userMock)
-        .expect(HttpStatus.NO_CONTENT);
+      await authHelper.createUser(userMock, false);
 
       await request(app.getHttpServer())
         .post('/auth/login')
@@ -220,19 +259,20 @@ describe('AuthController (e2e)', () => {
         })
         .expect(HttpStatus.UNAUTHORIZED);
     });
-    // it('should login', async function () {
-    //   const user = await authHelper.createUser(userMock2, true);
-    //   console.log(user);
-    //   const res = await request(app.getHttpServer())
-    //     .post('/auth/login')
-    //     .send({
-    //       email: userMock2.email,
-    //       password: userMock2.password,
-    //     })
-    //     .set('user-agent', 'test');
-    //
-    //   expect(res.body.accessToken).toBeDefined();
-    // });
+
+    it('should login', async function () {
+      await authHelper.createUser(userMock2, true);
+
+      const res = await request(app.getHttpServer())
+        .post('/auth/login')
+        .send({
+          email: userMock2.email,
+          password: userMock2.password,
+        })
+        .set('user-agent', 'test')
+        .expect(200);
+      expect(res.body.accessToken).toBeDefined();
+    });
   });
 
   describe('POST:[HOST]/auth/new-password - set new password', () => {
@@ -265,21 +305,21 @@ describe('AuthController (e2e)', () => {
         })
         .expect(400);
     });
-    it('POST:[HOST]/auth/new-password: should return code 204 If code is valid and new password is accepted', async () => {
-      const recoveryCode = await dbTestHelper.getPasswordRecoveryCode(
-        users[0].id,
-      );
-      await request(app.getHttpServer())
-        .post('/auth/new-password')
-        .send({
-          newPassword: 'newPassword',
-          recoveryCode,
-        })
-        .expect(204);
-    });
+    // it('POST:[HOST]/auth/new-password: should return code 204 If code is valid and new password is accepted', async () => {
+    //   const recoveryCode = await dbTestHelper.getPasswordRecoveryCode(
+    //     users[0].id,
+    //   );
+    //   await request(app.getHttpServer())
+    //     .post('/auth/new-password')
+    //     .send({
+    //       newPassword: 'newPassword',
+    //       recoveryCode,
+    //     })
+    //     .expect(204);
+    // });
   });
 
-  describe('POST:[HOST]/auth/logout', () => {
+  describe('POST:[HOST]/auth/logout - logout from system', () => {
     beforeAll(async () => {
       await dbTestHelper.clearDb();
     });

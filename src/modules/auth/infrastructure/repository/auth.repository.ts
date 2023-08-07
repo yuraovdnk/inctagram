@@ -9,8 +9,7 @@ import { AuthSession, PasswordRecoveryCode } from '@prisma/client';
 import { PasswordRecoveryMapper } from '../password-recovery.mapper';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Cache } from 'cache-manager';
-import { getLogger } from 'nodemailer/lib/shared';
-import { readableStreamLikeToAsyncGenerator } from 'rxjs/internal/util/isReadableStreamLike';
+import e from 'express';
 
 @Injectable()
 export class AuthRepository {
@@ -24,6 +23,7 @@ export class AuthRepository {
     prisma?: PrismaService,
   ) {
     const prismaService = prisma ?? this.prismaService;
+
     const res = await prismaService.emailConfirmationCode.create({
       data: {
         code: entity.code,

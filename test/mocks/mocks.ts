@@ -5,17 +5,17 @@ export interface IUserMock {
   passwordConfirm: string;
 }
 export const userMock: IUserMock = {
-  username: 'inctagram',
-  email: 'test@gmail.com',
-  password: 'testpassword',
-  passwordConfirm: 'testpassword',
+  username: 'Inctagram23',
+  email: 'inctagram@gmail.com',
+  password: 'Password-123',
+  passwordConfirm: 'Password-123',
 };
 
 export const userMock2: IUserMock = {
-  username: 'kyivstoner',
-  email: 'kyivstoner@gmail.com',
-  password: 'kyivstoner',
-  passwordConfirm: 'kyivstoner',
+  username: 'Testing23',
+  email: 'testing@gmail.com',
+  password: 'Password-123',
+  passwordConfirm: 'Password-123',
 };
 
 export const mockToken = {

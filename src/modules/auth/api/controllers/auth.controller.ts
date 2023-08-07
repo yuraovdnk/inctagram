@@ -18,7 +18,6 @@ import {
   ApiTags,
   ApiTooManyRequestsResponse,
 } from '@nestjs/swagger';
-import { SignupCommand } from '../../application/use-cases/command/signup.command-handler';
 import { PasswordRecoveryDto } from '../../application/dto/request/password-recovery.dto';
 import { PasswordRecoveryCommand } from '../../application/use-cases/command/password-recovery.command-handler';
 import { ThrottlerGuard } from '@nestjs/throttler';
@@ -42,6 +41,8 @@ import { JwtCookieGuard } from '../../application/strategies/jwt-cookie.strategy
 import { KillAuthSessionCommand } from '../../application/use-cases/command/kill-auth-session.command.handler';
 import { LogoutRequired } from '../../application/dto/swagger/logout-required.swagger.decorator';
 import { RefreshTokenRequired } from '../../application/dto/swagger/refresh-tooken-required.swagger.decorator';
+import { UsersRepository } from '../../../users/instrastructure/repository/users.repository';
+import { SignupCommand } from '../../application/use-cases/command/signup.command-handler';
 
 @ApiTags('AUTH')
 @Controller('auth')
@@ -49,6 +50,7 @@ export class AuthController {
   constructor(
     private commandBus: CommandBus,
     private readonly authService: AuthService,
+    private readonly usersRepository: UsersRepository,
   ) {}
 
   //register in the system

@@ -8,6 +8,9 @@ import { AuthRepository } from '../../src/modules/auth/infrastructure/repository
 import { EmailService } from '../../src/core/adapters/mailer/mail.service';
 import { v4 as uuid } from 'uuid';
 import * as bcrypt from 'bcrypt';
+import request from 'supertest';
+import { SignUpDto } from '../../src/modules/auth/application/dto/request/sign-up.dto';
+import { User } from '@prisma/client';
 
 export class AuthTestHelper {
   private usersRepository: UsersRepository;
@@ -19,16 +22,24 @@ export class AuthTestHelper {
     this.emailService = app.get(EmailService);
   }
 
+  async signUp(singUpDto: SignUpDto, expect: number) {
+    await request(this.app.getHttpServer())
+      .post('/auth/signup')
+      .send(singUpDto)
+      .expect(expect);
+  }
   async createUser(
     mockUser: IUserMock,
     confirmStatus = false,
   ): Promise<UserEntity> {
     const passwordHash = bcrypt.hashSync(mockUser.password, 10);
+
     const userEntity = UserEntity.create(
       mockUser.username,
       mockUser.email,
       passwordHash,
     );
+
     userEntity.isConfirmedEmail = confirmStatus; //for tests to don`t confirm every time
     await this.usersRepository.create(userEntity);
     return userEntity;

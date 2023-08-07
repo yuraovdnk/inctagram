@@ -6,7 +6,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { UsersRepository } from '../../../users/instrastructure/repository/users.repository';
-import bcrypt from 'bcrypt';
+import * as bcrypt from 'bcrypt';
 import { mapErrors } from '../../../../core/common/exception/validator-errors';
 import { validateOrReject } from 'class-validator';
 import { LoginDto } from '../dto/request/login.dto';
@@ -35,6 +35,7 @@ export class LocalStrategy extends PassportStrategy(Strategy, 'local') {
     });
 
     const candidate = await this.usersRepository.findByEmail(email);
+
     if (!candidate || !candidate.isConfirmedEmail) {
       throw new UnauthorizedException();
     }

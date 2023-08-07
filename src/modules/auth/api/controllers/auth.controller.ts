@@ -18,7 +18,6 @@ import {
   ApiTags,
   ApiTooManyRequestsResponse,
 } from '@nestjs/swagger';
-import { SignupCommand } from '../../application/use-cases/command/signup.command-handler';
 import { PasswordRecoveryDto } from '../../application/dto/request/password-recovery.dto';
 import { PasswordRecoveryCommand } from '../../application/use-cases/command/password-recovery.command-handler';
 import { ThrottlerGuard } from '@nestjs/throttler';
@@ -36,12 +35,14 @@ import { LoginRequired } from '../../application/dto/swagger/login-required.swag
 import { SignupRequired } from '../../application/dto/swagger/signup-required.swagger.decorator';
 import { RegistrationConfirmationRequired } from '../../application/dto/swagger/registration-confirmation-required.swagger.decorator';
 import { PasswordRecoveryRequired } from '../../application/dto/swagger/password-recovery.swagger.decorator';
-import { ConfigService } from '@nestjs/config';
-import { ConfigEnvType } from '../../../../core/common/config/env.config';
 import { NewPasswordDto } from '../../application/dto/request/new-password.dto';
 import { NewPasswordCommand } from '../../application/use-cases/command/new-password.command-handler';
 import { JwtCookieGuard } from '../../application/strategies/jwt-cookie.strategy';
 import { KillAuthSessionCommand } from '../../application/use-cases/command/kill-auth-session.command.handler';
+import { LogoutRequired } from '../../application/dto/swagger/logout-required.swagger.decorator';
+import { RefreshTokenRequired } from '../../application/dto/swagger/refresh-tooken-required.swagger.decorator';
+import { UsersRepository } from '../../../users/instrastructure/repository/users.repository';
+import { SignupCommand } from '../../application/use-cases/command/signup.command-handler';
 
 @ApiTags('AUTH')
 @Controller('auth')
@@ -49,7 +50,7 @@ export class AuthController {
   constructor(
     private commandBus: CommandBus,
     private readonly authService: AuthService,
-    private configService: ConfigService<ConfigEnvType, boolean>,
+    private readonly usersRepository: UsersRepository,
   ) {}
 
   //register in the system
@@ -123,15 +124,40 @@ export class AuthController {
   }
 
   //Logout
+  @LogoutRequired()
   @UseGuards(JwtCookieGuard)
   @HttpCode(HttpStatus.NO_CONTENT)
   @Post('logout')
   async logout(
     @DeviceMeta() deviceInfo: DeviceInfoType,
-    @CurrentUser() user: string,
+    @CurrentUser() userId: string,
+    @Res() res: Response,
   ) {
     await this.commandBus.execute<KillAuthSessionCommand, void>(
-      new KillAuthSessionCommand(),
+      new KillAuthSessionCommand(userId, deviceInfo.deviceId),
     );
+    res.clearCookie('refreshToken');
+    res.sendStatus(HttpStatus.NO_CONTENT);
+  }
+
+  //refreshToken
+  @RefreshTokenRequired()
+  @UseGuards(JwtCookieGuard)
+  @HttpCode(HttpStatus.OK)
+  @Post('refresh-token')
+  async refreshToken(
+    @DeviceMeta() deviceInfo: DeviceInfoType,
+    @CurrentUser() userId: string,
+    @Res() res: Response,
+  ) {
+    const tokens = this.authService.generateTokens(userId, deviceInfo.deviceId);
+    await this.commandBus.execute(
+      new CreateAuthSessionCommand(tokens.refreshToken, deviceInfo, userId),
+    );
+    res.cookie('refreshToken', tokens.refreshToken, {
+      // httpOnly: true,
+      // secure: true,
+    });
+    res.status(200).send({ accessToken: tokens.accessToken });
   }
 }

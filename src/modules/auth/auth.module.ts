@@ -15,6 +15,7 @@ import { CreateAuthSessionCommandHandler } from './application/use-cases/command
 import { NewPasswordCommandHandler } from './application/use-cases/command/new-password.command-handler';
 import { JwtCookieStrategy } from './application/strategies/jwt-cookie.strategy';
 import { KillAuthSessionCommandHandler } from './application/use-cases/command/kill-auth-session.command.handler';
+import { CacheModule } from '@nestjs/cache-manager';
 
 const commandHandlers = [
   PasswordRecoveryCommandHandler,
@@ -28,7 +29,7 @@ const queryHandlers = [];
 const eventHandlers = [CreatedUserEventHandler];
 const Strategies = [LocalStrategy, JwtCookieStrategy];
 @Module({
-  imports: [CqrsModule, EmailModule, UserModule],
+  imports: [CacheModule.register(), CqrsModule, EmailModule, UserModule],
   controllers: [AuthController],
   providers: [
     AuthService,

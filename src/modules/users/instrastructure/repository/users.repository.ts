@@ -7,13 +7,9 @@ import { UserMapper } from '../user.mapper';
 export class UsersRepository {
   constructor(private prismaService: PrismaService) {}
   async create(entity: UserEntity): Promise<string> {
+    const userModel = UserMapper.toModel(entity);
     const user = await this.prismaService.user.create({
-      data: {
-        id: entity.id,
-        email: entity.email,
-        passwordHash: entity.passwordHash,
-        username: entity.username,
-      },
+      data: userModel,
     });
     return user.id;
   }

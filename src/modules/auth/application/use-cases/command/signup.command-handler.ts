@@ -2,9 +2,9 @@ import { mapErrors } from '../../../../../core/common/exception/validator-errors
 import { CommandHandler, EventBus, ICommandHandler } from '@nestjs/cqrs';
 import { BadRequestException } from '@nestjs/common';
 import { UserEntity } from '../../../../users/domain/entity/user.entity';
-import { SignUpDto } from '../../dto/request/sign-up.dto';
-import bcrypt from 'bcrypt';
+import * as bcrypt from 'bcrypt';
 import { UsersRepository } from '../../../../users/instrastructure/repository/users.repository';
+import { SignUpDto } from '../../dto/request/sign-up.dto';
 export class SignupCommand {
   constructor(public readonly signupDto: SignUpDto) {}
 }

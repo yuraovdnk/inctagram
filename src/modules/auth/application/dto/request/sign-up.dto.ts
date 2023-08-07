@@ -1,5 +1,7 @@
-import { IsEmail, Matches, MaxLength, MinLength } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
+import { IsStrongPassword } from '../decorators/is-strong-password.validate.decorator';
+import { IsEmailInRFC5322 } from '../decorators/is-email-in-rfc5322.validate.decorator';
+import { IsUsernameValid } from '../decorators/is-username-valid.validate.decorator';
 
 export class SignUpDto {
   @ApiProperty({
@@ -9,19 +11,15 @@ export class SignUpDto {
     minLength: 6,
     maxLength: 30,
   })
-  @MinLength(6)
-  @MaxLength(30)
-  @Matches(/^[A-Za-z0-9]+$/, {
-    message: 'Username should only contain letters and numbers',
-  })
+  @IsUsernameValid()
   username: string;
 
   @ApiProperty({
-    description: 'email',
+    description: 'email. It must comply with RFC 5322',
     required: true,
     type: 'string',
   })
-  @IsEmail()
+  @IsEmailInRFC5322()
   email: string;
 
   @ApiProperty({
@@ -29,14 +27,7 @@ export class SignUpDto {
     required: true,
     type: 'string',
   })
-  @MinLength(6)
-  @MaxLength(20)
-  @Matches(
-    /^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?!.*\s)(?=.*[!"#$%&'()*+,-./:;<=>?@[\\\]^_`{|}~]).+$/,
-    {
-      message: 'newPassword is invalid',
-    },
-  )
+  @IsStrongPassword()
   password: string;
 
   @ApiProperty({
@@ -46,13 +37,6 @@ export class SignUpDto {
     minLength: 6,
     maxLength: 30,
   })
-  @MinLength(6)
-  @MaxLength(20)
-  @Matches(
-    /^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?!.*\s)(?=.*[!"#$%&'()*+,-./:;<=>?@[\\\]^_`{|}~]).+$/,
-    {
-      message: 'newPassword is invalid',
-    },
-  )
+  @IsStrongPassword()
   passwordConfirm: string;
 }

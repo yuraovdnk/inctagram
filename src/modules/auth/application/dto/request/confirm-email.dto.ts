@@ -1,4 +1,4 @@
-import { IsNotEmpty } from 'class-validator';
+import { IsNotEmpty, IsUUID } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class ConfirmEmailDto {
@@ -7,6 +7,6 @@ export class ConfirmEmailDto {
     required: true,
     type: 'string',
   })
-  @IsNotEmpty({ message: 'code is required' })
+  @IsUUID()
   code: string;
 }

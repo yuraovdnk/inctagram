@@ -1,5 +1,5 @@
-import { IsEmail, IsNotEmpty } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
+import { IsEmailInRFC5322 } from '../decorators/is-email-in-rfc5322.validate.decorator';
 
 export class PasswordRecoveryDto {
   @ApiProperty({
@@ -8,7 +8,6 @@ export class PasswordRecoveryDto {
     type: 'string',
     pattern: '^[w-.]+@([w-]+.)+[w-]{2,4}$',
   })
-  @IsEmail()
-  @IsNotEmpty({ message: 'email is required' })
+  @IsEmailInRFC5322()
   email: string;
 }

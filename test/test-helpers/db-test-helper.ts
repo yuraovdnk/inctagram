@@ -1,5 +1,4 @@
 import { PrismaService } from '../../src/core/adapters/database/prisma/prisma.service';
-import { SignUpDto } from '../../src/modules/auth/application/dto/request/sign-up.dto';
 import * as crypto from 'crypto';
 import { PasswordRecoveryCode, User } from '@prisma/client';
 
@@ -25,18 +24,21 @@ export class DbTestHelper {
         `TRUNCATE TABLE ${tables} CASCADE;`,
       );
     } catch (error) {
-      console.error({ error });
+      console.log({ error });
     } finally {
       await this.prisma.$disconnect();
     }
   }
 
-  async creatUser(dto: SignUpDto): Promise<User | null> {
-    const { email, username, password, passwordConfirm } = dto;
+  async creatUser(
+    email: string,
+    username: string,
+    passwordHash: string,
+  ): Promise<User | null> {
     const id = crypto.webcrypto.randomUUID();
     const query = `
     INSERT INTO "User" (id, username, email, "createdAt", "passwordHash", "isEmailConfirmed")
-    VALUES ('${id}', '${username}', '${email}', NOW(), '${'passwordHash'}', true);
+    VALUES ('${id}', '${username}', '${email}', NOW(), '${passwordHash}', true);
   `;
 
     try {
@@ -44,26 +46,30 @@ export class DbTestHelper {
       if (result != 1) {
         return null;
       }
-      return this.prisma.$queryRawUnsafe(
+      const res = await this.prisma.$queryRawUnsafe(
         'SELECT * FROM "User" WHERE id = $1',
         id,
       );
+      return res[0];
     } catch (error) {
-      console.error('Error executing SQL query:', error);
+      console.log('Error executing SQL query:', error);
     } finally {
       await this.prisma.$disconnect();
     }
   }
 
-  async getPasswordRecoveryCode(userId): Promise<PasswordRecoveryCode | null> {
+  async getPasswordRecoveryCode(
+    userId: string,
+  ): Promise<PasswordRecoveryCode | null> {
     try {
+      if (!userId) return null;
       const res = await this.prisma.$queryRawUnsafe(
         'SELECT * FROM "password_recovery_codes" WHERE "userId" = $1',
         userId,
       );
-      return res[0].code;
+      return res[0]?.code || null;
     } catch (error) {
-      console.error('Error executing SQL query:', error);
+      console.log('Error executing SQL query:', error);
     } finally {
       await this.prisma.$disconnect();
     }

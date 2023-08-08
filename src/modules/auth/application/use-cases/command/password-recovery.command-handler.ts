@@ -21,12 +21,7 @@ export class PasswordRecoveryCommandHandler
     try {
       const { email } = command;
       const userEntity = await this.usersRepository.findByEmail(email);
-      if (!userEntity || !userEntity.isConfirmedEmail) {
-        console.error(
-          `[PasswordRecoveryCommand]: by email: ${email} user did not found`,
-        );
-        return;
-      }
+      if (!userEntity || !userEntity.isConfirmedEmail) return;
       const passwordRecoveryEntity = PasswordRecoveryEntity.create(
         userEntity.id,
       );
@@ -38,7 +33,7 @@ export class PasswordRecoveryCommandHandler
         ),
       ]);
     } catch (e) {
-      console.error(`[mailService]: email sending error:`, e);
+      console.log(`[mailService]: email sending error:`, e);
     }
   }
 }

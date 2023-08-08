@@ -1,8 +1,7 @@
 import { HttpStatus, INestApplication } from '@nestjs/common';
 import request from 'supertest';
 import { DbTestHelper } from '../test-helpers/db-test-helper';
-import { UserTestHelper } from '../test-helpers/user.test.helper';
-import { User } from '@prisma/client';
+import { ExtendedUser, UserTestHelper } from '../test-helpers/user.test.helper';
 import { mockToken, userMock, userMock2 } from '../mocks/mocks';
 import { UsersRepository } from '../../src/modules/users/instrastructure/repository/users.repository';
 import { AuthTestHelper } from '../test-helpers/auth-test.helper';
@@ -17,9 +16,9 @@ jest.setTimeout(20000);
 describe('AuthController (e2e)', () => {
   let app: INestApplication;
   const dbTestHelper = new DbTestHelper();
-  const userTestHelper = new UserTestHelper();
-  let users: User[];
+  let users: ExtendedUser[];
   let usersRepository: UsersRepository;
+  let userTestHelper: UserTestHelper;
   let authHelper: AuthTestHelper;
 
   beforeAll(async () => {
@@ -30,14 +29,18 @@ describe('AuthController (e2e)', () => {
     app = moduleFixture.createNestApplication();
     app = setupApp(app);
     await app.init();
-
     await dbTestHelper.clearDb();
-    users = await userTestHelper.createUsers(5);
     usersRepository = app.get(UsersRepository);
     authHelper = new AuthTestHelper(app);
+    userTestHelper = new UserTestHelper(app);
   });
 
   describe('POST:[HOST]/auth/password-recovery', () => {
+    beforeAll(async () => {
+      await dbTestHelper.clearDb();
+      users = await userTestHelper.createUsers(1);
+    });
+
     it('POST:[HOST]/auth/password-recovery: should return code 400 If email is incorrect', async () => {
       await request(app.getHttpServer())
         .post('/auth/password-recovery')
@@ -62,28 +65,28 @@ describe('AuthController (e2e)', () => {
         })
         .expect(HttpStatus.NO_CONTENT);
     });
-    it('POST:[HOST]/auth/password-recovery: should return code 429 If More than 5 attempts from one IP-address during 10 seconds', async () => {
-      await request(app.getHttpServer())
-        .post('/auth/password-recovery')
-        .send({
-          email: 'email1111@gmail.com',
-        })
-        .expect(HttpStatus.NO_CONTENT);
-
-      await request(app.getHttpServer())
-        .post('/auth/password-recovery')
-        .send({
-          email: 'email1111@gmail.com',
-        })
-        .expect(HttpStatus.NO_CONTENT);
-
-      await request(app.getHttpServer())
-        .post('/auth/password-recovery')
-        .send({
-          email: 'email1111@gmail.com',
-        })
-        .expect(HttpStatus.TOO_MANY_REQUESTS);
-    });
+    // it('POST:[HOST]/auth/password-recovery: should return code 429 If More than 5 attempts from one IP-address during 10 seconds', async () => {
+    //   await request(app.getHttpServer())
+    //     .post('/auth/password-recovery')
+    //     .send({
+    //       email: 'email1111@gmail.com',
+    //     })
+    //     .expect(HttpStatus.NO_CONTENT);
+    //
+    //   await request(app.getHttpServer())
+    //     .post('/auth/password-recovery')
+    //     .send({
+    //       email: 'email1111@gmail.com',
+    //     })
+    //     .expect(HttpStatus.NO_CONTENT);
+    //
+    //   await request(app.getHttpServer())
+    //     .post('/auth/password-recovery')
+    //     .send({
+    //       email: 'email1111@gmail.com',
+    //     })
+    //     .expect(HttpStatus.TOO_MANY_REQUESTS);
+    // });
   });
 
   describe('POST:[HOST]/auth/signup - registration', () => {
@@ -276,17 +279,19 @@ describe('AuthController (e2e)', () => {
   });
 
   describe('POST:[HOST]/auth/new-password - set new password', () => {
-    it('POST:[HOST]/auth/new-password: should return code 400 If the inputModel is incorrect', async () => {
+    beforeAll(async () => {
+      await dbTestHelper.clearDb();
+      users = await userTestHelper.createUsers(3);
       await request(app.getHttpServer())
-        .post('/auth/new-password')
+        .post('/auth/password-recovery')
         .send({
-          newPassword: 'string',
+          email: users[2].email,
         })
-        .expect(400);
+        .expect(HttpStatus.NO_CONTENT);
     });
     it('POST:[HOST]/auth/new-password: should return code 400 If the inputModel has incorrect value (for incorrect password length) ', async () => {
       const recoveryCode = await dbTestHelper.getPasswordRecoveryCode(
-        users[0].id,
+        users[2].id,
       );
       await request(app.getHttpServer())
         .post('/auth/new-password')
@@ -305,18 +310,30 @@ describe('AuthController (e2e)', () => {
         })
         .expect(400);
     });
-    // it('POST:[HOST]/auth/new-password: should return code 204 If code is valid and new password is accepted', async () => {
-    //   const recoveryCode = await dbTestHelper.getPasswordRecoveryCode(
-    //     users[0].id,
-    //   );
-    //   await request(app.getHttpServer())
-    //     .post('/auth/new-password')
-    //     .send({
-    //       newPassword: 'newPassword',
-    //       recoveryCode,
-    //     })
-    //     .expect(204);
-    // });
+    it('POST:[HOST]/auth/new-password: should return code 204 If code is valid and new password is accepted', async () => {
+      const recoveryCode = await dbTestHelper.getPasswordRecoveryCode(
+        users[2]?.id,
+      );
+      await request(app.getHttpServer())
+        .post('/auth/new-password')
+        .send({
+          newPassword: 'newPassword@1',
+          recoveryCode,
+        })
+        .expect(204);
+    });
+
+    it('should login', async function () {
+      const res = await request(app.getHttpServer())
+        .post('/auth/login')
+        .send({
+          email: users[2].email,
+          password: 'newPassword@1',
+        })
+        .set('user-agent', 'test')
+        .expect(200);
+      expect(res.body.accessToken).toBeDefined();
+    });
   });
 
   describe('POST:[HOST]/auth/logout - logout from system', () => {

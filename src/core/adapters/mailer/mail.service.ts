@@ -42,7 +42,7 @@ export class EmailService {
         //context: { recoveryCode },
       });
     } catch (e) {
-      console.error('email sending error: ', e);
+      console.log('email sending error: ', e);
     }
   }
   async sendConfirmCode(username: string, email: string, code: string) {

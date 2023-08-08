@@ -245,28 +245,23 @@ window.onload = function() {
           "properties": {
             "username": {
               "type": "string",
+              "description": "username",
               "minLength": 6,
-              "maxLength": 30,
-              "pattern": "/^[A-Za-z0-9]+$/",
-              "description": "username"
+              "maxLength": 30
             },
             "email": {
               "type": "string",
-              "description": "email"
+              "description": "email. It must comply with RFC 5322"
             },
             "password": {
               "type": "string",
-              "minLength": 6,
-              "maxLength": 20,
-              "pattern": "/^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?!.*\\s)(?=.*[!\"#$%&'()*+,-./:;<=>?@[\\\\\\]^_`{|}~]).+$/",
               "description": "password"
             },
             "passwordConfirm": {
               "type": "string",
+              "description": "password confirmation",
               "minLength": 6,
-              "maxLength": 30,
-              "pattern": "/^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?!.*\\s)(?=.*[!\"#$%&'()*+,-./:;<=>?@[\\\\\\]^_`{|}~]).+$/",
-              "description": "password confirmation"
+              "maxLength": 30
             }
           },
           "required": [
@@ -293,12 +288,13 @@ window.onload = function() {
           "properties": {
             "email": {
               "type": "string",
-              "description": "login"
+              "description": "email must comply with RFC 5322"
             },
             "password": {
               "type": "string",
-              "pattern": "/^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?!.*\\s)(?=.*[!\"#$%&'()*+,-./:;<=>?@[\\\\\\]^_`{|}~]).+$/",
-              "description": "password"
+              "description": "password",
+              "minLength": 6,
+              "maxLength": 30
             }
           },
           "required": [
@@ -324,10 +320,9 @@ window.onload = function() {
           "properties": {
             "newPassword": {
               "type": "string",
+              "description": "new password. ",
               "minLength": 6,
-              "maxLength": 20,
-              "pattern": "/^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?!.*\\s)(?=.*[!\"#$%&'()*+,-./:;<=>?@[\\\\\\]^_`{|}~]).+$/",
-              "description": "new password. "
+              "maxLength": 20
             },
             "recoveryCode": {
               "type": "string",

@@ -2,9 +2,9 @@ import { mapErrors } from '../../../../../core/common/exception/validator-errors
 import { CommandHandler, EventBus, ICommandHandler } from '@nestjs/cqrs';
 import { BadRequestException } from '@nestjs/common';
 import { UserEntity } from '../../../../users/domain/entity/user.entity';
-import * as bcrypt from 'bcrypt';
 import { UsersRepository } from '../../../../users/instrastructure/repository/users.repository';
 import { SignUpDto } from '../../dto/request/sign-up.dto';
+import { AuthService } from '../../service/auth.service';
 export class SignupCommand {
   constructor(public readonly signupDto: SignUpDto) {}
 }
@@ -13,6 +13,7 @@ export class SignupCommand {
 export class SignupCommandHandler implements ICommandHandler<SignupCommand> {
   constructor(
     private authRepository: UsersRepository,
+    private authService: AuthService,
     private eventBus: EventBus,
   ) {}
 
@@ -39,7 +40,9 @@ export class SignupCommandHandler implements ICommandHandler<SignupCommand> {
       );
     }
 
-    const passwordHash = bcrypt.hashSync(command.signupDto.password, 10); //TODO env
+    const passwordHash = this.authService.getPasswordHash(
+      command.signupDto.password,
+    );
 
     const user = UserEntity.create(
       command.signupDto.username,

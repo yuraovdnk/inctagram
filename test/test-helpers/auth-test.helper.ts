@@ -1,5 +1,5 @@
 import { INestApplication } from '@nestjs/common';
-import { IUserMock, userMock } from '../mocks/mocks';
+import { IUserMock } from '../mocks/mocks';
 import { UsersRepository } from '../../src/modules/users/instrastructure/repository/users.repository';
 import { UserEntity } from '../../src/modules/users/domain/entity/user.entity';
 import { add } from 'date-fns';
@@ -10,7 +10,6 @@ import { v4 as uuid } from 'uuid';
 import * as bcrypt from 'bcrypt';
 import request from 'supertest';
 import { SignUpDto } from '../../src/modules/auth/application/dto/request/sign-up.dto';
-import { User } from '@prisma/client';
 
 export class AuthTestHelper {
   private usersRepository: UsersRepository;

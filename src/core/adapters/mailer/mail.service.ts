@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import * as nodemailer from 'nodemailer';
-import hbs from 'nodemailer-express-handlebars';
 
 @Injectable()
 export class EmailService {
@@ -18,19 +17,19 @@ export class EmailService {
         pass: this.configService.get('SMTP_PASS'),
       },
     });
-    const viewsPath = __dirname + '/templates';
-    this.transporter.use(
-      'compile',
-      hbs({
-        viewEngine: {
-          extname: '.hbs',
-          layoutsDir: viewsPath,
-          defaultLayout: false,
-        },
-        viewPath: viewsPath,
-        extName: '.hbs',
-      }),
-    );
+    // const viewsPath = __dirname + '/templates';
+    // this.transporter.use(
+    //   'compile',
+    //   hbs({
+    //     viewEngine: {
+    //       extname: '.hbs',
+    //       layoutsDir: viewsPath,
+    //       defaultLayout: false,
+    //     },
+    //     viewPath: viewsPath,
+    //     extName: '.hbs',
+    //   }),
+    // );
   }
 
   async sendPasswordRecoveryCodeEmail(email: string, recoveryCode: string) {
@@ -39,8 +38,8 @@ export class EmailService {
         to: email,
         from: this.configService.get('SMTP_USER'),
         subject: 'Password recovery email',
-        template: 'password-recovery',
-        context: { recoveryCode },
+        //template: 'password-recovery',
+        //context: { recoveryCode },
       });
     } catch (e) {
       console.error('email sending error: ', e);
@@ -51,8 +50,8 @@ export class EmailService {
       to: email,
       from: this.configService.get('SMTP_USER'),
       subject: 'Confirm Email',
-      template: 'confirm-email-code',
-      context: { confirmationCode: code, username },
+      //template: 'confirm-email-code',
+      //context: { confirmationCode: code, username },
     });
   }
 }

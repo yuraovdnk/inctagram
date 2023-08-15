@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Get,
   HttpCode,
   HttpStatus,
   ParseUUIDPipe,
@@ -12,6 +13,7 @@ import { CommandBus } from '@nestjs/cqrs';
 import { SignUpDto } from '../../application/dto/request/sign-up.dto';
 import {
   ApiBadRequestResponse,
+  ApiBearerAuth,
   ApiBody,
   ApiNoContentResponse,
   ApiOperation,
@@ -43,6 +45,8 @@ import { LogoutRequired } from '../../application/dto/swagger/logout-required.sw
 import { RefreshTokenRequired } from '../../application/dto/swagger/refresh-tooken-required.swagger.decorator';
 import { UsersRepository } from '../../../users/instrastructure/repository/users.repository';
 import { SignupCommand } from '../../application/use-cases/command/signup.command-handler';
+import { UserInfoViewDto } from '../../application/dto/response/user-info.view.dto';
+import { UserMapper } from '../../../users/instrastructure/user.mapper';
 
 @ApiTags('AUTH')
 @Controller('auth')
@@ -159,5 +163,19 @@ export class AuthController {
       // secure: true,
     });
     res.status(200).send({ accessToken: tokens.accessToken });
+  }
+
+  @ApiBearerAuth()
+  @Get('me')
+  async getAuthInfo(): Promise<UserInfoViewDto> {
+    const userId = '';
+    const user = await this.usersRepository.findById(userId);
+    if (!user)
+      return {
+        userId: 'a6f961a5-19fd-4234-a089-8963ac7b1db8',
+        username: 'userName',
+        email: 'testEmail@gmail.com',
+      };
+    return UserMapper.toUserInfoView(user);
   }
 }

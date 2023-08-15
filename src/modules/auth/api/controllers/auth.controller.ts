@@ -46,7 +46,6 @@ import { RefreshTokenRequired } from '../../application/dto/swagger/refresh-took
 import { UsersRepository } from '../../../users/instrastructure/repository/users.repository';
 import { SignupCommand } from '../../application/use-cases/command/signup.command-handler';
 import { UserInfoViewDto } from '../../application/dto/response/user-info.view.dto';
-import { UserMapper } from '../../../users/instrastructure/user.mapper';
 
 @ApiTags('AUTH')
 @Controller('auth')
@@ -173,9 +172,9 @@ export class AuthController {
     if (!user)
       return {
         userId: 'a6f961a5-19fd-4234-a089-8963ac7b1db8',
-        username: 'userName',
+        username: 'MockUser',
         email: 'testEmail@gmail.com',
       };
-    return UserMapper.toUserInfoView(user);
+    return new UserInfoViewDto(user);
   }
 }

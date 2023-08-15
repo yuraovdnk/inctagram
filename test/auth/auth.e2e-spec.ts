@@ -345,7 +345,7 @@ describe('AuthController (e2e)', () => {
       await request(app.getHttpServer())
         .post('/auth/new-password')
         .send({
-          newPassword: 'newPassword@1',
+          newPassword: 'newPassword_1',
           recoveryCode,
         })
         .expect(204);
@@ -356,7 +356,7 @@ describe('AuthController (e2e)', () => {
         .post('/auth/login')
         .send({
           email: users[2].email,
-          password: 'newPassword@1',
+          password: 'newPassword_1',
         })
         .set('user-agent', 'test')
         .expect(200);

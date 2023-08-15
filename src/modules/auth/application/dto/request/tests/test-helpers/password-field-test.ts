@@ -9,7 +9,7 @@ export const passwordFieldTest = (fieldTitle: string, dto: any) => {
       expect(errors[0].constraints).toHaveProperty('isStrongPassword'); // Expect the isStrongPassword constraint to fail
     };
     beforeEach(() => {
-      dto[fieldTitle] = 'SecurePassword@1';
+      dto[fieldTitle] = 'SecurePassword_1';
     });
     it(`should fail when  ${fieldTitle} is missing`, async () => {
       delete dto[fieldTitle];
@@ -20,25 +20,28 @@ export const passwordFieldTest = (fieldTitle: string, dto: any) => {
       await testPasswordField('');
     });
     it(`should fail when ${fieldTitle} is too short`, async () => {
-      await testPasswordField('Se@');
+      await testPasswordField('Se_');
     });
     it(`should fail when ${fieldTitle} is too long`, async () => {
-      await testPasswordField('ThisIsTooLongPassword@');
+      await testPasswordField('ThisIsTooLongPassword_');
     });
     it(`should fail when ${fieldTitle} does not not include uppercase`, async () => {
-      await testPasswordField('passwordW@');
+      await testPasswordField('passwordW_');
     });
     it(`should fail when ${fieldTitle} does not include lowercase`, async () => {
-      await testPasswordField('QWERTY$@');
+      await testPasswordField('QWERTY90__');
     });
     it(`should fail when ${fieldTitle} does not  include numbers`, async () => {
-      await testPasswordField('SecureP@ssword');
+      await testPasswordField('SecureP__ssword');
     });
     it(`should fail when ${fieldTitle} does not include symbol`, async () => {
       await testPasswordField('SecurePassword1');
     });
     it(`should fail when ${fieldTitle} include invalid symbols`, async () => {
-      await testPasswordField('Secure Password@1');
+      await testPasswordField('Secure Password_1');
+    });
+    it(`should fail when ${fieldTitle} include cyrillic symbols`, async () => {
+      await testPasswordField('SecurePassЮord_1');
     });
   });
 };

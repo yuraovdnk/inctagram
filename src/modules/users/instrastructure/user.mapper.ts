@@ -1,5 +1,6 @@
 import { UserEntity } from '../domain/entity/user.entity';
 import { User } from '@prisma/client';
+import { UserInfoViewDto } from '../../auth/application/dto/response/user-info.view.dto';
 
 export class UserMapper {
   static toModel(userEntity: UserEntity): User {
@@ -22,5 +23,12 @@ export class UserMapper {
     entity.isConfirmedEmail = user.isEmailConfirmed;
 
     return entity;
+  }
+  static toUserInfoView(userEntity: UserEntity): UserInfoViewDto {
+    const view = new UserInfoViewDto();
+    view.userId = userEntity.id;
+    view.username = userEntity.username;
+    view.email = userEntity.email;
+    return view;
   }
 }

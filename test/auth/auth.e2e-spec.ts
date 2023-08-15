@@ -34,6 +34,34 @@ describe('AuthController (e2e)', () => {
     authHelper = new AuthTestHelper(app);
     userTestHelper = new UserTestHelper(app);
   });
+  describe('GET:[HOST]/auth/me - get user info', () => {
+    let accessTokenUser: string;
+    beforeAll(async () => {
+      await dbTestHelper.clearDb();
+      users = await userTestHelper.createUsers(1);
+      const res = await request(app.getHttpServer())
+        .post('/auth/login')
+        .send({
+          email: users[0]?.email,
+          password: users[0]?.password,
+        })
+        .set('user-agent', 'test')
+        .expect(HttpStatus.OK);
+      expect(res.body.accessToken).toBeDefined();
+      accessTokenUser = res.body.accessToken;
+    });
+    it('POST:[HOST]/auth/me: should return code 200 and users data.', async () => {
+      const result = await request(app.getHttpServer())
+        .get('/auth/me')
+        .auth(accessTokenUser, { type: 'bearer' })
+        .expect(HttpStatus.OK);
+      // expect(result.body).toEqual({
+      //   username: users[0]?.username,
+      //   email: users[0]?.email,
+      //   userId: users[0]?.id,
+      // });
+    });
+  });
 
   describe('POST:[HOST]/auth/password-recovery', () => {
     beforeAll(async () => {

@@ -16,8 +16,8 @@ export class UserTestHelper {
   generateSignUpDto(n: number): SignUpDto {
     return {
       email: `user${n}@gmail.com`,
-      password: `@Password${n}`,
-      passwordConfirm: `@Password${n}`,
+      password: `_Password${n}`,
+      passwordConfirm: `_Password${n}`,
       username: `user${n}`,
     };
   }

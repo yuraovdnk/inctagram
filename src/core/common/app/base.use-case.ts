@@ -1,12 +1,16 @@
 import { PrismaService } from '../../adapters/database/prisma/prisma.service';
+import { NotificationResult } from '../notification/notification-result';
+import { PrismaClient } from '@prisma/client';
+import * as runtime from '@prisma/client/runtime/library';
 
 export abstract class BaseUseCase<Message> {
-  constructor(protected readonly prismaService: PrismaService) {}
+  protected prismaClient: Omit<PrismaClient, runtime.ITXClientDenyList>;
+  protected constructor(protected readonly prismaService: PrismaService) {}
 
   protected abstract onExecute(message: Message);
 
   async execute(message: Message) {
-    await this.executeWithTransaction(message);
+    return this.executeWithTransaction(message); //1
   }
 
   async handle(event: Message) {
@@ -14,14 +18,23 @@ export abstract class BaseUseCase<Message> {
   }
 
   async executeWithTransaction(message: Message) {
-    await this.prismaService.$transaction(async () => {
-      console.log('transaction started');
-      try {
-        this.onExecute(message);
-      } catch (e) {
-        console.log('transaction failed');
-        throw new Error(e);
-      }
-    });
+    let domainNotification: NotificationResult;
+
+    try {
+      await this.prismaService.$transaction(async (prisma) => {
+        this.prismaClient = prisma;
+        console.log('transaction started');
+        domainNotification = await this.onExecute(message);
+        if (domainNotification.hasError()) {
+          throw new Error();
+        }
+      });
+    } catch (e) {
+      console.log(e);
+      console.log('transaction failed');
+    } finally {
+      console.log('transaction ended');
+    }
+    return domainNotification;
   }
 }

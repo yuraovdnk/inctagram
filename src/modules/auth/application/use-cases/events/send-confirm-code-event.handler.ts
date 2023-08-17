@@ -5,11 +5,17 @@ import { EmailConfirmationEntity } from '../../../domain/entity/email-confirmati
 import { EmailService } from '../../../../../core/adapters/mailer/mail.service';
 import { BaseUseCase } from '../../../../../core/common/app/base.use-case';
 import { PrismaService } from '../../../../../core/adapters/database/prisma/prisma.service';
+import { ResentedConfirmCodeEvent } from '../../../domain/events/resented-confirm-code.event';
+import {
+  NotificationResult,
+  SuccessResult,
+} from '../../../../../core/common/notification/notification-result';
+import { UserEntity } from '../../../../users/domain/entity/user.entity';
 
-@EventsHandler(UserCreatedEvent)
-export class CreatedUserEventHandler
-  extends BaseUseCase<UserCreatedEvent>
-  implements IEventHandler<UserCreatedEvent>
+@EventsHandler(UserCreatedEvent, ResentedConfirmCodeEvent)
+export class SendConfirmCodeEventHandler<T extends { user: UserEntity }>
+  extends BaseUseCase<T>
+  implements IEventHandler<T>
 {
   constructor(
     private readonly authRepository: AuthRepository,
@@ -19,19 +25,27 @@ export class CreatedUserEventHandler
     super(prismaService);
   }
 
-  async onExecute(event: UserCreatedEvent) {
+  async onExecute(
+    event: T,
+  ): Promise<NotificationResult<EmailConfirmationEntity>> {
     const { user } = event;
-    const codeEntity = EmailConfirmationEntity.create(user.id);
+    const codeEntityRes = EmailConfirmationEntity.create(user.id);
+    if (codeEntityRes.hasError()) {
+      return codeEntityRes;
+    }
+
     await Promise.all([
       this.authRepository.createEmailConfirmCode(
-        codeEntity,
+        codeEntityRes.data,
         this.prismaService,
       ),
       this.emailService.sendConfirmCode(
         user.username,
         user.email,
-        codeEntity.code,
+        codeEntityRes.data.code,
       ),
     ]);
+
+    return new SuccessResult();
   }
 }

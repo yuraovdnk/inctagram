@@ -5,11 +5,15 @@ import { PasswordRecoveryEntity } from '../../domain/entity/password-recovery.en
 import { EmailConfirmationCodeMapper } from '../mappers/email-confirmation-code.mapper';
 import { AuthSessionMapper } from '../mappers/auth-session.mapper';
 import { AuthSessionEntity } from '../../domain/entity/auth-session.entity';
-import { AuthSession, PasswordRecoveryCode } from '@prisma/client';
+import {
+  AuthSession,
+  PasswordRecoveryCode,
+  PrismaClient,
+} from '@prisma/client';
 import { PasswordRecoveryMapper } from '../password-recovery.mapper';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Cache } from 'cache-manager';
-import e from 'express';
+import * as runtime from '@prisma/client/runtime/library';
 
 @Injectable()
 export class AuthRepository {
@@ -20,12 +24,19 @@ export class AuthRepository {
 
   async createEmailConfirmCode(
     entity: EmailConfirmationEntity,
-    prisma?: PrismaService,
+    prisma?: Omit<PrismaClient, runtime.ITXClientDenyList>,
   ) {
     const prismaService = prisma ?? this.prismaService;
 
-    const res = await prismaService.emailConfirmationCode.create({
-      data: {
+    const res = await prismaService.emailConfirmationCode.upsert({
+      where: {
+        userId: entity.userId,
+      },
+      update: {
+        code: entity.code,
+        expireAt: entity.expireAt,
+      },
+      create: {
         code: entity.code,
         userId: entity.userId,
         expireAt: entity.expireAt,

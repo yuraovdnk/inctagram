@@ -29,3 +29,8 @@ import { join } from 'path';
   providers: [],
 })
 export class AppModule {}
+// export class AppModule implements NestModule {
+// configure(consumer: MiddlewareConsumer): any {
+//   consumer.apply(AsyncStorageMiddleware).forRoutes('*');
+// }
+//}

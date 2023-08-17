@@ -52,6 +52,7 @@ export class EmailService {
       subject: 'Confirm Email',
       //template: 'confirm-email-code',
       //context: { confirmationCode: code, username },
+      text: `confirm code - ${code}`,
     });
   }
 }

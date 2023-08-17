@@ -1,10 +1,14 @@
-import { mapErrors } from '../../../../../core/common/exception/validator-errors';
 import { CommandHandler, EventBus, ICommandHandler } from '@nestjs/cqrs';
-import { BadRequestException } from '@nestjs/common';
 import { UserEntity } from '../../../../users/domain/entity/user.entity';
 import * as bcrypt from 'bcrypt';
 import { UsersRepository } from '../../../../users/instrastructure/repository/users.repository';
 import { SignUpDto } from '../../dto/request/sign-up.dto';
+import {
+  BadResult,
+  NotificationResult,
+  SuccessResult,
+} from '../../../../../core/common/notification/notification-result';
+
 export class SignupCommand {
   constructor(public readonly signupDto: SignUpDto) {}
 }
@@ -16,26 +20,16 @@ export class SignupCommandHandler implements ICommandHandler<SignupCommand> {
     private eventBus: EventBus,
   ) {}
 
-  async execute(command: SignupCommand): Promise<void> {
-    if (command.signupDto.password !== command.signupDto.passwordConfirm) {
-      throw new BadRequestException(
-        mapErrors(
-          'Password confirmation must match the password',
-          'passwordConfirm',
-        ),
-      );
-    }
+  async execute(command: SignupCommand): Promise<NotificationResult> {
     const [userByEmail, userByUsername] = await Promise.all([
       this.authRepository.findByEmail(command.signupDto.email),
       this.authRepository.findByUsername(command.signupDto.username),
     ]);
 
     if (userByEmail || userByUsername) {
-      throw new BadRequestException(
-        mapErrors(
-          'User with this email is already registered',
-          'login or username',
-        ),
+      return new BadResult(
+        'User with this email or username is already registered',
+        'email or username',
       );
     }
 
@@ -52,5 +46,6 @@ export class SignupCommandHandler implements ICommandHandler<SignupCommand> {
     user.getUncommittedEvents().forEach((event) => {
       this.eventBus.publish(event);
     });
+    return new SuccessResult();
   }
 }

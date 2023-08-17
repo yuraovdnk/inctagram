@@ -9,6 +9,12 @@ import {
 } from '@nestjs/common';
 import process from 'process';
 import { useContainer } from 'class-validator';
+import {
+  ErrorExceptionFilter,
+  HttpExceptionFilter,
+} from './core/common/exception/exception.filter';
+import { BadResult } from './core/common/notification/notification-result';
+import { NotificationExtension } from './core/common/notification/notification-extension';
 
 export const setupApp = (app: INestApplication) => {
   app.use(cookieParser());
@@ -26,24 +32,27 @@ export const setupApp = (app: INestApplication) => {
       stopAtFirstError: true,
       transform: true,
       exceptionFactory: (errors) => {
-        const errorsForResponse = [];
+        const errorsForResponse: NotificationExtension[] = [];
         for (const e of errors) {
           const key = Object.keys(e.constraints)[0];
           errorsForResponse.push({
             message: e.constraints[key],
-            field: e.property,
+            key: e.property,
           });
         }
+
         throw new BadRequestException(errorsForResponse);
       },
     }),
   );
+  app.useGlobalFilters(new ErrorExceptionFilter(), new HttpExceptionFilter());
   return app;
 };
 
 async function bootstrap() {
   let app = await NestFactory.create(AppModule);
   app = setupApp(app);
+
   SwaggerConfig.setup(app);
 
   await app.listen(process.env.PORT || 3000);

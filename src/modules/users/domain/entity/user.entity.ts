@@ -1,7 +1,7 @@
 import { AggregateRoot } from '@nestjs/cqrs';
 import { UserCreatedEvent } from '../events/user.created.event';
-import * as crypto from 'crypto';
 import { v4 as uuid } from 'uuid';
+
 export class UserEntity extends AggregateRoot {
   id: string;
   username: string;

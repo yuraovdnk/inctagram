@@ -28,13 +28,14 @@ window.onload = function() {
           },
           "responses": {
             "200": {
-              "description": "Input data is accepted. Email with confirmation code will be send to passed email address"
-            },
-            "204": {
-              "description": ""
-            },
-            "400": {
-              "description": "If the inputModel has incorrect values (in particular if the user with the given email or password already exists)"
+              "description": "",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/NotificationResult"
+                  }
+                }
+              }
             }
           },
           "tags": [
@@ -223,6 +224,38 @@ window.onload = function() {
             "AUTH"
           ]
         }
+      },
+      "/auth/registration-email-resending": {
+        "post": {
+          "operationId": "AuthController_resendEmailConfirmation",
+          "summary": "registration email resending",
+          "parameters": [],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResendConfirmationEmailDto"
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/NotificationResult"
+                  }
+                }
+              }
+            }
+          },
+          "tags": [
+            "AUTH"
+          ]
+        }
       }
     },
     "info": {
@@ -271,12 +304,71 @@ window.onload = function() {
             "passwordConfirm"
           ]
         },
+        "NotificationExtension": {
+          "type": "object",
+          "properties": {
+            "key": {
+              "type": "string"
+            },
+            "message": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "message"
+          ]
+        },
+        "NotificationResult": {
+          "type": "object",
+          "properties": {
+            "resultCode": {
+              "type": "array",
+              "example": {
+                "OK": 0,
+                "ERROR": 1,
+                "BAD_REQUEST": 2,
+                "UNAUTHORIZED": 3,
+                "FORBIDDEN": 4,
+                "NOT_FOUND": 5,
+                "NOT_CONFIRMED": 6,
+                "NOT_EXIST": 7
+              },
+              "items": {
+                "type": "number",
+                "enum": [
+                  0,
+                  1,
+                  2,
+                  3,
+                  4,
+                  5,
+                  6,
+                  7
+                ]
+              }
+            },
+            "extensions": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/NotificationExtension"
+              }
+            },
+            "data": {
+              "type": "object"
+            }
+          },
+          "required": [
+            "resultCode",
+            "extensions",
+            "data"
+          ]
+        },
         "ConfirmEmailDto": {
           "type": "object",
           "properties": {
             "code": {
               "type": "string",
-              "description": "confirm code"
+              "description": "Code that be sent via Email inside link"
             }
           },
           "required": [
@@ -333,6 +425,19 @@ window.onload = function() {
           "required": [
             "newPassword",
             "recoveryCode"
+          ]
+        },
+        "ResendConfirmationEmailDto": {
+          "type": "object",
+          "properties": {
+            "email": {
+              "type": "string",
+              "description": "email",
+              "pattern": "^[w-.]+@([w-]+.)+[w-]{2,4}$"
+            }
+          },
+          "required": [
+            "email"
           ]
         }
       }

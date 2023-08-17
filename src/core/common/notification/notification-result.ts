@@ -1,19 +1,79 @@
-import { NotificationExtension } from './notififcation-extention';
-import { NotificationCodesEnum } from './notification-codes.enum';
+import {
+  NotificationCodesEnum,
+  NotificationCodesEnumSwagger,
+} from './notification-codes.enum';
+import { NotificationExtension } from './notification-extension';
+import { ApiProperty } from '@nestjs/swagger';
 
 export class NotificationResult<T = null> {
+  @ApiProperty({
+    type: 'number',
+    enum: NotificationCodesEnumSwagger,
+    isArray: true,
+
+    example: NotificationCodesEnumSwagger,
+  })
+  resultCode: NotificationCodesEnum;
+
+  @ApiProperty({
+    type: [NotificationExtension],
+  })
   extensions: NotificationExtension[] = [];
-  code = NotificationCodesEnum.OK;
+
+  @ApiProperty({})
   data: T | null = null;
+
   hasError() {
-    return this.code !== NotificationCodesEnum.OK;
+    return !!this.extensions.length;
   }
-  addError(message: string, code?: number | null, key?: string | null) {
-    this.code = code ?? NotificationCodesEnum.ERROR;
-    const extension = new NotificationExtension(message, key);
-    this.extensions.push(extension);
+}
+
+export class BadResult extends NotificationResult {
+  constructor(error: string, key?: string) {
+    super();
+    this.extensions.push(new NotificationExtension(error, key));
   }
-  addData(data: T) {
+  resultCode: NotificationCodesEnum = NotificationCodesEnum.BAD_REQUEST;
+}
+
+export class NotFoundResult extends NotificationResult {
+  constructor(error: string, key?: string) {
+    super();
+    this.extensions.push(new NotificationExtension(error, key));
+  }
+  resultCode: NotificationCodesEnum = NotificationCodesEnum.NOT_FOUND;
+}
+
+export class UnAuthorizedResult extends NotificationResult {
+  constructor(error: string, key?: string) {
+    super();
+    this.extensions.push(new NotificationExtension(error, key));
+  }
+  resultCode: NotificationCodesEnum = NotificationCodesEnum.UNAUTHORIZED;
+}
+
+export class ForbiddenResult extends NotificationResult {
+  constructor(error: string, key?: string) {
+    super();
+    this.extensions.push(new NotificationExtension(error, key));
+  }
+  resultCode: NotificationCodesEnum = NotificationCodesEnum.FORBIDDEN;
+}
+
+export class SuccessResult extends NotificationResult {
+  resultCode: NotificationCodesEnum = NotificationCodesEnum.OK;
+
+  constructor(data: any = null) {
+    super();
     this.data = data;
+  }
+}
+
+export class InternalServerError extends NotificationResult {
+  resultCode: NotificationCodesEnum = NotificationCodesEnum.ERROR;
+
+  constructor(error: string, key?: string) {
+    super();
+    this.extensions.push(new NotificationExtension(error, key));
   }
 }

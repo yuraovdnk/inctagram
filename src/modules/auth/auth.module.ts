@@ -5,7 +5,7 @@ import { AuthRepository } from './infrastructure/repository/auth.repository';
 import { PasswordRecoveryCommandHandler } from './application/use-cases/command/password-recovery.command-handler';
 import { SignupCommandHandler } from './application/use-cases/command/signup.command-handler';
 import { UserModule } from '../users/user.module';
-import { CreatedUserEventHandler } from './application/use-cases/events/created-user.event.handler';
+import { SendConfirmCodeEventHandler } from './application/use-cases/events/send-confirm-code-event.handler';
 import { EmailModule } from '../../core/adapters/mailer/mail.module';
 import { LocalStrategy } from './application/strategies/local.strategy';
 import { AuthService } from './application/service/auth.service';
@@ -16,6 +16,9 @@ import { NewPasswordCommandHandler } from './application/use-cases/command/new-p
 import { JwtCookieStrategy } from './application/strategies/jwt-cookie.strategy';
 import { KillAuthSessionCommandHandler } from './application/use-cases/command/kill-auth-session.command.handler';
 import { CacheModule } from '@nestjs/cache-manager';
+import { ResendEmailConfirmationCommandHandler } from './application/use-cases/command/resend-email-confirmation.command.handler';
+import { AlsModule } from '../../als.module';
+import { JwtStrategy } from '../../core/common/guards/jwt.guard';
 
 const commandHandlers = [
   PasswordRecoveryCommandHandler,
@@ -24,12 +27,19 @@ const commandHandlers = [
   CreateAuthSessionCommandHandler,
   NewPasswordCommandHandler,
   KillAuthSessionCommandHandler,
+  ResendEmailConfirmationCommandHandler,
 ];
 const queryHandlers = [];
-const eventHandlers = [CreatedUserEventHandler];
-const Strategies = [LocalStrategy, JwtCookieStrategy];
+const eventHandlers = [SendConfirmCodeEventHandler];
+const Strategies = [LocalStrategy, JwtCookieStrategy, JwtStrategy];
 @Module({
-  imports: [CacheModule.register(), CqrsModule, EmailModule, UserModule],
+  imports: [
+    CacheModule.register(),
+    CqrsModule,
+    EmailModule,
+    UserModule,
+    AlsModule,
+  ],
   controllers: [AuthController],
   providers: [
     AuthService,

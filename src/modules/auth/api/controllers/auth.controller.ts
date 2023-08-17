@@ -43,8 +43,11 @@ import { JwtCookieGuard } from '../../application/strategies/jwt-cookie.strategy
 import { KillAuthSessionCommand } from '../../application/use-cases/command/kill-auth-session.command.handler';
 import { LogoutRequired } from '../../application/dto/swagger/logout-required.swagger.decorator';
 import { RefreshTokenRequired } from '../../application/dto/swagger/refresh-tooken-required.swagger.decorator';
-import { UsersRepository } from '../../../users/instrastructure/repository/users.repository';
 import { SignupCommand } from '../../application/use-cases/command/signup.command-handler';
+import { ResendConfirmationEmailDto } from '../../application/dto/request/resend-confirmation-email.dto';
+import { NotificationResult } from '../../../../core/common/notification/notification-result';
+import { ResendEmailConfirmationCommand } from '../../application/use-cases/command/resend-email-confirmation.command.handler';
+import { RegistrationEmailResendingRequiredSwaggerDecorator } from '../../application/dto/swagger/registration-email-resending-required.swagger-decorator';
 import { UserInfoViewDto } from '../../application/dto/response/user-info.view.dto';
 
 @ApiTags('AUTH')
@@ -53,15 +56,14 @@ export class AuthController {
   constructor(
     private commandBus: CommandBus,
     private readonly authService: AuthService,
-    private readonly usersRepository: UsersRepository,
   ) {}
 
   //register in the system
   @SignupRequired()
-  @HttpCode(HttpStatus.NO_CONTENT)
+  @HttpCode(HttpStatus.OK)
   @Post('signup')
-  async signUp(@Body() signUpDto: SignUpDto) {
-    return this.commandBus.execute<SignupCommand, void>(
+  async signUp(@Body() signUpDto: SignUpDto): Promise<NotificationResult> {
+    return this.commandBus.execute<SignupCommand, NotificationResult>(
       new SignupCommand(signUpDto),
     );
   }
@@ -163,6 +165,18 @@ export class AuthController {
     });
     res.status(200).send({ accessToken: tokens.accessToken });
   }
+
+  @RegistrationEmailResendingRequiredSwaggerDecorator()
+  @HttpCode(HttpStatus.OK)
+  @Post('registration-email-resending')
+  async resendEmailConfirmation(
+    @Body() resendConfirmationEmailDto: ResendConfirmationEmailDto,
+  ): Promise<NotificationResult> {
+    const result = await this.commandBus.execute<
+      ResendEmailConfirmationCommand,
+      NotificationResult
+    >(new ResendEmailConfirmationCommand(resendConfirmationEmailDto));
+    return result;
 
   @ApiBearerAuth()
   @Get('me')

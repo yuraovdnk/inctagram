@@ -3,7 +3,7 @@ import { ApiProperty } from '@nestjs/swagger';
 
 export class ConfirmEmailDto {
   @ApiProperty({
-    description: 'confirm code',
+    description: 'Code that be sent via Email inside link',
     required: true,
     type: 'string',
   })

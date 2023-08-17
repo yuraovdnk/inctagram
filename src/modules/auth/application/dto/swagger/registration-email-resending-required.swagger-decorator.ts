@@ -1,13 +1,13 @@
 import { applyDecorators } from '@nestjs/common';
 import { ApiBody, ApiOkResponse, ApiOperation } from '@nestjs/swagger';
-import { SignUpDto } from '../request/sign-up.dto';
+import { ResendConfirmationEmailDto } from '../request/resend-confirmation-email.dto';
 import { NotificationResult } from '../../../../../core/common/notification/notification-result';
 
-export const SignupRequired = () =>
+export const RegistrationEmailResendingRequiredSwaggerDecorator = () =>
   applyDecorators(
     ApiOkResponse({
       type: NotificationResult,
     }),
-    ApiBody({ type: SignUpDto }),
-    ApiOperation({ summary: 'signup' }),
+    ApiBody({ type: ResendConfirmationEmailDto }),
+    ApiOperation({ summary: 'registration email resending' }),
   );

@@ -18,24 +18,24 @@ export class AuthService {
     const accessToken = this.jwtService.sign(
       { userId, deviceId },
       {
-        secret: this.configService.get('secrets.secretAccessToken', {
+        secret: this.configService.get('secrets', {
           infer: true,
-        }),
-        expiresIn: this.configService.get('secrets.timeExpireAccessToken', {
+        }).secretAccessToken,
+        expiresIn: this.configService.get('secrets', {
           infer: true,
-        }),
+        }).timeExpireAccessToken,
       },
     );
 
     const refreshToken = this.jwtService.sign(
       { userId, deviceId },
       {
-        secret: this.configService.get('secrets.secretRefreshToken', {
+        secret: this.configService.get('secrets', {
           infer: true,
-        }),
-        expiresIn: this.configService.get('secrets.timeExpireRefreshToken', {
+        }).secretRefreshToken,
+        expiresIn: this.configService.get('secrets', {
           infer: true,
-        }),
+        }).timeExpireRefreshToken,
       },
     );
 

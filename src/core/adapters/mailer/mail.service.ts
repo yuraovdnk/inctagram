@@ -66,6 +66,7 @@ export class EmailService {
         `,
       //template: 'confirm-email-code',
       //context: { confirmationCode: code, username },
+      text: `confirm code - ${code}`,
     });
   }
 }

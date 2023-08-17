@@ -1,26 +1,33 @@
 import {
-  ExceptionFilter,
-  Catch,
   ArgumentsHost,
+  Catch,
+  ExceptionFilter,
   HttpException,
-  BadRequestException,
-  InternalServerErrorException,
 } from '@nestjs/common';
-import { Request, Response } from 'express';
+import { Response } from 'express';
+
+import {
+  BadResult,
+  ForbiddenResult,
+  InternalServerError,
+  NotFoundResult,
+  NotificationResult,
+  UnAuthorizedResult,
+} from '../notification/notification-result';
+import { isArray } from 'class-validator';
 
 @Catch(Error)
 export class ErrorExceptionFilter implements ExceptionFilter {
-  catch(exception: HttpException, host: ArgumentsHost) {
+  catch(exception: Error, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
-    const request = ctx.getRequest<Request>();
-    if (process.env.environment !== 'production') {
-      response.status(500).send({
-        error: exception.toString(),
-        exception: exception.stack,
-      });
+
+    let stack = undefined;
+    if (process.env.NODE_ENV === 'development') {
+      stack = exception.stack;
     }
-    response.status(500).json('some error occurred');
+    const res = new InternalServerError('some error occurred');
+    response.status(200).json({ ...res, stack });
   }
 }
 
@@ -29,23 +36,35 @@ export class HttpExceptionFilter implements ExceptionFilter {
   catch(exception: HttpException, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
-    const status = exception.getStatus();
 
-    if (
-      exception instanceof InternalServerErrorException &&
-      process.env.environment !== 'production'
-    ) {
-      const errors: any = exception.getResponse();
-      response.status(status).json(errors);
+    let stack = undefined;
+    if (process.env.NODE_ENV === 'development') {
+      stack = exception.stack;
+    }
+    const test: any = exception.getResponse();
+
+    let responseBody: NotificationResult;
+
+    switch (exception.getStatus()) {
+      case 400:
+        responseBody = new BadResult(test.message);
+        if (isArray(test.message)) {
+          responseBody.extensions = test.message;
+        }
+        break;
+      case 401:
+        responseBody = new UnAuthorizedResult(test.message);
+        break;
+      case 403:
+        responseBody = new ForbiddenResult(test.message);
+        break;
+      case 404:
+        responseBody = new NotFoundResult(test.message);
+        break;
+      default:
+        responseBody = new NotFoundResult('some error occurred');
     }
 
-    if (exception instanceof BadRequestException) {
-      const errors: any = exception.getResponse();
-      response.status(status).json({
-        errorsMessages: errors.message,
-      });
-    }
-
-    response.status(status).send();
+    response.status(200).json({ ...responseBody, stack });
   }
 }

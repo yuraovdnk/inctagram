@@ -1,5 +1,8 @@
 import { UserEntity } from '../../../users/domain/entity/user.entity';
 import { DeviceInfoType } from '../../../../core/common/decorators/device-info.decorator';
+import { getLogger } from 'nodemailer/lib/shared';
+import { is, tr } from 'date-fns/locale';
+import { UnauthorizedException } from '@nestjs/common';
 
 export class AuthSessionEntity {
   id: string;

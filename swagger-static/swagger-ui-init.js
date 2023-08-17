@@ -28,10 +28,14 @@ window.onload = function() {
           },
           "responses": {
             "200": {
-              "description": "Input data is accepted. Email with confirmation code will be send to passed email address"
-            },
-            "400": {
-              "description": "If the inputModel has incorrect values (in particular if the user with the given email or password already exists)"
+              "description": "",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/NotificationResult"
+                  }
+                }
+              }
             }
           },
           "tags": [
@@ -300,6 +304,65 @@ window.onload = function() {
             "passwordConfirm"
           ]
         },
+        "NotificationExtension": {
+          "type": "object",
+          "properties": {
+            "key": {
+              "type": "string"
+            },
+            "message": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "message"
+          ]
+        },
+        "NotificationResult": {
+          "type": "object",
+          "properties": {
+            "resultCode": {
+              "type": "array",
+              "example": {
+                "OK": 0,
+                "ERROR": 1,
+                "BAD_REQUEST": 2,
+                "UNAUTHORIZED": 3,
+                "FORBIDDEN": 4,
+                "NOT_FOUND": 5,
+                "NOT_CONFIRMED": 6,
+                "NOT_EXIST": 7
+              },
+              "items": {
+                "type": "number",
+                "enum": [
+                  0,
+                  1,
+                  2,
+                  3,
+                  4,
+                  5,
+                  6,
+                  7
+                ]
+              }
+            },
+            "extensions": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/NotificationExtension"
+              }
+            },
+            "data": {
+              "type": "object"
+            }
+          },
+          "required": [
+            "resultCode",
+            "extensions",
+            "data"
+          ]
+        },
         "ConfirmEmailDto": {
           "type": "object",
           "properties": {
@@ -375,65 +438,6 @@ window.onload = function() {
           },
           "required": [
             "email"
-          ]
-        },
-        "NotificationExtension": {
-          "type": "object",
-          "properties": {
-            "key": {
-              "type": "string"
-            },
-            "message": {
-              "type": "string"
-            }
-          },
-          "required": [
-            "message"
-          ]
-        },
-        "NotificationResult": {
-          "type": "object",
-          "properties": {
-            "resultCode": {
-              "type": "array",
-              "example": {
-                "OK": 0,
-                "ERROR": 1,
-                "BAD_REQUEST": 2,
-                "UNAUTHORIZED": 3,
-                "FORBIDDEN": 4,
-                "NOT_FOUND": 5,
-                "NOT_CONFIRMED": 6,
-                "NOT_EXIST": 7
-              },
-              "items": {
-                "type": "number",
-                "enum": [
-                  0,
-                  1,
-                  2,
-                  3,
-                  4,
-                  5,
-                  6,
-                  7
-                ]
-              }
-            },
-            "extensions": {
-              "type": "array",
-              "items": {
-                "$ref": "#/components/schemas/NotificationExtension"
-              }
-            },
-            "data": {
-              "type": "object"
-            }
-          },
-          "required": [
-            "resultCode",
-            "extensions",
-            "data"
           ]
         }
       }

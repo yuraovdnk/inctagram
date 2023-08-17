@@ -1,21 +1,12 @@
 import { applyDecorators } from '@nestjs/common';
-import {
-  ApiBadRequestResponse,
-  ApiBody,
-  ApiOkResponse,
-  ApiOperation,
-} from '@nestjs/swagger';
+import { ApiBody, ApiOkResponse, ApiOperation } from '@nestjs/swagger';
 import { SignUpDto } from '../request/sign-up.dto';
+import { NotificationResult } from '../../../../../core/common/notification/notification-result';
 
 export const SignupRequired = () =>
   applyDecorators(
     ApiOkResponse({
-      description:
-        'Input data is accepted. Email with confirmation code will be send to passed email address',
-    }),
-    ApiBadRequestResponse({
-      description:
-        'If the inputModel has incorrect values (in particular if the user with the given email or password already exists)',
+      type: NotificationResult,
     }),
     ApiBody({ type: SignUpDto }),
     ApiOperation({ summary: 'signup' }),

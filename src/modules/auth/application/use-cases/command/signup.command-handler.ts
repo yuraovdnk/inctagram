@@ -46,6 +46,6 @@ export class SignupCommandHandler implements ICommandHandler<SignupCommand> {
     user.getUncommittedEvents().forEach((event) => {
       this.eventBus.publish(event);
     });
-    return new SuccessResult();
+    return new SuccessResult({ email: user.email });
   }
 }

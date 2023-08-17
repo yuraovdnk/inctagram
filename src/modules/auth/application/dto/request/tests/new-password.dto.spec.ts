@@ -5,7 +5,7 @@ import { passwordFieldTest } from './test-helpers/password-field-test';
 describe('NewPasswordDto', () => {
   const getValidDto = () => {
     const dto = new NewPasswordDto();
-    dto.newPassword = 'SecurePassword@1'; // A valid password
+    dto.newPassword = 'SecurePassword_1'; // A valid password
     dto.recoveryCode = '123e4567-e89b-12d3-a456-426655440000'; // A valid UUID recoveryCode
     return dto;
   };

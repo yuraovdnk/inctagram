@@ -5,7 +5,7 @@ import { LoginDto } from '../login.dto';
 describe('LoginDto', () => {
   const getValidDto = () => {
     const email = 'test@gamil.com';
-    const password = 'SecurePassword@1';
+    const password = 'SecurePassword_1';
     return new LoginDto(email, password);
   };
   emailFieldTest('email', getValidDto());

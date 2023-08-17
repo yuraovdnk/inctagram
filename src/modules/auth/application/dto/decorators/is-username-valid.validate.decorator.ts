@@ -19,7 +19,7 @@ export function IsUsernameValid(
       options: validationOptions,
       validator: {
         validate(value: string) {
-          const usernameRegex = /^[A-Za-z0-9]+$/;
+          const usernameRegex = /^[A-Za-z0-9\-_]+$/;
           if (typeof value !== 'string' || !value) {
             return false;
           }

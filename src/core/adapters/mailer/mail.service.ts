@@ -40,9 +40,16 @@ export class EmailService {
         subject: 'Password recovery email',
         //template: 'password-recovery',
         //context: { recoveryCode },
+        html: `
+        <h1>Password recovery</h1>
+        <p>password recovery code: ${recoveryCode} <br>
+        To finish password recovery please follow the link below:
+        <a href="https://somesite.com/password-recovery?recoveryCode=${recoveryCode}">recovery password</a>
+        </p>
+        `,
       });
     } catch (e) {
-      console.error('email sending error: ', e);
+      console.log('email sending error: ', e);
     }
   }
   async sendConfirmCode(username: string, email: string, code: string) {
@@ -50,6 +57,13 @@ export class EmailService {
       to: email,
       from: this.configService.get('SMTP_USER'),
       subject: 'Confirm Email',
+      html: `
+        <h1>Confirm Email</h1>
+        <p>email confirmation code: ${code} <br>
+        To confirm your email please follow the link below:
+        <a href="https://somesite.com/password-recovery?code=${code}">recovery password</a>
+        </p>
+        `,
       //template: 'confirm-email-code',
       //context: { confirmationCode: code, username },
       text: `confirm code - ${code}`,

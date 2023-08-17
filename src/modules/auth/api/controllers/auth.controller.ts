@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Get,
   HttpCode,
   HttpStatus,
   ParseUUIDPipe,
@@ -12,6 +13,7 @@ import { CommandBus } from '@nestjs/cqrs';
 import { SignUpDto } from '../../application/dto/request/sign-up.dto';
 import {
   ApiBadRequestResponse,
+  ApiBearerAuth,
   ApiBody,
   ApiNoContentResponse,
   ApiOperation,
@@ -46,6 +48,7 @@ import { ResendConfirmationEmailDto } from '../../application/dto/request/resend
 import { NotificationResult } from '../../../../core/common/notification/notification-result';
 import { ResendEmailConfirmationCommand } from '../../application/use-cases/command/resend-email-confirmation.command.handler';
 import { RegistrationEmailResendingRequiredSwaggerDecorator } from '../../application/dto/swagger/registration-email-resending-required.swagger-decorator';
+import { UserInfoViewDto } from '../../application/dto/response/user-info.view.dto';
 
 @ApiTags('AUTH')
 @Controller('auth')
@@ -174,5 +177,18 @@ export class AuthController {
       NotificationResult
     >(new ResendEmailConfirmationCommand(resendConfirmationEmailDto));
     return result;
+
+  @ApiBearerAuth()
+  @Get('me')
+  async getAuthInfo(): Promise<UserInfoViewDto> {
+    const userId = '';
+    const user = await this.usersRepository.findById(userId);
+    if (!user)
+      return {
+        userId: 'a6f961a5-19fd-4234-a089-8963ac7b1db8',
+        username: 'MockUser',
+        email: 'testEmail@gmail.com',
+      };
+    return new UserInfoViewDto(user);
   }
 }

@@ -10,6 +10,7 @@ import { v4 as uuid } from 'uuid';
 import * as bcrypt from 'bcrypt';
 import request from 'supertest';
 import { SignUpDto } from '../../src/modules/auth/application/dto/request/sign-up.dto';
+import { NotificationResult } from '../../src/core/common/notification/notification-result';
 
 export class AuthTestHelper {
   private usersRepository: UsersRepository;
@@ -57,9 +58,19 @@ export class AuthTestHelper {
       createdAt: undefined,
     };
 
+    const mockSuccessNotification: NotificationResult<EmailConfirmationEntity> =
+      {
+        data: mockEmailConfirmEntity,
+        resultCode: 0,
+        extensions: [],
+        hasError(): boolean {
+          return false;
+        },
+      };
+
     jest
       .spyOn(EmailConfirmationEntity, 'create')
-      .mockImplementation(() => mockEmailConfirmEntity);
+      .mockImplementation(() => mockSuccessNotification);
 
     await Promise.all([
       this.authRepository.createEmailConfirmCode(mockEmailConfirmEntity),

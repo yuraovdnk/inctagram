@@ -48,8 +48,8 @@ import { ResendConfirmationEmailDto } from '../../application/dto/request/resend
 import { NotificationResult } from '../../../../core/common/notification/notification-result';
 import { ResendEmailConfirmationCommand } from '../../application/use-cases/command/resend-email-confirmation.command.handler';
 import { RegistrationEmailResendingRequiredSwaggerDecorator } from '../../application/dto/swagger/registration-email-resending-required.swagger-decorator';
-import { UserInfoViewDto } from '../../application/dto/response/user-info.view.dto';
 import { UsersRepository } from '../../../users/instrastructure/repository/users.repository';
+import { UserInfoViewDto } from '../../application/dto/response/user-info.view.dto';
 
 @ApiTags('AUTH')
 @Controller('auth')
@@ -180,6 +180,7 @@ export class AuthController {
     >(new ResendEmailConfirmationCommand(resendConfirmationEmailDto));
     return result;
   }
+
   @ApiBearerAuth()
   @Get('me')
   async getAuthInfo(): Promise<UserInfoViewDto> {

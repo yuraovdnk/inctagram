@@ -7,7 +7,6 @@ import {
   NotificationResult,
   SuccessResult,
 } from '../../../../../core/common/notification/notification-result';
-
 import { AuthService } from '../../service/auth.service';
 export class SignupCommand {
   constructor(public readonly signupDto: SignUpDto) {}

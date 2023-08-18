@@ -32,7 +32,7 @@ export class ResendEmailConfirmationCommandHandler
     if (!user) {
       return new NotFoundResult('user not found'); //show stack error if  it throws in app
     }
-
+    console.log(user, 'user');
     if (user.isConfirmedEmail) {
       return new ForbiddenResult('user is already confirmed');
     }

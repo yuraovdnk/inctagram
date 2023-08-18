@@ -12,6 +12,10 @@ import * as crypto from 'crypto';
 import { setupApp } from '../../src/main';
 import { Test, TestingModule } from '@nestjs/testing';
 import { AppModule } from '../../src/app.module';
+import { ignoreElements } from 'rxjs';
+import { UserEntity } from '../../src/modules/users/domain/entity/user.entity';
+import { NotificationResult } from '../../src/core/common/notification/notification-result';
+import { NotificationCodesEnum } from '../../src/core/common/notification/notification-codes.enum';
 
 jest.setTimeout(20000);
 describe('AuthController (e2e)', () => {
@@ -404,6 +408,75 @@ describe('AuthController (e2e)', () => {
           .expect(HttpStatus.UNAUTHORIZED);
       }, 1);
       //if try with old tokens
+    });
+  });
+
+  describe('POST:[HOST]/auth/registration-email-resending - registration-email-resending', () => {
+    // let emailConfirmCode: EmailConfirmationEntity;
+    // let createdUser: UserEntity;
+    // beforeAll(async () => {
+    //   await dbTestHelper.clearDb();
+    //   createdUser = await authHelper.createUser(userMock);
+    //   emailConfirmCode = await authHelper.createConfirmCode(createdUser, 15);
+    // });
+    it('should return bad result if email is incorrect', async function () {
+      const res = await request(app.getHttpServer())
+        .post('/auth/registration-email-resending')
+        .send({
+          email: 'dsfsd-gmai.com',
+        });
+
+      const resBody: NotificationResult = res.body;
+      expect(resBody.resultCode).toBe(NotificationCodesEnum.BAD_REQUEST);
+    });
+
+    it('should return bad result if email is incorrect', async function () {
+      const res = await request(app.getHttpServer())
+        .post('/auth/registration-email-resending')
+        .send({
+          email: 'dsfsd-gmai.com',
+        });
+
+      const resBody: NotificationResult = res.body;
+      expect(resBody.resultCode).toBe(NotificationCodesEnum.BAD_REQUEST);
+    });
+
+    it('should return not found result if user is not exist', async function () {
+      const res = await request(app.getHttpServer())
+        .post('/auth/registration-email-resending')
+        .send({
+          email: 'dsfsd@gmai.com',
+        });
+
+      const resBody: NotificationResult = res.body;
+      expect(resBody.resultCode).toBe(NotificationCodesEnum.NOT_FOUND);
+    });
+
+    it('should return forbidden result if user is already confirmed', async function () {
+      await authHelper.createUser(userMock, true);
+      const res = await request(app.getHttpServer())
+        .post('/auth/registration-email-resending')
+        .send({
+          email: userMock.email,
+        });
+
+      const resBody: NotificationResult = res.body;
+      expect(resBody.resultCode).toBe(NotificationCodesEnum.FORBIDDEN);
+    });
+
+    it('should return success result', async function () {
+      await dbTestHelper.clearDb();
+      const createdUser = await authHelper.createUser(userMock, false);
+      const emailConfirmationEntity = await authHelper.createConfirmCode(
+        createdUser,
+        15,
+      );
+      await request(app.getHttpServer())
+        .post('/auth/registration-confirmation')
+        .send({
+          code: emailConfirmationEntity.code,
+        })
+        .expect(204);
     });
   });
 

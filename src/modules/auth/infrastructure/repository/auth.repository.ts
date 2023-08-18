@@ -28,7 +28,7 @@ export class AuthRepository {
   ) {
     const prismaService = prisma ?? this.prismaService;
 
-    const res = await prismaService.emailConfirmationCode.upsert({
+    return prismaService.emailConfirmationCode.upsert({
       where: {
         userId: entity.userId,
       },
@@ -42,8 +42,6 @@ export class AuthRepository {
         expireAt: entity.expireAt,
       },
     });
-
-    return res;
   }
   async createPasswordRecoveryCode(entity: PasswordRecoveryEntity) {
     return this.prismaService.passwordRecoveryCode.create({

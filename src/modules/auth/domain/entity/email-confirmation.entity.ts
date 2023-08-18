@@ -2,7 +2,6 @@ import { add } from 'date-fns';
 import { UserEntity } from '../../../users/domain/entity/user.entity';
 import * as crypto from 'crypto';
 import {
-  BadResult,
   NotificationResult,
   SuccessResult,
 } from '../../../../core/common/notification/notification-result';

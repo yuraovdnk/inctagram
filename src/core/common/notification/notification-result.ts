@@ -20,7 +20,7 @@ export class NotificationResult<T = null> {
   })
   extensions: NotificationExtension[] = [];
 
-  @ApiProperty({})
+  @ApiProperty({ type: {} })
   data: T | null = null;
 
   hasError() {

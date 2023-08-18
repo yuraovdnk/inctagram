@@ -13,7 +13,6 @@ import {
   ErrorExceptionFilter,
   HttpExceptionFilter,
 } from './core/common/exception/exception.filter';
-import { BadResult } from './core/common/notification/notification-result';
 import { NotificationExtension } from './core/common/notification/notification-extension';
 
 export const setupApp = (app: INestApplication) => {

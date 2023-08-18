@@ -7,13 +7,13 @@ import {
   ParseUUIDPipe,
   Post,
   Res,
+  UnauthorizedException,
   UseGuards,
 } from '@nestjs/common';
 import { CommandBus } from '@nestjs/cqrs';
 import { SignUpDto } from '../../application/dto/request/sign-up.dto';
 import {
   ApiBadRequestResponse,
-  ApiBearerAuth,
   ApiBody,
   ApiNoContentResponse,
   ApiOperation,
@@ -45,11 +45,16 @@ import { LogoutRequired } from '../../application/dto/swagger/logout-required.sw
 import { RefreshTokenRequired } from '../../application/dto/swagger/refresh-tooken-required.swagger.decorator';
 import { SignupCommand } from '../../application/use-cases/command/signup.command-handler';
 import { ResendConfirmationEmailDto } from '../../application/dto/request/resend-confirmation-email.dto';
-import { NotificationResult } from '../../../../core/common/notification/notification-result';
+import {
+  NotificationResult,
+  SuccessResult,
+} from '../../../../core/common/notification/notification-result';
 import { ResendEmailConfirmationCommand } from '../../application/use-cases/command/resend-email-confirmation.command.handler';
 import { RegistrationEmailResendingRequiredSwaggerDecorator } from '../../application/dto/swagger/registration-email-resending-required.swagger-decorator';
 import { UsersRepository } from '../../../users/instrastructure/repository/users.repository';
 import { UserInfoViewDto } from '../../application/dto/response/user-info.view.dto';
+import { JwtGuard } from '../../../../core/common/guards/jwt.guard';
+import { MeRequiredSwaggerDecorator } from '../../application/dto/swagger/me-required.swagger-decorator';
 
 @ApiTags('AUTH')
 @Controller('auth')
@@ -174,24 +179,20 @@ export class AuthController {
   async resendEmailConfirmation(
     @Body() resendConfirmationEmailDto: ResendConfirmationEmailDto,
   ): Promise<NotificationResult> {
-    const result = await this.commandBus.execute<
+    return this.commandBus.execute<
       ResendEmailConfirmationCommand,
       NotificationResult
     >(new ResendEmailConfirmationCommand(resendConfirmationEmailDto));
-    return result;
   }
 
-  @ApiBearerAuth()
+  @MeRequiredSwaggerDecorator()
+  @UseGuards(JwtGuard)
   @Get('me')
-  async getAuthInfo(): Promise<UserInfoViewDto> {
-    const userId = '';
+  async getAuthInfo(
+    @CurrentUser() userId: string,
+  ): Promise<NotificationResult<UserInfoViewDto>> {
     const user = await this.usersRepository.findById(userId);
-    if (!user)
-      return {
-        userId: 'a6f961a5-19fd-4234-a089-8963ac7b1db8',
-        username: 'MockUser',
-        email: 'testEmail@gmail.com',
-      };
-    return new UserInfoViewDto(user);
+    if (!user) new UnauthorizedException();
+    return new SuccessResult(new UserInfoViewDto(user));
   }
 }

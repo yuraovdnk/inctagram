@@ -2,11 +2,11 @@ import { UserEntity } from '../../../../users/domain/entity/user.entity';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class UserInfoViewDto {
-  @ApiProperty()
+  @ApiProperty({ format: 'uuid' })
   userId: string;
-  @ApiProperty()
+  @ApiProperty({ example: 'Username' })
   username: string;
-  @ApiProperty()
+  @ApiProperty({ format: 'email' })
   email: string;
   constructor(entity: UserEntity) {
     this.userId = entity.id;

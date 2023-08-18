@@ -23,7 +23,7 @@ export class UsersRepository {
         },
       });
     } catch (e) {
-      console.error(e);
+      console.log(e);
     }
   }
 

@@ -54,7 +54,7 @@ export class AuthTestHelper {
   ): Promise<EmailConfirmationEntity> {
     jest.spyOn(this.emailService, 'sendConfirmCode').mockImplementation();
 
-    const mockEmailConfirmEntity = {
+    const mockEmailConfirmEntity: EmailConfirmationEntity = {
       userId: userEntity.id,
       code: uuid(),
       expireAt: add(new Date(), { seconds: timeCode ?? 1 }),

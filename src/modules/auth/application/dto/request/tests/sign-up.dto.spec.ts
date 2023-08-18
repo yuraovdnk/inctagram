@@ -9,8 +9,8 @@ describe('SignUpDto', () => {
     dto = new SignUpDto();
     dto.username = 'Username1';
     dto.email = 'test@gamil.com';
-    dto.password = 'SecurePassword@1';
-    dto.passwordConfirm = 'SecurePassword@1';
+    dto.password = 'SecurePassword_1';
+    dto.passwordConfirm = 'SecurePassword_1';
     return dto;
   };
   it('should validate a valid Dto', async () => {

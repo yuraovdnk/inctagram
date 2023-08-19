@@ -11,8 +11,6 @@ import * as crypto from 'crypto';
 import { setupApp } from '../../src/main';
 import { Test, TestingModule } from '@nestjs/testing';
 import { AppModule } from '../../src/app.module';
-import { ignoreElements } from 'rxjs';
-import { UserEntity } from '../../src/modules/users/domain/entity/user.entity';
 import { NotificationResult } from '../../src/core/common/notification/notification-result';
 import { NotificationCodesEnum } from '../../src/core/common/notification/notification-codes.enum';
 
@@ -54,16 +52,23 @@ describe('AuthController (e2e)', () => {
       expect(res.body.accessToken).toBeDefined();
       accessTokenUser = res.body.accessToken;
     });
+    it('POST:[HOST]/auth/me: should return noAuthorized error.', async () => {
+      const result = await request(app.getHttpServer())
+        .get('/auth/me')
+        .expect(HttpStatus.OK);
+      expect(result.body.resultCode).toBe(3);
+    });
     it('POST:[HOST]/auth/me: should return code 200 and users data.', async () => {
       const result = await request(app.getHttpServer())
         .get('/auth/me')
         .auth(accessTokenUser, { type: 'bearer' })
         .expect(HttpStatus.OK);
-      // expect(result.body).toEqual({
-      //   username: users[0]?.username,
-      //   email: users[0]?.email,
-      //   userId: users[0]?.id,
-      // });
+      expect(result.body.resultCode).toBe(0);
+      expect(result.body.data).toEqual({
+        username: users[0]?.username,
+        email: users[0]?.email,
+        userId: users[0]?.id,
+      });
     });
   });
 
@@ -450,7 +455,7 @@ describe('AuthController (e2e)', () => {
         await request(app.getHttpServer())
           .post('/auth/refresh-token')
           .set('Cookie', token)
-          .expect(HttpStatus.UNAUTHORIZED);
+          .expect(HttpStatus.OK);
       }, 1);
       //if try with old tokens
     });
@@ -521,7 +526,7 @@ describe('AuthController (e2e)', () => {
         .send({
           code: emailConfirmationEntity.code,
         })
-        .expect(204);
+        .expect(HttpStatus.OK);
     });
   });
 

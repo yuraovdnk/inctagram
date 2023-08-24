@@ -2,7 +2,8 @@ import { ApiProperty } from '@nestjs/swagger';
 import { IsStrongPassword } from '../decorators/is-strong-password.validate.decorator';
 import { IsEmailInRFC5322 } from '../decorators/is-email-in-rfc5322.validate.decorator';
 import { IsUsernameValid } from '../decorators/is-username-valid.validate.decorator';
-import { ValidateIf } from 'class-validator';
+import { equals, Equals, ValidateIf } from 'class-validator';
+import { IsEqualToField } from '../decorators/is-equal-to-field.validate.decorator';
 
 export class SignUpDto {
   @ApiProperty({
@@ -31,7 +32,6 @@ export class SignUpDto {
   @IsStrongPassword()
   password: string;
 
-  @ValidateIf((object: SignUpDto, value) => object.password !== value) //TODO
   @ApiProperty({
     description: 'password confirmation',
     required: true,
@@ -39,6 +39,7 @@ export class SignUpDto {
     minLength: 6,
     maxLength: 30,
   })
+  @IsEqualToField('password')
   @IsStrongPassword()
   passwordConfirm: string;
 }

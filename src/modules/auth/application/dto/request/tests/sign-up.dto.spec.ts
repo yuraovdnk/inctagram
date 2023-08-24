@@ -15,8 +15,16 @@ describe('SignUpDto', () => {
   };
   it('should validate a valid Dto', async () => {
     const errors = await validate(dto);
+    console.log(errors);
     expect(errors.length).toBe(0); // Expect no errors
   });
+  it('should fault if password!=confirm password', async () => {
+    dto.password = dto.password + '1';
+    const errors = await validate(dto);
+    console.log('errors:', errors);
+    expect(errors.length).toBeGreaterThan(0); // Expect no errors
+  });
+
   describe('username', () => {
     beforeEach(() => {
       dto = getValidDto();

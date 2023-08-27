@@ -31,7 +31,9 @@ export class SignUpDto {
   @IsStrongPassword()
   password: string;
 
-  @ValidateIf((object: SignUpDto, value) => object.password !== value) //TODO
+  @ValidateIf((object: SignUpDto, value) => {
+    return object.password === value; //TODO
+  })
   @ApiProperty({
     description: 'password confirmation',
     required: true,

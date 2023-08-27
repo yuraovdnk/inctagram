@@ -19,6 +19,12 @@ import { CacheModule } from '@nestjs/cache-manager';
 import { ResendEmailConfirmationCommandHandler } from './application/use-cases/command/resend-email-confirmation.command.handler';
 import { AlsModule } from '../../als.module';
 import { JwtStrategy } from '../../core/common/guards/jwt.guard';
+import { GoogleStrategy } from './application/strategies/google.strategy';
+import { AuthenticationByExternalAccountCommandHandler } from './application/use-cases/command/authentication-by-external-account-command.handler';
+import { GithubStrategy } from './application/strategies/github.strategy';
+import { UserCreatedByExternalAccountEventHandler } from './application/use-cases/events/user-created-by-external-account-event.handler';
+import { OauthController } from './api/controllers/oauth.controller';
+import { TestCaseHandler } from '../../../test/test.case';
 
 const commandHandlers = [
   PasswordRecoveryCommandHandler,
@@ -28,10 +34,21 @@ const commandHandlers = [
   NewPasswordCommandHandler,
   KillAuthSessionCommandHandler,
   ResendEmailConfirmationCommandHandler,
+  AuthenticationByExternalAccountCommandHandler,
+  TestCaseHandler,
 ];
 const queryHandlers = [];
-const eventHandlers = [SendConfirmCodeEventHandler];
-const Strategies = [LocalStrategy, JwtCookieStrategy, JwtStrategy];
+const eventHandlers = [
+  SendConfirmCodeEventHandler,
+  UserCreatedByExternalAccountEventHandler,
+];
+const Strategies = [
+  LocalStrategy,
+  JwtCookieStrategy,
+  JwtStrategy,
+  GoogleStrategy,
+  GithubStrategy,
+];
 @Module({
   imports: [
     CacheModule.register(),
@@ -40,7 +57,7 @@ const Strategies = [LocalStrategy, JwtCookieStrategy, JwtStrategy];
     UserModule,
     AlsModule,
   ],
-  controllers: [AuthController],
+  controllers: [AuthController, OauthController],
   providers: [
     AuthService,
     JwtService,

@@ -7,14 +7,15 @@ export enum NotificationCodesEnum {
   NOT_FOUND,
   NOT_CONFIRMED,
   NOT_EXIST,
+  CREATED,
 }
-export const NotificationCodesEnumSwagger: typeof NotificationCodesEnum = {
-  OK: 0,
-  ERROR: 1,
-  BAD_REQUEST: 2,
-  UNAUTHORIZED: 3,
-  FORBIDDEN: 4,
-  NOT_FOUND: 5,
-  NOT_CONFIRMED: 6,
-  NOT_EXIST: 7,
-} as const;
+
+export const NotificationCodesEnumSwagger = Object.keys(
+  NotificationCodesEnum,
+).reduce((acc, key) => {
+  const enumValue = NotificationCodesEnum[key];
+  if (typeof enumValue === 'number') {
+    acc[key] = enumValue;
+  }
+  return acc;
+}, {});

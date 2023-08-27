@@ -28,6 +28,7 @@ export class AuthTestHelper {
       .send(singUpDto)
       .expect(expect);
   }
+
   async createUser(
     mockUser: IUserMock,
     confirmStatus = false,

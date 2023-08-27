@@ -8,12 +8,18 @@ import { AuthSessionEntity } from '../../domain/entity/auth-session.entity';
 import {
   AuthSession,
   PasswordRecoveryCode,
+  Prisma,
   PrismaClient,
 } from '@prisma/client';
 import { PasswordRecoveryMapper } from '../password-recovery.mapper';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Cache } from 'cache-manager';
 import * as runtime from '@prisma/client/runtime/library';
+
+export type EmailConfirmationCodeFullType =
+  Prisma.EmailConfirmationCodeGetPayload<{
+    select: { [K in keyof Required<Prisma.EmailConfirmationCodeSelect>]: true };
+  }>;
 
 @Injectable()
 export class AuthRepository {
@@ -68,7 +74,7 @@ export class AuthRepository {
   async findByConfirmCode(
     code: string,
   ): Promise<EmailConfirmationEntity | null> {
-    const confirmCode =
+    const confirmCode: EmailConfirmationCodeFullType =
       await this.prismaService.emailConfirmationCode.findFirst({
         where: { code },
         include: {

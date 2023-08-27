@@ -16,6 +16,7 @@ export class EmailConfirmCommandHandler
     private readonly usersRepository: UsersRepository,
   ) {}
   async execute(command: EmailConfirmCommand): Promise<any> {
+    console.log('sdfsdf');
     const confirmCode = await this.authRepository.findByConfirmCode(
       command.code,
     );

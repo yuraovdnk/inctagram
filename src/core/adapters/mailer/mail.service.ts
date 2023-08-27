@@ -69,4 +69,16 @@ export class EmailService {
       text: `confirm code - ${code}`,
     });
   }
+
+  async sendMailWithSuccessRegistration(email: string) {
+    await this.transporter.sendMail({
+      to: email,
+      from: this.configService.get('SMTP_USER'),
+      subject: 'Success authentication',
+      html: `
+        <p>Congratulations,<br>
+        your account has been successfully created
+      `,
+    });
+  }
 }

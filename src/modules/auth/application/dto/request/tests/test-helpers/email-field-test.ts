@@ -39,5 +39,11 @@ export const emailFieldTest = (fieldTile: string, dto: any) => {
       expect(errors.length).toBeGreaterThan(0); // Expect errors to be greater than 0
       expect(errors[0].constraints).toHaveProperty('IsStrongEmail');
     });
+    it('should fail if the email property do not include .', async () => {
+      dto[fieldTile] = 'test@gamilcom';
+      const errors = await validate(dto);
+      expect(errors.length).toBeGreaterThan(0); // Expect errors to be greater than 0
+      expect(errors[0].constraints).toHaveProperty('IsStrongEmail');
+    });
   });
 };

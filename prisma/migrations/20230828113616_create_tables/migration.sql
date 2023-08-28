@@ -11,14 +11,14 @@ CREATE TABLE "users" (
 );
 
 -- CreateTable
-CREATE TABLE "external_acccounts" (
+CREATE TABLE "external_accounts" (
     "providerId" TEXT NOT NULL,
     "email" TEXT NOT NULL,
     "provider" TEXT NOT NULL,
     "userId" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
-    CONSTRAINT "external_acccounts_pkey" PRIMARY KEY ("providerId")
+    CONSTRAINT "external_accounts_pkey" PRIMARY KEY ("providerId")
 );
 
 -- CreateTable
@@ -69,7 +69,7 @@ CREATE UNIQUE INDEX "password_recovery_codes_userId_key" ON "password_recovery_c
 CREATE UNIQUE INDEX "auth_sessions_deviceId_key" ON "auth_sessions"("deviceId");
 
 -- AddForeignKey
-ALTER TABLE "external_acccounts" ADD CONSTRAINT "external_acccounts_userId_fkey" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "external_accounts" ADD CONSTRAINT "external_accounts_userId_fkey" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "email_confirmation_codes" ADD CONSTRAINT "email_confirmation_codes_userId_fkey" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

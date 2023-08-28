@@ -34,9 +34,9 @@ model ExternalAccount {
   userId     String
   createdAt  DateTime @default(now())
 
-  User User? @relation(fields: [userId], references: [id])
+  user User? @relation(fields: [userId], references: [id])
 
-  @@map("external_acccounts")
+  @@map("external_accounts")
 }
 
 model EmailConfirmationCode {
@@ -44,7 +44,7 @@ model EmailConfirmationCode {
   createdAt DateTime @default(now())
   code      String
   expireAt  DateTime
-  user      User     @relation(fields: [userId], references: [id])
+  user      User?    @relation(fields: [userId], references: [id])
 
   @@map("email_confirmation_codes")
 }

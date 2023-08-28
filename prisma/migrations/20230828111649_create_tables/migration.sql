@@ -12,22 +12,13 @@ CREATE TABLE "users" (
 
 -- CreateTable
 CREATE TABLE "external_acccounts" (
-    "id" TEXT NOT NULL,
     "providerId" TEXT NOT NULL,
     "email" TEXT NOT NULL,
     "provider" TEXT NOT NULL,
     "userId" TEXT NOT NULL,
-    "displayName" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
-    CONSTRAINT "external_acccounts_pkey" PRIMARY KEY ("id")
-);
-
--- CreateTable
-CREATE TABLE "external_account_confirmations" (
-    "providerId" TEXT NOT NULL,
-    "confirmationCode" TEXT NOT NULL,
-    "expiresCode" TIMESTAMP(3) NOT NULL
+    CONSTRAINT "external_acccounts_pkey" PRIMARY KEY ("providerId")
 );
 
 -- CreateTable
@@ -69,12 +60,6 @@ CREATE UNIQUE INDEX "users_username_key" ON "users"("username");
 CREATE UNIQUE INDEX "users_email_key" ON "users"("email");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "external_acccounts_providerId_key" ON "external_acccounts"("providerId");
-
--- CreateIndex
-CREATE UNIQUE INDEX "external_account_confirmations_providerId_key" ON "external_account_confirmations"("providerId");
-
--- CreateIndex
 CREATE UNIQUE INDEX "email_confirmation_codes_userId_key" ON "email_confirmation_codes"("userId");
 
 -- CreateIndex
@@ -85,9 +70,6 @@ CREATE UNIQUE INDEX "auth_sessions_deviceId_key" ON "auth_sessions"("deviceId");
 
 -- AddForeignKey
 ALTER TABLE "external_acccounts" ADD CONSTRAINT "external_acccounts_userId_fkey" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "external_account_confirmations" ADD CONSTRAINT "external_account_confirmations_providerId_fkey" FOREIGN KEY ("providerId") REFERENCES "external_acccounts"("providerId") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "email_confirmation_codes" ADD CONSTRAINT "email_confirmation_codes_userId_fkey" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

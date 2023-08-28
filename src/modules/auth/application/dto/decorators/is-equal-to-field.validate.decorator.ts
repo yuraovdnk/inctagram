@@ -4,24 +4,25 @@ import {
   ValidationArguments,
 } from 'class-validator';
 
-export function IsEmailInRFC5322(validationOptions?: ValidationOptions) {
+export function IsEqualToField(
+  targetPropertyName: string,
+  validationOptions?: ValidationOptions,
+) {
   return function (object: NonNullable<unknown>, propertyName: string) {
     registerDecorator({
-      name: 'IsStrongEmail',
+      name: 'IsEqualToField',
       target: object.constructor,
       propertyName: propertyName,
       options: validationOptions,
       validator: {
-        validate(value: string) {
-          const emailRegex =
-            /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*\.[a-zA-Z]{2,}$/;
+        validate(value: string, args: ValidationArguments) {
           if (typeof value !== 'string' || !value) {
             return false;
           }
-          return emailRegex.test(value);
+          return value === args.object[targetPropertyName];
         },
         defaultMessage(args: ValidationArguments) {
-          return `${args.property} should conform to the specification for email addresses defined in RFC 5322.`;
+          return `${args.property} value must be equal to ${targetPropertyName}`;
         },
       },
     });

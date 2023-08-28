@@ -1,5 +1,19 @@
 import { UserEntity } from '../domain/entity/user.entity';
-import { User } from '@prisma/client';
+import {
+  EmailConfirmationCode,
+  ExternalAccount,
+  Prisma,
+  User,
+} from '@prisma/client';
+
+export type UserFullType = Prisma.UserGetPayload<{
+  select: { [K in keyof Required<Prisma.UserSelect>]: true };
+}>;
+
+type UserType = User & {
+  externalAccounts?: ExternalAccount[];
+  emailConfirmationCode?: EmailConfirmationCode;
+};
 
 export class UserMapper {
   static toModel(userEntity: UserEntity): User {
@@ -12,7 +26,7 @@ export class UserMapper {
       isEmailConfirmed: userEntity.isConfirmedEmail,
     };
   }
-  static toEntity(user: User) {
+  static toEntity(user: UserType) {
     const entity = new UserEntity();
     entity.id = user.id;
     entity.email = user.email;
@@ -20,6 +34,7 @@ export class UserMapper {
     entity.username = user.username;
     entity.createdAt = user.createdAt;
     entity.isConfirmedEmail = user.isEmailConfirmed;
+    entity.externalAccounts.push(...(user.externalAccounts || []));
 
     return entity;
   }

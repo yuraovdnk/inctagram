@@ -1,6 +1,7 @@
 import { AggregateRoot } from '@nestjs/cqrs';
 import { UserCreatedEvent } from '../events/user.created.event';
 import { v4 as uuid } from 'uuid';
+import { ExternalAccountEntity } from './external-account.entity';
 
 export class UserEntity extends AggregateRoot {
   id: string;
@@ -9,19 +10,28 @@ export class UserEntity extends AggregateRoot {
   createdAt: Date;
   passwordHash: string;
   isConfirmedEmail: boolean;
+  externalAccounts: ExternalAccountEntity[] = [];
+
   constructor() {
     super();
   }
-  static create(username: string, email: string, passwordHash: string) {
+
+  static create(
+    username: string,
+    email: string,
+    passwordHash: string,
+    isConfirmed = false,
+  ) {
     const user = new UserEntity();
     user.id = uuid();
     user.email = email;
     user.username = username;
     user.passwordHash = passwordHash;
-
+    user.isConfirmedEmail = isConfirmed;
     user.apply(new UserCreatedEvent(user));
     return user;
   }
+
   confirmEmail() {
     this.isConfirmedEmail = true;
   }

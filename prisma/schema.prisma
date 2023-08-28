@@ -3,7 +3,7 @@
 
 generator client {
   provider      = "prisma-client-js"
-  binaryTargets = ["native", "rhel-openssl-1.0.x"]
+  binaryTargets = ["native", "rhel-openssl-1.0.x", "windows"]
 }
 
 datasource db {
@@ -19,9 +19,24 @@ model User {
   createdAt             DateTime               @default(now())
   passwordHash          String
   isEmailConfirmed      Boolean                @default(false)
-  EmailConfirmationCode EmailConfirmationCode?
-  PasswordRecoveryCode  PasswordRecoveryCode?
-  AuthSession           AuthSession[]
+  emailConfirmationCode EmailConfirmationCode?
+  passwordRecoveryCode  PasswordRecoveryCode?
+  authSessions          AuthSession[]
+  externalAccounts      ExternalAccount[]
+
+  @@map("users")
+}
+
+model ExternalAccount {
+  providerId String   @id
+  email      String
+  provider   String
+  userId     String
+  createdAt  DateTime @default(now())
+
+  User User? @relation(fields: [userId], references: [id])
+
+  @@map("external_acccounts")
 }
 
 model EmailConfirmationCode {

@@ -36,7 +36,6 @@ export class SignupCommandHandler implements ICommandHandler<SignupCommand> {
     const passwordHash = this.authService.getPasswordHash(
       command.signupDto.password,
     );
-
     const user = UserEntity.create(
       command.signupDto.username,
       command.signupDto.email,

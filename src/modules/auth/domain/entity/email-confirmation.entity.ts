@@ -5,8 +5,9 @@ import {
   NotificationResult,
   SuccessResult,
 } from '../../../../core/common/notification/notification-result';
+import { EmailConfirmationCode } from '@prisma/client';
 
-export class EmailConfirmationEntity {
+export class EmailConfirmationEntity implements EmailConfirmationCode {
   userId: string;
   code: string;
   createdAt: Date;

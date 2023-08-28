@@ -24,7 +24,7 @@ import { PasswordRecoveryDto } from '../../application/dto/request/password-reco
 import { PasswordRecoveryCommand } from '../../application/use-cases/command/password-recovery.command-handler';
 import { ThrottlerGuard } from '@nestjs/throttler';
 import { LocalAuthGuard } from '../../application/strategies/local.strategy';
-import { AuthService } from '../../application/service/auth.service';
+import { AuthService, JwtTokens } from '../../application/service/auth.service';
 import { CurrentUser } from '../../../../core/common/decorators/current-user.decorator';
 import { Response } from 'express';
 import { EmailConfirmCommand } from '../../application/use-cases/command/email-confirm.command.handler';
@@ -43,7 +43,6 @@ import { JwtCookieGuard } from '../../application/strategies/jwt-cookie.strategy
 import { KillAuthSessionCommand } from '../../application/use-cases/command/kill-auth-session.command.handler';
 import { LogoutRequired } from '../../application/dto/swagger/logout-required.swagger.decorator';
 import { RefreshTokenRequired } from '../../application/dto/swagger/refresh-tooken-required.swagger.decorator';
-import { SignupCommand } from '../../application/use-cases/command/signup.command-handler';
 import { ResendConfirmationEmailDto } from '../../application/dto/request/resend-confirmation-email.dto';
 import {
   NotificationResult,
@@ -55,6 +54,7 @@ import { UsersRepository } from '../../../users/instrastructure/repository/users
 import { UserInfoViewDto } from '../../application/dto/response/user-info.view.dto';
 import { JwtGuard } from '../../../../core/common/guards/jwt.guard';
 import { MeRequiredSwaggerDecorator } from '../../application/dto/swagger/me-required.swagger-decorator';
+import { SignupCommand } from '../../application/use-cases/command/signup.command-handler';
 
 @ApiTags('AUTH')
 @Controller('auth')
@@ -69,7 +69,7 @@ export class AuthController {
   @SignupRequired()
   @HttpCode(HttpStatus.OK)
   @Post('signup')
-  async signUp(@Body() signUpDto: SignUpDto): Promise<NotificationResult> {
+  async signUp(@Body() signUpDto: SignUpDto) /*: Promise<NotificationResult>*/ {
     return this.commandBus.execute<SignupCommand, NotificationResult>(
       new SignupCommand(signUpDto),
     );
@@ -92,15 +92,16 @@ export class AuthController {
     @CurrentUser() userId: string,
     @DeviceMeta() deviceInfo: DeviceInfoType,
   ) {
-    const tokens = this.authService.generateTokens(userId, deviceInfo.deviceId);
-    await this.commandBus.execute(
-      new CreateAuthSessionCommand(tokens.refreshToken, deviceInfo, userId),
-    );
-    res.cookie('refreshToken', tokens.refreshToken, {
+    const result = await this.commandBus.execute<
+      CreateAuthSessionCommand,
+      NotificationResult<JwtTokens>
+    >(new CreateAuthSessionCommand(deviceInfo, userId));
+
+    res.cookie('refreshToken', result.data.refreshToken, {
       // httpOnly: true,
       // secure: true,
     });
-    res.status(200).send({ accessToken: tokens.accessToken });
+    res.status(200).send({ accessToken: result.data.accessToken });
   }
 
   //Password recovery
@@ -162,15 +163,16 @@ export class AuthController {
     @CurrentUser() userId: string,
     @Res() res: Response,
   ) {
-    const tokens = this.authService.generateTokens(userId, deviceInfo.deviceId);
-    await this.commandBus.execute(
-      new CreateAuthSessionCommand(tokens.refreshToken, deviceInfo, userId),
-    );
-    res.cookie('refreshToken', tokens.refreshToken, {
+    const result = await this.commandBus.execute<
+      CreateAuthSessionCommand,
+      NotificationResult<JwtTokens>
+    >(new CreateAuthSessionCommand(deviceInfo, userId));
+
+    res.cookie('refreshToken', result.data.refreshToken, {
       // httpOnly: true,
       // secure: true,
     });
-    res.status(200).send({ accessToken: tokens.accessToken });
+    res.status(200).send({ accessToken: result.data.accessToken });
   }
 
   @RegistrationEmailResendingRequiredSwaggerDecorator()

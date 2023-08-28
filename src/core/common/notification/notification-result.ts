@@ -7,11 +7,8 @@ import { ApiProperty } from '@nestjs/swagger';
 
 export class NotificationResult<T = null> {
   @ApiProperty({
-    type: 'number',
-    enum: NotificationCodesEnumSwagger,
-    isArray: true,
-
-    example: NotificationCodesEnumSwagger,
+    type: Number,
+    description: JSON.stringify(NotificationCodesEnumSwagger),
   })
   resultCode: NotificationCodesEnum;
 
@@ -62,6 +59,14 @@ export class ForbiddenResult extends NotificationResult {
 
 export class SuccessResult extends NotificationResult {
   resultCode: NotificationCodesEnum = NotificationCodesEnum.OK;
+
+  constructor(data: any = null) {
+    super();
+    this.data = data;
+  }
+}
+export class CreatedResult extends NotificationResult {
+  resultCode: NotificationCodesEnum = NotificationCodesEnum.CREATED;
 
   constructor(data: any = null) {
     super();

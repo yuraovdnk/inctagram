@@ -1,10 +1,8 @@
-import { EmailConfirmationCode, User } from '@prisma/client';
+import { EmailConfirmationCode, Prisma, User } from '@prisma/client';
 import { EmailConfirmationEntity } from '../../domain/entity/email-confirmation.entity';
 import { UserMapper } from '../../../users/instrastructure/user.mapper';
+import { EmailConfirmationCodeFullType } from '../repository/auth.repository';
 
-type EmailConfirmationCodeFullType = EmailConfirmationCode & {
-  user: User;
-};
 export class EmailConfirmationCodeMapper {
   static toModel(entity: EmailConfirmationEntity): EmailConfirmationCode {
     return {

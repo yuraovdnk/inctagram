@@ -3,10 +3,14 @@ import { JwtService } from '@nestjs/jwt';
 import { AuthRepository } from '../../../infrastructure/repository/auth.repository';
 import { DeviceInfoType } from '../../../../../core/common/decorators/device-info.decorator';
 import { AuthSessionEntity } from '../../../domain/entity/auth-session.entity';
+import { AuthService, JwtTokens } from '../../service/auth.service';
+import {
+  NotificationResult,
+  SuccessResult,
+} from '../../../../../core/common/notification/notification-result';
 
 export class CreateAuthSessionCommand {
   constructor(
-    public readonly token: string,
     public readonly deviceInfo: DeviceInfoType,
     public readonly userId: string,
   ) {}
@@ -18,9 +22,17 @@ export class CreateAuthSessionCommandHandler
   constructor(
     private authRepository: AuthRepository,
     private jwtService: JwtService,
+    private authService: AuthService,
   ) {}
-  async execute(command: CreateAuthSessionCommand) {
-    const decodedToken: any = this.jwtService.decode(command.token);
+  async execute(
+    command: CreateAuthSessionCommand,
+  ): Promise<NotificationResult<JwtTokens>> {
+    const tokens = await this.authService.generateTokens(
+      command.userId,
+      command.deviceInfo.deviceId,
+    );
+
+    const decodedToken: any = this.jwtService.decode(tokens.refreshToken);
     const timeToken = {
       iat: new Date(decodedToken.iat * 1000),
       exp: new Date(decodedToken.exp * 1000),
@@ -37,9 +49,8 @@ export class CreateAuthSessionCommandHandler
         timeToken,
       );
       await this.authRepository.createAuthSession(session);
-      return;
+      return new SuccessResult(tokens);
     }
-    //refresh token regenerate
 
     authSession.refreshSession(command.deviceInfo.deviceId, timeToken);
 
@@ -47,5 +58,6 @@ export class CreateAuthSessionCommandHandler
       command.deviceInfo.deviceId,
       authSession,
     );
+    return new SuccessResult(tokens);
   }
 }

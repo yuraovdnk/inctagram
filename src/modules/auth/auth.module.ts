@@ -24,7 +24,6 @@ import { AuthenticationByExternalAccountCommandHandler } from './application/use
 import { GithubStrategy } from './application/strategies/github.strategy';
 import { UserCreatedByExternalAccountEventHandler } from './application/use-cases/events/user-created-by-external-account-event.handler';
 import { OauthController } from './api/controllers/oauth.controller';
-import { TestCaseHandler } from '../../../test/test.case';
 
 const commandHandlers = [
   PasswordRecoveryCommandHandler,
@@ -35,7 +34,6 @@ const commandHandlers = [
   KillAuthSessionCommandHandler,
   ResendEmailConfirmationCommandHandler,
   AuthenticationByExternalAccountCommandHandler,
-  TestCaseHandler,
 ];
 const queryHandlers = [];
 const eventHandlers = [

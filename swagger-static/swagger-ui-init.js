@@ -143,13 +143,27 @@ window.onload = function() {
           },
           "responses": {
             "200": {
-              "description": ""
-            },
-            "204": {
-              "description": "Even if current email is not registered (for prevent user's email detection)"
-            },
-            "400": {
-              "description": "If the inputModel has invalid email"
+              "description": "",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "allOf": [
+                      {
+                        "$ref": "#/components/schemas/NotificationResult"
+                      },
+                      {
+                        "properties": {
+                          "data": {
+                            "type": "object",
+                            "nullable": true,
+                            "default": null
+                          }
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
             },
             "429": {
               "description": "More than 5 attempts from one IP-address during 10 seconds"
@@ -177,13 +191,27 @@ window.onload = function() {
           },
           "responses": {
             "200": {
-              "description": ""
-            },
-            "204": {
-              "description": "If code is valid and new password is accepted"
-            },
-            "400": {
-              "description": "If the inputModel has invalid email"
+              "description": "",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "allOf": [
+                      {
+                        "$ref": "#/components/schemas/NotificationResult"
+                      },
+                      {
+                        "properties": {
+                          "data": {
+                            "type": "object",
+                            "nullable": true,
+                            "default": null
+                          }
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
             },
             "429": {
               "description": "More than 5 attempts from one IP-address during 10 seconds"
@@ -287,7 +315,19 @@ window.onload = function() {
               "content": {
                 "application/json": {
                   "schema": {
-                    "$ref": "#/components/schemas/withDataType"
+                    "allOf": [
+                      {
+                        "$ref": "#/components/schemas/NotificationResult"
+                      },
+                      {
+                        "properties": {
+                          "data": {
+                            "$ref": "#/components/schemas/UserInfoViewDto",
+                            "nullable": true
+                          }
+                        }
+                      }
+                    ]
                   }
                 }
               }
@@ -444,6 +484,7 @@ window.onload = function() {
               "description": "{\"OK\":0,\"ERROR\":1,\"BAD_REQUEST\":2,\"UNAUTHORIZED\":3,\"FORBIDDEN\":4,\"NOT_FOUND\":5,\"NOT_CONFIRMED\":6,\"NOT_EXIST\":7,\"CREATED\":8}"
             },
             "extensions": {
+              "default": [],
               "type": "array",
               "items": {
                 "$ref": "#/components/schemas/NotificationExtension"
@@ -497,7 +538,8 @@ window.onload = function() {
             "email": {
               "type": "string",
               "description": "email",
-              "pattern": "^[w-.]+@([w-]+.)+[w-]{2,4}$"
+              "pattern": "^[w-.]+@([w-]+.)+[w-]{2,4}$",
+              "example": "test@email.com"
             }
           },
           "required": [
@@ -511,7 +553,8 @@ window.onload = function() {
               "type": "string",
               "description": "new password. ",
               "minLength": 6,
-              "maxLength": 20
+              "maxLength": 20,
+              "example": "Testpass1_"
             },
             "recoveryCode": {
               "type": "string",
@@ -557,29 +600,6 @@ window.onload = function() {
             "userId",
             "username",
             "email"
-          ]
-        },
-        "withDataType": {
-          "type": "object",
-          "properties": {
-            "resultCode": {
-              "type": "number",
-              "description": "{\"OK\":0,\"ERROR\":1,\"BAD_REQUEST\":2,\"UNAUTHORIZED\":3,\"FORBIDDEN\":4,\"NOT_FOUND\":5,\"NOT_CONFIRMED\":6,\"NOT_EXIST\":7,\"CREATED\":8}"
-            },
-            "extensions": {
-              "type": "array",
-              "items": {
-                "$ref": "#/components/schemas/NotificationExtension"
-              }
-            },
-            "data": {
-              "$ref": "#/components/schemas/UserInfoViewDto"
-            }
-          },
-          "required": [
-            "resultCode",
-            "extensions",
-            "data"
           ]
         }
       }

@@ -5,6 +5,10 @@ import { PasswordRecoveryEntity } from '../../../domain/entity/password-recovery
 import { BadRequestException } from '@nestjs/common';
 import { mapErrors } from '../../../../../core/common/exception/validator-errors';
 import { AuthService } from '../../service/auth.service';
+import {
+  NotificationResult,
+  SuccessResult,
+} from '../../../../../core/common/notification/notification-result';
 export class NewPasswordCommand {
   constructor(public newPassword: string, public recoveryCode: string) {}
 }
@@ -18,7 +22,7 @@ export class NewPasswordCommandHandler
     private readonly usersRepository: UsersRepository,
     private readonly authService: AuthService,
   ) {}
-  async execute(command: NewPasswordCommand): Promise<void> {
+  async execute(command: NewPasswordCommand): Promise<NotificationResult> {
     const { newPassword, recoveryCode } = command;
     const passwordRecoveryEntity: PasswordRecoveryEntity =
       await this.authRepository.findPasswordRecovery(recoveryCode);
@@ -34,5 +38,6 @@ export class NewPasswordCommandHandler
 
     userEntity.passwordHash = this.authService.getPasswordHash(newPassword);
     await this.usersRepository.updatePassword(userEntity);
+    return new SuccessResult();
   }
 }

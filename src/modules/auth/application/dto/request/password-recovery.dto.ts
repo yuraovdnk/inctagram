@@ -7,6 +7,7 @@ export class PasswordRecoveryDto {
     required: true,
     type: 'string',
     pattern: '^[w-.]+@([w-]+.)+[w-]{2,4}$',
+    example: 'test@email.com',
   })
   @IsEmailInRFC5322()
   email: string;

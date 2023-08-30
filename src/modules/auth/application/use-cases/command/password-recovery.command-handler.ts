@@ -1,8 +1,12 @@
-import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
+import { CommandHandler, EventBus, ICommandHandler } from '@nestjs/cqrs';
 import { AuthRepository } from '../../../infrastructure/repository/auth.repository';
 import { EmailService } from '../../../../../core/adapters/mailer/mail.service';
 import { UsersRepository } from '../../../../users/instrastructure/repository/users.repository';
 import { PasswordRecoveryEntity } from '../../../domain/entity/password-recovery.entity';
+import {
+  NotificationResult,
+  SuccessResult,
+} from '../../../../../core/common/notification/notification-result';
 
 export class PasswordRecoveryCommand {
   constructor(public email: string) {}
@@ -16,24 +20,19 @@ export class PasswordRecoveryCommandHandler
     private readonly authRepository: AuthRepository,
     private readonly usersRepository: UsersRepository,
     private readonly emailService: EmailService,
+    private eventBus: EventBus,
   ) {}
-  async execute(command: PasswordRecoveryCommand): Promise<void> {
-    try {
-      const { email } = command;
-      const userEntity = await this.usersRepository.findByEmail(email);
-      if (!userEntity || !userEntity.isConfirmedEmail) return;
-      const passwordRecoveryEntity = PasswordRecoveryEntity.create(
-        userEntity.id,
-      );
-      await Promise.all([
-        this.authRepository.createPasswordRecoveryCode(passwordRecoveryEntity),
-        this.emailService.sendPasswordRecoveryCodeEmail(
-          email,
-          passwordRecoveryEntity.code,
-        ),
-      ]);
-    } catch (e) {
-      console.log(`[mailService]: email sending error:`, e);
-    }
+  async execute(command: PasswordRecoveryCommand): Promise<NotificationResult> {
+    const { email } = command;
+    const userEntity = await this.usersRepository.findByEmail(email);
+    if (!userEntity || !userEntity.isConfirmedEmail) return new SuccessResult(); //according to security requirements, in any case, we return a success result
+    const passwordRecoveryEntity = PasswordRecoveryEntity.create(userEntity);
+    await this.authRepository.createPasswordRecoveryCode(
+      passwordRecoveryEntity,
+    );
+    passwordRecoveryEntity.getUncommittedEvents().forEach((event) => {
+      this.eventBus.publish(event);
+    });
+    return new SuccessResult();
   }
 }

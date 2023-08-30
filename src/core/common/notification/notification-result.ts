@@ -18,6 +18,7 @@ export class NotificationResult<T = null> {
 
   @ApiProperty({
     type: [NotificationExtension],
+    default: [],
   })
   extensions: NotificationExtension[] = [];
 

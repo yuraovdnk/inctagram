@@ -4,8 +4,12 @@ import {
 } from './notification-codes.enum';
 import { NotificationExtension } from './notification-extension';
 import { ApiProperty } from '@nestjs/swagger';
+import { IEvent } from '@nestjs/cqrs';
+import { Exclude } from 'class-transformer';
 
 export class NotificationResult<T = null> {
+  constructor() {}
+
   @ApiProperty({
     type: Number,
     description: JSON.stringify(NotificationCodesEnumSwagger),
@@ -20,8 +24,16 @@ export class NotificationResult<T = null> {
   @ApiProperty({ type: {} })
   data: T | null = null;
 
+  @Exclude()
+  events: IEvent[] | undefined;
+
   hasError() {
     return !!this.extensions.length;
+  }
+
+  toViewResponse() {
+    const { events, ...viewResponse } = this;
+    return viewResponse;
   }
 }
 
@@ -60,11 +72,15 @@ export class ForbiddenResult extends NotificationResult {
 export class SuccessResult extends NotificationResult {
   resultCode: NotificationCodesEnum = NotificationCodesEnum.OK;
 
-  constructor(data: any = null) {
+  constructor(data: any = null, events?: IEvent[]) {
     super();
     this.data = data;
+    if (events) {
+      this.events = [...events];
+    }
   }
 }
+
 export class CreatedResult extends NotificationResult {
   resultCode: NotificationCodesEnum = NotificationCodesEnum.CREATED;
 

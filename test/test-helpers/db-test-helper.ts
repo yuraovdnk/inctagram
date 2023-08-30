@@ -37,7 +37,7 @@ export class DbTestHelper {
   ): Promise<User | null> {
     const id = crypto.webcrypto.randomUUID();
     const query = `
-    INSERT INTO "User" (id, username, email, "createdAt", "passwordHash", "isEmailConfirmed")
+    INSERT INTO "users" (id, username, email, "createdAt", "passwordHash", "isEmailConfirmed")
     VALUES ('${id}', '${username}', '${email}', NOW(), '${passwordHash}', true);
   `;
 
@@ -47,7 +47,7 @@ export class DbTestHelper {
         return null;
       }
       const res = await this.prisma.$queryRawUnsafe(
-        'SELECT * FROM "User" WHERE id = $1',
+        'SELECT * FROM "users" WHERE id = $1',
         id,
       );
       return res[0];

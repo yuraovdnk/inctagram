@@ -7,7 +7,5 @@ import { PrismaService } from './prisma.service';
   providers: [PrismaService],
 })
 export class PrismaModule {
-  constructor() {
-    console.log('prisma module initialized');
-  }
+  constructor() {}
 }

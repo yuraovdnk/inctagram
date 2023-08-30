@@ -23,10 +23,11 @@ export class AuthTestHelper {
   }
 
   async signUp(singUpDto: SignUpDto, expect: number) {
-    await request(this.app.getHttpServer())
+    const res = await request(this.app.getHttpServer())
       .post('/auth/signup')
       .send(singUpDto)
       .expect(expect);
+    return res;
   }
 
   async createUser(

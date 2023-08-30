@@ -101,7 +101,9 @@ export class AuthController {
       // httpOnly: true,
       // secure: true,
     });
-    res.status(200).send({ accessToken: result.data.accessToken });
+    res
+      .status(200)
+      .send(new SuccessResult({ accessToken: result.data.accessToken }));
   }
 
   //Password recovery
@@ -150,7 +152,7 @@ export class AuthController {
       new KillAuthSessionCommand(userId, deviceInfo.deviceId),
     );
     res.clearCookie('refreshToken');
-    res.sendStatus(HttpStatus.OK);
+    res.send(new SuccessResult());
   }
 
   //refreshToken
@@ -172,7 +174,9 @@ export class AuthController {
       // httpOnly: true,
       // secure: true,
     });
-    res.status(200).send({ accessToken: result.data.accessToken });
+    res
+      .status(200)
+      .send(new SuccessResult({ accessToken: result.data.accessToken }));
   }
 
   @RegistrationEmailResendingRequiredSwaggerDecorator()

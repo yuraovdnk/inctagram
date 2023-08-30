@@ -30,11 +30,9 @@ export class AuthRepository {
 
   async createEmailConfirmCode(
     entity: EmailConfirmationEntity,
-    prisma?: Omit<PrismaClient, runtime.ITXClientDenyList>,
+    prisma: Omit<PrismaClient, runtime.ITXClientDenyList> = this.prismaService,
   ) {
-    const prismaService = prisma ?? this.prismaService;
-
-    return prismaService.emailConfirmationCode.upsert({
+    return prisma.emailConfirmationCode.upsert({
       where: {
         userId: entity.userId,
       },

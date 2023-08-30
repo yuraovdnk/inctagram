@@ -8,25 +8,37 @@ import {
   SuccessResult,
 } from '../../../../../core/common/notification/notification-result';
 import { AuthService } from '../../service/auth.service';
+import { EmailConfirmationEntity } from '../../../domain/entity/email-confirmation.entity';
+import { AuthRepository } from '../../../infrastructure/repository/auth.repository';
+import { BaseUseCase } from '../../../../../core/common/app/base.use-case';
+import { PrismaService } from '../../../../../core/adapters/database/prisma/prisma.service';
 export class SignupCommand {
   constructor(public readonly signupDto: SignUpDto) {}
 }
 
 @CommandHandler(SignupCommand)
-export class SignupCommandHandler implements ICommandHandler<SignupCommand> {
+export class SignupCommandHandler
+  extends BaseUseCase<SignupCommand>
+  implements ICommandHandler<SignupCommand>
+{
   constructor(
-    private authRepository: UsersRepository,
+    private usersRepository: UsersRepository,
+    private authRepository: AuthRepository,
     private authService: AuthService,
-    private eventBus: EventBus,
-  ) {}
+    protected eventBus: EventBus,
+    protected prismaService: PrismaService,
+  ) {
+    super(prismaService, eventBus);
+  }
 
-  async execute(command: SignupCommand): Promise<NotificationResult> {
+  protected async onExecute(message: SignupCommand) {
     const [userByEmail, userByUsername] = await Promise.all([
-      this.authRepository.findByEmail(command.signupDto.email),
-      this.authRepository.findByUsername(command.signupDto.username),
+      this.usersRepository.findByEmail(message.signupDto.email),
+      this.usersRepository.findByUsername(message.signupDto.username),
     ]);
 
     if (userByEmail || userByUsername) {
+      console.log('user already registered');
       return new BadResult(
         'User with this email or username is already registered',
         'email or username',
@@ -34,19 +46,25 @@ export class SignupCommandHandler implements ICommandHandler<SignupCommand> {
     }
 
     const passwordHash = this.authService.getPasswordHash(
-      command.signupDto.password,
+      message.signupDto.password,
     );
     const user = UserEntity.create(
-      command.signupDto.username,
-      command.signupDto.email,
+      message.signupDto.username,
+      message.signupDto.email,
       passwordHash,
     );
 
-    await this.authRepository.create(user);
+    await this.usersRepository.create(user, this.prismaClient);
 
-    user.getUncommittedEvents().forEach((event) => {
-      this.eventBus.publish(event);
-    });
-    return new SuccessResult({ email: user.email });
+    const codeEntityRes = EmailConfirmationEntity.create(user.id);
+
+    await this.authRepository.createEmailConfirmCode(
+      codeEntityRes.data,
+      this.prismaClient,
+    );
+
+    const events = user.getUncommittedEvents();
+
+    return new SuccessResult({ email: user.email }, events);
   }
 }

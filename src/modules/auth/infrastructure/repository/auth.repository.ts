@@ -50,8 +50,15 @@ export class AuthRepository {
     });
   }
   async createPasswordRecoveryCode(entity: PasswordRecoveryEntity) {
-    return this.prismaService.passwordRecoveryCode.create({
-      data: {
+    return this.prismaService.passwordRecoveryCode.upsert({
+      where: {
+        userId: entity.userId,
+      },
+      update: {
+        code: entity.code,
+        expireAt: entity.expireAt,
+      },
+      create: {
         code: entity.code,
         userId: entity.userId,
         expireAt: entity.expireAt,

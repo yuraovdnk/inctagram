@@ -12,14 +12,7 @@ import {
 } from '@nestjs/common';
 import { CommandBus } from '@nestjs/cqrs';
 import { SignUpDto } from '../../application/dto/request/sign-up.dto';
-import {
-  ApiBadRequestResponse,
-  ApiBody,
-  ApiNoContentResponse,
-  ApiOperation,
-  ApiTags,
-  ApiTooManyRequestsResponse,
-} from '@nestjs/swagger';
+import { ApiTags } from '@nestjs/swagger';
 import { PasswordRecoveryDto } from '../../application/dto/request/password-recovery.dto';
 import { PasswordRecoveryCommand } from '../../application/use-cases/command/password-recovery.command-handler';
 import { ThrottlerGuard } from '@nestjs/throttler';
@@ -36,7 +29,7 @@ import { CreateAuthSessionCommand } from '../../application/use-cases/command/cr
 import { LoginRequired } from '../../application/dto/swagger/login-required.swagger.decorator';
 import { SignupRequired } from '../../application/dto/swagger/signup-required.swagger.decorator';
 import { RegistrationConfirmationRequired } from '../../application/dto/swagger/registration-confirmation-required.swagger.decorator';
-import { PasswordRecoveryRequired } from '../../application/dto/swagger/password-recovery.swagger.decorator';
+import { ApiPasswordRecovery } from '../../application/dto/swagger/password-recovery.swagger.decorator';
 import { NewPasswordDto } from '../../application/dto/request/new-password.dto';
 import { NewPasswordCommand } from '../../application/use-cases/command/new-password.command-handler';
 import { JwtCookieGuard } from '../../application/strategies/jwt-cookie.strategy';
@@ -53,8 +46,9 @@ import { RegistrationEmailResendingRequiredSwaggerDecorator } from '../../applic
 import { UsersRepository } from '../../../users/instrastructure/repository/users.repository';
 import { UserInfoViewDto } from '../../application/dto/response/user-info.view.dto';
 import { JwtGuard } from '../../../../core/common/guards/jwt.guard';
-import { MeRequiredSwaggerDecorator } from '../../application/dto/swagger/me-required.swagger-decorator';
 import { SignupCommand } from '../../application/use-cases/command/signup.command-handler';
+import { ApiNewPassword } from '../../application/dto/swagger/new -password.swagger.decorator';
+import { ApiGetUserInfo } from '../../application/dto/swagger/me-required.swagger-decorator';
 
 @ApiTags('AUTH')
 @Controller('auth')
@@ -105,35 +99,31 @@ export class AuthController {
   }
 
   //Password recovery
-  @PasswordRecoveryRequired()
+  @ApiPasswordRecovery()
   @UseGuards(ThrottlerGuard)
   @HttpCode(HttpStatus.OK)
   @Post('password-recovery')
-  async passwordRecovery(@Body() passwordRecoveryDto: PasswordRecoveryDto) {
-    await this.commandBus.execute<PasswordRecoveryCommand, Promise<boolean>>(
-      new PasswordRecoveryCommand(passwordRecoveryDto.email),
-    );
+  async passwordRecovery(
+    @Body() passwordRecoveryDto: PasswordRecoveryDto,
+  ): Promise<NotificationResult> {
+    return await this.commandBus.execute<
+      PasswordRecoveryCommand,
+      Promise<NotificationResult>
+    >(new PasswordRecoveryCommand(passwordRecoveryDto.email));
   }
 
   //New password
-  @ApiOperation({ summary: 'Confirm Password recovery' })
-  @ApiNoContentResponse({
-    description: 'If code is valid and new password is accepted',
-  })
-  @ApiBadRequestResponse({
-    description: 'If the inputModel has invalid email',
-  })
-  @ApiTooManyRequestsResponse({
-    description: 'More than 5 attempts from one IP-address during 10 seconds',
-  })
-  @ApiBody({ type: NewPasswordDto })
+  @ApiNewPassword()
   @UseGuards(ThrottlerGuard)
   @HttpCode(HttpStatus.OK)
   @Post('new-password')
-  async newPassword(@Body() inputDto: NewPasswordDto) {
-    await this.commandBus.execute<NewPasswordCommand, Promise<boolean>>(
-      new NewPasswordCommand(inputDto.newPassword, inputDto.recoveryCode),
-    );
+  async newPassword(
+    @Body() inputDto: NewPasswordDto,
+  ): Promise<NotificationResult> {
+    return this.commandBus.execute<
+      NewPasswordCommand,
+      Promise<NotificationResult>
+    >(new NewPasswordCommand(inputDto.newPassword, inputDto.recoveryCode));
   }
 
   //Logout
@@ -187,7 +177,8 @@ export class AuthController {
     >(new ResendEmailConfirmationCommand(resendConfirmationEmailDto));
   }
 
-  @MeRequiredSwaggerDecorator()
+  // @MeRequiredSwaggerDecorator()
+  @ApiGetUserInfo(UserInfoViewDto)
   @UseGuards(JwtGuard)
   @Get('me')
   async getAuthInfo(

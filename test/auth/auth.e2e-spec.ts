@@ -78,29 +78,45 @@ describe('AuthController (e2e)', () => {
       users = await userTestHelper.createUsers(1);
     });
 
-    it('POST:[HOST]/auth/password-recovery: should return code 400 If email is incorrect', async () => {
-      await request(app.getHttpServer())
+    it('POST:[HOST]/auth/password-recovery: should return NotificationCode 2 If email is incorrect', async () => {
+      const { body } = await request(app.getHttpServer())
         .post('/auth/password-recovery')
         .send({
           email: 'fake^^gmail.com',
         })
         .expect(HttpStatus.OK);
+      expect(body).toEqual({
+        extensions: [
+          {
+            message: expect.any(String),
+            key: 'email',
+          },
+        ],
+        data: null,
+        resultCode: 2,
+      });
     });
-    it('POST:[HOST]/auth/password-recovery: should return code 204 If the email is correct', async () => {
-      await request(app.getHttpServer())
+    it('POST:[HOST]/auth/password-recovery: should return NotificationCode 0 If the email is correct', async () => {
+      const { body } = await request(app.getHttpServer())
         .post('/auth/password-recovery')
         .send({
           email: users[0].email,
         })
         .expect(HttpStatus.OK);
+      expect(body).toEqual({
+        extensions: [],
+        data: null,
+        resultCode: 0,
+      });
     });
     it('POST:[HOST]/auth/password-recovery: should return code 204 If the email is correct but email is not in dataBase', async () => {
-      await request(app.getHttpServer())
+      const { body } = await request(app.getHttpServer())
         .post('/auth/password-recovery')
         .send({
           email: 'email1111@gmail.com',
         })
         .expect(HttpStatus.OK);
+      expect(body.resultCode).toBe(0);
     });
     // it('POST:[HOST]/auth/password-recovery: should return code 429 If More than 5 attempts from one IP-address during 10 seconds', async () => {
     //   await request(app.getHttpServer())
@@ -326,38 +342,50 @@ describe('AuthController (e2e)', () => {
         })
         .expect(HttpStatus.OK);
     });
-    it('POST:[HOST]/auth/new-password: should return code 400 If the inputModel has incorrect value (for incorrect password length) ', async () => {
+    it('POST:[HOST]/auth/new-password: should return NotificationResult (Code 2) if new password is too short', async () => {
       const recoveryCode = await dbTestHelper.getPasswordRecoveryCode(
         users[2].id,
       );
-      await request(app.getHttpServer())
+      const { body } = await request(app.getHttpServer())
         .post('/auth/new-password')
         .send({
           newPassword: 'st',
           recoveryCode,
         })
         .expect(HttpStatus.OK);
+      expect(body).toEqual({
+        extensions: [
+          {
+            message: expect.any(String),
+            key: 'newPassword',
+          },
+        ],
+        data: null,
+        resultCode: 2,
+      });
     });
-    it('POST:[HOST]/auth/new-password: should return code 400 If  RecoveryCode is incorrect', async () => {
-      await request(app.getHttpServer())
+    it('POST:[HOST]/auth/new-password: should return NotificationResult (Code 2) If  RecoveryCode is incorrect', async () => {
+      const { body } = await request(app.getHttpServer())
         .post('/auth/new-password')
         .send({
           newPassword: 'string',
           recoveryCode: crypto.webcrypto.randomUUID(),
         })
         .expect(HttpStatus.OK);
+      expect(body.resultCode).toBe(2);
     });
-    it('POST:[HOST]/auth/new-password: should return code 204 If code is valid and new password is accepted', async () => {
+    it('POST:[HOST]/auth/new-password: should return NotificationResult (Code 0) If code is valid and new password is accepted', async () => {
       const recoveryCode = await dbTestHelper.getPasswordRecoveryCode(
         users[2]?.id,
       );
-      await request(app.getHttpServer())
+      const { body } = await request(app.getHttpServer())
         .post('/auth/new-password')
         .send({
           newPassword: 'newPassword_1',
           recoveryCode,
         })
         .expect(HttpStatus.OK);
+      expect(body.resultCode).toBe(0);
     });
 
     it('should login', async function () {

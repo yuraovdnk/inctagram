@@ -9,6 +9,7 @@ export class NewPasswordDto {
     type: 'string',
     minLength: 6,
     maxLength: 20,
+    example: 'Testpass1_',
   })
   @IsStrongPassword()
   newPassword: string;

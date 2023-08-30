@@ -1,25 +1,11 @@
-import { applyDecorators } from '@nestjs/common';
-import {
-  ApiBearerAuth,
-  ApiOkResponse,
-  ApiOperation,
-  ApiProperty,
-} from '@nestjs/swagger';
-import { NotificationResult } from '../../../../../core/common/notification/notification-result';
-import { UserInfoViewDto } from '../response/user-info.view.dto';
+import { applyDecorators, Type } from '@nestjs/common';
+import { ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
 
-class withDataType extends NotificationResult<UserInfoViewDto> {
-  @ApiProperty({
-    type: UserInfoViewDto,
-  })
-  data: UserInfoViewDto;
-}
+import { ApiNotificationResult } from './nofication-result.swagger';
 
-export const MeRequiredSwaggerDecorator = () =>
+export const ApiGetUserInfo = <T extends Type<any>>(notificationData: T) =>
   applyDecorators(
     ApiBearerAuth(),
-    ApiOkResponse({
-      type: withDataType,
-    }),
+    ApiNotificationResult(notificationData),
     ApiOperation({ summary: 'get user information' }),
   );

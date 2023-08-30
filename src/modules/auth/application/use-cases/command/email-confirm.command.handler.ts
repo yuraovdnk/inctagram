@@ -1,7 +1,5 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { AuthRepository } from '../../../infrastructure/repository/auth.repository';
-import { BadRequestException } from '@nestjs/common';
-import { mapErrors } from '../../../../../core/common/exception/validator-errors';
 import { UsersRepository } from '../../../../users/instrastructure/repository/users.repository';
 import {
   BadResult,

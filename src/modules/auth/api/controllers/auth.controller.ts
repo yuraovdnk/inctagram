@@ -47,8 +47,8 @@ import { UsersRepository } from '../../../users/instrastructure/repository/users
 import { UserInfoViewDto } from '../../application/dto/response/user-info.view.dto';
 import { JwtGuard } from '../../../../core/common/guards/jwt.guard';
 import { SignupCommand } from '../../application/use-cases/command/signup.command-handler';
-import { ApiNewPassword } from '../../application/dto/swagger/new -password.swagger.decorator';
 import { ApiGetUserInfo } from '../../application/dto/swagger/me-required.swagger-decorator';
+import { ApiNewPassword } from '../../application/dto/swagger/new-password.swagger.decorator';
 
 @ApiTags('AUTH')
 @Controller('auth')
@@ -63,7 +63,7 @@ export class AuthController {
   @SignupRequired()
   @HttpCode(HttpStatus.OK)
   @Post('signup')
-  async signUp(@Body() signUpDto: SignUpDto) /*: Promise<NotificationResult>*/ {
+  async signUp(@Body() signUpDto: SignUpDto): Promise<NotificationResult> {
     return this.commandBus.execute<SignupCommand, NotificationResult>(
       new SignupCommand(signUpDto),
     );
@@ -74,7 +74,9 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   @Post('registration-confirmation')
   async confirmationEmail(@Body('code', ParseUUIDPipe) code: string) {
-    return this.commandBus.execute(new EmailConfirmCommand(code));
+    return this.commandBus.execute<EmailConfirmCommand, NotificationResult>(
+      new EmailConfirmCommand(code),
+    );
   }
 
   //login in the system

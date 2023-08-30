@@ -38,7 +38,6 @@ export class SignupCommandHandler
     ]);
 
     if (userByEmail || userByUsername) {
-      console.log('user already registered');
       return new BadResult(
         'User with this email or username is already registered',
         'email or username',

@@ -45,123 +45,132 @@ describe('AuthController (e2e)', () => {
     authHelper = new AuthTestHelper(app);
     userTestHelper = new UserTestHelper(app);
     emailService = app.get(EmailService);
-    jest.spyOn(emailService, 'sendConfirmCode').mockImplementation()
+    jest.spyOn(emailService, 'sendConfirmCode').mockImplementation();
   });
-    function expectNotification(
+
+  function expectNotification(
     result: request.Response,
-      resultCode: NotificationCodesEnum,
-    ) {
-      expect(result.body).toMatchObject<Partial<NotificationResult>>({
-        resultCode,
-      });
-    }
-    
-    describe('GET:[HOST]/auth/me - get user info', () => {
-      let accessTokenUser: string;
-      beforeAll(async () => {
-        await dbTestHelper.clearDb();
-        users = await userTestHelper.createUsers(1);
-        const res = await request(app.getHttpServer())
-          .post('/auth/login')
-          .send({
-            email: users[0]?.email,
-            password: users[0]?.password,
-          })
-          .set('user-agent', 'test')
-          .expect(HttpStatus.OK);
-        expect(res.body.accessToken).toBeDefined();
-        accessTokenUser = res.body.accessToken;
-      });
-      it('POST:[HOST]/auth/me: should return noAuthorized error.', async () => {
-        const result = await request(app.getHttpServer())
-          .get('/auth/me')
-          .expect(HttpStatus.OK);
-        expect(result.body.resultCode).toBe(3);
-      });
-      it('POST:[HOST]/auth/me: should return code 200 and users data.', async () => {
-        const result = await request(app.getHttpServer())
-          .get('/auth/me')
-          .auth(accessTokenUser, { type: 'bearer' })
-          .expect(HttpStatus.OK);
-        expect(result.body.resultCode).toBe(0);
-        expect(result.body.data).toEqual({
-          username: users[0]?.username,
+    resultCode: NotificationCodesEnum,
+  ) {
+    expect(result.body).toMatchObject<Partial<NotificationResult>>({
+      resultCode,
+    });
+  }
+
+  //////////////////////////////
+  describe('GET:[HOST]/auth/me - get user info', () => {
+    let accessTokenUser: string;
+    beforeAll(async () => {
+      await dbTestHelper.clearDb();
+      users = await userTestHelper.createUsers(1);
+      const result = await request(app.getHttpServer())
+        .post('/auth/login')
+        .send({
           email: users[0]?.email,
-          userId: users[0]?.id,
-        });
+          password: users[0]?.password,
+        })
+        .set('user-agent', 'test')
+        .expect(HttpStatus.OK);
+
+      expect(result.body).toMatchObject({
+        data: {
+          accessToken: expect.any(String),
+        },
+      });
+
+      accessTokenUser = result.body.data.accessToken;
+    });
+    it('POST:[HOST]/auth/me: should return noAuthorized error.', async () => {
+      const result = await request(app.getHttpServer())
+        .get('/auth/me')
+        .expect(HttpStatus.OK);
+
+      expectNotification(result, NotificationCodesEnum.UNAUTHORIZED);
+    });
+    it('POST:[HOST]/auth/me: should return code 200 and users data.', async () => {
+      const result = await request(app.getHttpServer())
+        .get('/auth/me')
+        .auth(accessTokenUser, { type: 'bearer' })
+        .expect(HttpStatus.OK);
+      expect(result.body.resultCode).toBe(0);
+      expect(result.body.data).toEqual({
+        username: users[0]?.username,
+        email: users[0]?.email,
+        userId: users[0]?.id,
       });
     });
-
-    describe('POST:[HOST]/auth/password-recovery', () => {
-      beforeAll(async () => {
-        await dbTestHelper.clearDb();
-        users = await userTestHelper.createUsers(1);
-    });
-
-      it('POST:[HOST]/auth/password-recovery: should return NotificationCode 2 If email is incorrect', async () => {
-        const { body } = await request(app.getHttpServer())
-          .post('/auth/password-recovery')
-          .send({
-            email: 'fake^^gmail.com',
-          })
-          .expect(HttpStatus.OK);
-        expect(body).toEqual({
-          extensions: [
-            {
-              message: expect.any(String),
-              key: 'email',
-            },
-          ],
-          data: null,
-          resultCode: 2,
-        });
-      });
-      it('POST:[HOST]/auth/password-recovery: should return NotificationCode 0 If the email is correct', async () => {
-        const { body } = await request(app.getHttpServer())
-          .post('/auth/password-recovery')
-          .send({
-            email: users[0].email,
-          })
-          .expect(HttpStatus.OK);
-        expect(body).toEqual({
-          extensions: [],
-          data: null,
-          resultCode: 0,
-        });
-      });
-      it('POST:[HOST]/auth/password-recovery: should return code 204 If the email is correct but email is not in dataBase', async () => {
-        const { body } = await request(app.getHttpServer())
-          .post('/auth/password-recovery')
-          .send({
-            email: 'email1111@gmail.com',
-          })
-          .expect(HttpStatus.OK);
-        expect(body.resultCode).toBe(0);
-      });
-      // it('POST:[HOST]/auth/password-recovery: should return code 429 If More than 5 attempts from one IP-address during 10 seconds', async () => {
-      //   await request(app.getHttpServer())
-      //     .post('/auth/password-recovery')
-      //     .send({
-      //       email: 'email1111@gmail.com',
-      //     })
-      //     .expect(HttpStatus.NO_CONTENT);
-      //
-      //   await request(app.getHttpServer())
-      //     .post('/auth/password-recovery')
-      //     .send({
-      //       email: 'email1111@gmail.com',
-      //     })
-      //     .expect(HttpStatus.NO_CONTENT);
-      //
-      //   await request(app.getHttpServer())
-      //     .post('/auth/password-recovery')
-      //     .send({
-      //       email: 'email1111@gmail.com',
-      //     })
-      //     .expect(HttpStatus.TOO_MANY_REQUESTS);
-      // });
   });
+  ////////////////////////////////
+  describe('POST:[HOST]/auth/password-recovery', () => {
+    beforeAll(async () => {
+      await dbTestHelper.clearDb();
+      users = await userTestHelper.createUsers(1);
+    });
 
+    it('POST:[HOST]/auth/password-recovery: should return NotificationCode 2 If email is incorrect', async () => {
+      const { body } = await request(app.getHttpServer())
+        .post('/auth/password-recovery')
+        .send({
+          email: 'fake^^gmail.com',
+        })
+        .expect(HttpStatus.OK);
+      expect(body).toEqual({
+        extensions: [
+          {
+            message: expect.any(String),
+            key: 'email',
+          },
+        ],
+        data: null,
+        resultCode: 2,
+      });
+    });
+    it('POST:[HOST]/auth/password-recovery: should return NotificationCode 0 If the email is correct', async () => {
+      const { body } = await request(app.getHttpServer())
+        .post('/auth/password-recovery')
+        .send({
+          email: users[0].email,
+        })
+        .expect(HttpStatus.OK);
+      expect(body).toEqual({
+        extensions: [],
+        data: null,
+        resultCode: 0,
+      });
+    });
+    it('POST:[HOST]/auth/password-recovery: should return code 204 If the email is correct but email is not in dataBase', async () => {
+      const { body } = await request(app.getHttpServer())
+        .post('/auth/password-recovery')
+        .send({
+          email: 'email1111@gmail.com',
+        })
+        .expect(HttpStatus.OK);
+      expect(body.resultCode).toBe(0);
+    });
+    // it('POST:[HOST]/auth/password-recovery: should return code 429 If More than 5 attempts from one IP-address during 10 seconds', async () => {
+    //   await request(app.getHttpServer())
+    //     .post('/auth/password-recovery')
+    //     .send({
+    //       email: 'email1111@gmail.com',
+    //     })
+    //     .expect(HttpStatus.NO_CONTENT);
+    //
+    //   await request(app.getHttpServer())
+    //     .post('/auth/password-recovery')
+    //     .send({
+    //       email: 'email1111@gmail.com',
+    //     })
+    //     .expect(HttpStatus.NO_CONTENT);
+    //
+    //   await request(app.getHttpServer())
+    //     .post('/auth/password-recovery')
+    //     .send({
+    //       email: 'email1111@gmail.com',
+    //     })
+    //     .expect(HttpStatus.TOO_MANY_REQUESTS);
+    // });
+  });
+  //////////////////////////////
   describe('POST:[HOST]/auth/signup - registration', () => {
     it('should not register if username is incorrect', async () => {
       const result1 = await authHelper.signUp(
@@ -259,7 +268,7 @@ describe('AuthController (e2e)', () => {
       expect(user.isConfirmedEmail).toBeFalsy();
     });
   });
-  ////////////////
+  //////////////////////////////
   describe('POST:[HOST]/auth/registration-confirmation - confirmation email', () => {
     let emailConfirmCode: EmailConfirmationEntity;
 
@@ -321,7 +330,81 @@ describe('AuthController (e2e)', () => {
       expectNotification(result, NotificationCodesEnum.BAD_REQUEST);
     });
   });
-  // ////////////////
+  //////////////////////////////
+  describe('POST:[HOST]/auth/new-password - set new password', () => {
+    beforeAll(async () => {
+      await dbTestHelper.clearDb();
+      users = await userTestHelper.createUsers(3);
+      await request(app.getHttpServer())
+        .post('/auth/password-recovery')
+        .send({
+          email: users[2].email,
+        })
+        .expect(HttpStatus.OK);
+    });
+    it('POST:[HOST]/auth/new-password: should return NotificationResult (Code 2) if new password is too short', async () => {
+      const recoveryCode = await dbTestHelper.getPasswordRecoveryCode(
+        users[2].id,
+      );
+      const { body } = await request(app.getHttpServer())
+        .post('/auth/new-password')
+        .send({
+          newPassword: 'st',
+          recoveryCode,
+        })
+        .expect(HttpStatus.OK);
+      expect(body).toEqual({
+        extensions: [
+          {
+            message: expect.any(String),
+            key: 'newPassword',
+          },
+        ],
+        data: null,
+        resultCode: 2,
+      });
+    });
+    it('POST:[HOST]/auth/new-password: should return NotificationResult (Code 2) If  RecoveryCode is incorrect', async () => {
+      const { body } = await request(app.getHttpServer())
+        .post('/auth/new-password')
+        .send({
+          newPassword: 'string',
+          recoveryCode: crypto.webcrypto.randomUUID(),
+        })
+        .expect(HttpStatus.OK);
+      expect(body.resultCode).toBe(2);
+    });
+    it('POST:[HOST]/auth/new-password: should return NotificationResult (Code 0) If code is valid and new password is accepted', async () => {
+      const recoveryCode = await dbTestHelper.getPasswordRecoveryCode(
+        users[2]?.id,
+      );
+      const { body } = await request(app.getHttpServer())
+        .post('/auth/new-password')
+        .send({
+          newPassword: 'newPassword_1',
+          recoveryCode,
+        })
+        .expect(HttpStatus.OK);
+      expect(body.resultCode).toBe(0);
+    });
+    it('should login', async function () {
+      const result = await request(app.getHttpServer())
+        .post('/auth/login')
+        .send({
+          email: users[2].email,
+          password: 'newPassword_1',
+        })
+        .set('user-agent', 'test')
+        .expect(HttpStatus.OK);
+
+      expect(result.body).toMatchObject({
+        data: {
+          accessToken: expect.any(String),
+        },
+      });
+    });
+  });
+  ////////////////////////////////
   describe('POST:[HOST]/auth/login - login', () => {
     beforeAll(async () => {
       await dbTestHelper.clearDb();
@@ -368,78 +451,9 @@ describe('AuthController (e2e)', () => {
           accessToken: expect.any(String),
         },
       });
-
-  describe('POST:[HOST]/auth/new-password - set new password', () => {
-    beforeAll(async () => {
-      await dbTestHelper.clearDb();
-      users = await userTestHelper.createUsers(3);
-      await request(app.getHttpServer())
-        .post('/auth/password-recovery')
-        .send({
-          email: users[2].email,
-        })
-        .expect(HttpStatus.OK);
-    });
-    it('POST:[HOST]/auth/new-password: should return NotificationResult (Code 2) if new password is too short', async () => {
-      const recoveryCode = await dbTestHelper.getPasswordRecoveryCode(
-        users[2].id,
-      );
-      const { body } = await request(app.getHttpServer())
-        .post('/auth/new-password')
-        .send({
-          newPassword: 'st',
-          recoveryCode,
-        })
-        .expect(HttpStatus.OK);
-      expect(body).toEqual({
-        extensions: [
-          {
-            message: expect.any(String),
-            key: 'newPassword',
-          },
-        ],
-        data: null,
-        resultCode: 2,
-      });
     });
   });
-    it('POST:[HOST]/auth/new-password: should return NotificationResult (Code 2) If  RecoveryCode is incorrect', async () => {
-      const { body } = await request(app.getHttpServer())
-        .post('/auth/new-password')
-        .send({
-          newPassword: 'string',
-          recoveryCode: crypto.webcrypto.randomUUID(),
-        })
-        .expect(HttpStatus.OK);
-      expect(body.resultCode).toBe(2);
-    });
-    it('POST:[HOST]/auth/new-password: should return NotificationResult (Code 0) If code is valid and new password is accepted', async () => {
-      const recoveryCode = await dbTestHelper.getPasswordRecoveryCode(
-        users[2]?.id,
-      );
-      const { body } = await request(app.getHttpServer())
-        .post('/auth/new-password')
-        .send({
-          newPassword: 'newPassword_1',
-          recoveryCode,
-        })
-        .expect(HttpStatus.OK);
-      expect(body.resultCode).toBe(0);
-    });
-
-    it('should login', async function () {
-      const res = await request(app.getHttpServer())
-        .post('/auth/login')
-        .send({
-          email: users[2].email,
-          password: 'newPassword_1',
-        })
-        .set('user-agent', 'test')
-        .expect(HttpStatus.OK);
-      expect(res.body.accessToken).toBeDefined();
-    });
-  });
-
+  ////////////////////////////////
   describe('POST:[HOST]/auth/logout - logout from system', () => {
     beforeAll(async () => {
       await dbTestHelper.clearDb();
@@ -478,7 +492,7 @@ describe('AuthController (e2e)', () => {
       expectNotification(result2, NotificationCodesEnum.OK);
     });
   });
-  ////////////////
+  ////////////////////////////////
   describe('POST:[HOST]/auth/refresh-token - refreshing token', () => {
     beforeAll(async () => {
       await dbTestHelper.clearDb();
@@ -536,7 +550,7 @@ describe('AuthController (e2e)', () => {
         .expect(HttpStatus.OK);
     });
   });
-  ////////////////
+  ////////////////////////////////
   describe('POST:[HOST]/auth/registration-email-resending - registration-email-resending', () => {
     it('should return bad result if email is incorrect', async function () {
       const res = await request(app.getHttpServer())
@@ -592,6 +606,7 @@ describe('AuthController (e2e)', () => {
       expectNotification(result, NotificationCodesEnum.OK);
     });
   });
+  ////////////////////////////////
 
   afterAll(async () => {
     await app.close();

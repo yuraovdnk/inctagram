@@ -19,7 +19,7 @@ env:
     GOOGLE_CLIENT_SECRET: ${{secrets.GOOGLE_CLIENT_SECRET}}
     GH_CLIENT_ID: ${{secrets.GH_CLIENT_ID}}
     GH_CLIENT_SECRET: ${{secrets.GH_CLIENT_SECRET}}
-    PORT: 3000
+
 
 on:
   push:

@@ -19,7 +19,7 @@ env:
     GOOGLE_CLIENT_SECRET: ${{secrets.GOOGLE_CLIENT_SECRET}}
     GH_CLIENT_ID: ${{secrets.GH_CLIENT_ID}}
     GH_CLIENT_SECRET: ${{secrets.GH_CLIENT_SECRET}}
-
+    PORT: 0
 
 on:
   push:
@@ -43,8 +43,6 @@ jobs:
         run: yarn test # запускаем скрипт тестами
 
       - name: Test e2e
-        env:
-          PORT: 0
         run: yarn test:e2e
 
   Deploy-Preview:

@@ -43,6 +43,8 @@ jobs:
         run: yarn test # запускаем скрипт тестами
 
       - name: Test e2e
+        env:
+          PORT: 0
         run: yarn test:e2e
 
   Deploy-Preview:

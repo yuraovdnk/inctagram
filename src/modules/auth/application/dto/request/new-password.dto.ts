@@ -1,6 +1,6 @@
 import { IsUUID } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
-import { IsStrongPassword } from '../decorators/is-strong-password.validate.decorator';
+import { IsStrongPassword } from '../../../../../core/common/validate-decorators/is-strong-password.validate.decorator';
 
 export class NewPasswordDto {
   @ApiProperty({

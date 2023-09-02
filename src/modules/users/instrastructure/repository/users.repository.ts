@@ -69,6 +69,9 @@ export class UsersRepository {
       where: {
         id,
       },
+      include: {
+        profile: true,
+      },
     });
     return user ? UserMapper.toEntity(user) : null;
   }
@@ -100,5 +103,41 @@ export class UsersRepository {
     });
 
     return user ? UserMapper.toEntity(user) : null;
+  }
+
+  async upsertUserProfile(user: UserEntity) {
+    const profileData = {
+      aboutMe: user.profile.aboutMe ?? null,
+      city: user.profile.city ?? null,
+      dateOfBirth: user.profile.dateOfBirth,
+      lastName: user.profile.lastName,
+      firstName: user.profile.firstName,
+      avatar: user.profile.avatar ?? null,
+    };
+    await this.prismaService.user.update({
+      where: { id: user.id },
+      data: {
+        username: user.username,
+        profile: {
+          upsert: {
+            create: profileData,
+            update: profileData,
+          },
+        },
+      },
+      include: {
+        profile: true,
+      },
+    });
+  }
+
+  async getUserProfile(id: string): Promise<UserEntity> {
+    const res = await this.prismaService.user.findUnique({
+      where: { id },
+      include: {
+        profile: true,
+      },
+    });
+    return UserMapper.toEntity(res);
   }
 }

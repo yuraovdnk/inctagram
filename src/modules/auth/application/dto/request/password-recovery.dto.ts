@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEmailInRFC5322 } from '../decorators/is-email-in-rfc5322.validate.decorator';
+import { IsEmailInRFC5322 } from '../../../../../core/common/validate-decorators/is-email-in-rfc5322.validate.decorator';
 
 export class PasswordRecoveryDto {
   @ApiProperty({

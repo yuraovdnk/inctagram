@@ -4,6 +4,7 @@ import {
   ExternalAccount,
   Prisma,
   User,
+  UserProfile,
 } from '@prisma/client';
 
 export type UserFullType = Prisma.UserGetPayload<{
@@ -13,6 +14,7 @@ export type UserFullType = Prisma.UserGetPayload<{
 type UserType = User & {
   externalAccounts?: ExternalAccount[];
   emailConfirmationCode?: EmailConfirmationCode;
+  profile?: UserProfile;
 };
 
 export class UserMapper {
@@ -35,7 +37,7 @@ export class UserMapper {
     entity.createdAt = user.createdAt;
     entity.isConfirmedEmail = user.isEmailConfirmed;
     entity.externalAccounts.push(...(user.externalAccounts || []));
-
+    entity.profile = user.profile;
     return entity;
   }
 }

@@ -60,14 +60,7 @@ window.onload = function() {
           },
           "responses": {
             "200": {
-              "description": "",
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "type": "object"
-                  }
-                }
-              }
+              "description": ""
             },
             "204": {
               "description": "Congratulations! Your email has been confirmed"
@@ -414,6 +407,163 @@ window.onload = function() {
             "AUTH"
           ]
         }
+      },
+      "/users/profile/{id}": {
+        "post": {
+          "operationId": "UserController_createProfile",
+          "summary": "Create user profile",
+          "parameters": [
+            {
+              "name": "id",
+              "required": true,
+              "in": "path",
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserProfileDto"
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "allOf": [
+                      {
+                        "$ref": "#/components/schemas/NotificationResult"
+                      },
+                      {
+                        "properties": {
+                          "data": {
+                            "type": "object",
+                            "nullable": true,
+                            "default": null
+                          }
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "tags": [
+            "Users"
+          ]
+        },
+        "put": {
+          "operationId": "UserController_updateProfile",
+          "summary": "Update user profile",
+          "parameters": [
+            {
+              "name": "id",
+              "required": true,
+              "in": "path",
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserProfileDto"
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "allOf": [
+                      {
+                        "$ref": "#/components/schemas/NotificationResult"
+                      },
+                      {
+                        "properties": {
+                          "data": {
+                            "type": "object",
+                            "nullable": true,
+                            "default": null
+                          }
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "tags": [
+            "Users"
+          ]
+        },
+        "get": {
+          "operationId": "UserController_getProfile",
+          "summary": "Get user profile",
+          "parameters": [
+            {
+              "name": "id",
+              "required": true,
+              "in": "path",
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserProfileDto"
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "allOf": [
+                      {
+                        "$ref": "#/components/schemas/NotificationResult"
+                      },
+                      {
+                        "properties": {
+                          "data": {
+                            "$ref": "#/components/schemas/UserProfileViewDto",
+                            "nullable": true
+                          }
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "tags": [
+            "Users"
+          ]
+        }
       }
     },
     "info": {
@@ -600,6 +750,114 @@ window.onload = function() {
             "userId",
             "username",
             "email"
+          ]
+        },
+        "UserProfileDto": {
+          "type": "object",
+          "properties": {
+            "username": {
+              "type": "string",
+              "description": "username",
+              "minLength": 6,
+              "maxLength": 30,
+              "example": "Username"
+            },
+            "firstName": {
+              "type": "string",
+              "description": "firstName",
+              "minLength": 1,
+              "maxLength": 50,
+              "example": "John"
+            },
+            "lastName": {
+              "type": "string",
+              "description": "lastName",
+              "minLength": 1,
+              "maxLength": 50,
+              "example": "Smith"
+            },
+            "city": {
+              "type": "string",
+              "description": "city",
+              "nullable": true,
+              "example": "London"
+            },
+            "dateOfBirth": {
+              "type": "string",
+              "description": "dateOfBirth",
+              "example": "2003-09-01T20:22:39.762Z"
+            },
+            "aboutMe": {
+              "type": "string",
+              "maxLength": 200,
+              "description": "aboutMe",
+              "nullable": true,
+              "example": "Some text..."
+            },
+            "avatar": {
+              "type": "string",
+              "description": "avatar",
+              "nullable": true,
+              "format": "url",
+              "example": "https://s3.eu-central-1.amazonaws.com/example-bucket/avatar.png"
+            }
+          },
+          "required": [
+            "username",
+            "firstName",
+            "lastName",
+            "dateOfBirth"
+          ]
+        },
+        "UserProfileViewDto": {
+          "type": "object",
+          "properties": {
+            "userId": {
+              "type": "uuid",
+              "example": "ad813e6f-90be-46ed-a0ce-2f094885f253"
+            },
+            "username": {
+              "type": "string",
+              "example": "Username"
+            },
+            "firstName": {
+              "type": "string",
+              "example": "John"
+            },
+            "lastName": {
+              "type": "string",
+              "example": "Smith"
+            },
+            "city": {
+              "type": "string",
+              "example": "London"
+            },
+            "dateOfBirth": {
+              "type": "string",
+              "description": "dateOfBirth",
+              "example": "2003-09-01T20:22:39.762Z"
+            },
+            "aboutMe": {
+              "type": "string",
+              "description": "aboutMe",
+              "example": "Some text..."
+            },
+            "avatar": {
+              "type": "string",
+              "description": "avatar",
+              "format": "url",
+              "example": "https://s3.eu-central-1.amazonaws.com/example-bucket/avatar.png"
+            }
+          },
+          "required": [
+            "userId",
+            "username",
+            "firstName",
+            "lastName",
+            "city",
+            "dateOfBirth",
+            "aboutMe",
+            "avatar"
           ]
         }
       }

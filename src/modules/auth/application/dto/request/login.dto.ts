@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsEmail } from 'class-validator';
-import { IsStrongPassword } from '../decorators/is-strong-password.validate.decorator';
-import { IsEmailInRFC5322 } from '../decorators/is-email-in-rfc5322.validate.decorator';
+import { IsStrongPassword } from '../../../../../core/common/validate-decorators/is-strong-password.validate.decorator';
+import { IsEmailInRFC5322 } from '../../../../../core/common/validate-decorators/is-email-in-rfc5322.validate.decorator';
 
 export class LoginDto {
   @IsEmail()

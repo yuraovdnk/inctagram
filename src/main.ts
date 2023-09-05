@@ -51,7 +51,7 @@ export const setupApp = (app: INestApplication) => {
 async function bootstrap() {
   let app = await NestFactory.create(AppModule);
   app = setupApp(app);
-
+  app.setGlobalPrefix('back-api');
   SwaggerConfig.setup(app);
   console.log(process.env.PORT);
   await app.listen(process.env.PORT || 3000);

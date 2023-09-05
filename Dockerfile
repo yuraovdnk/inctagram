@@ -18,7 +18,7 @@ COPY --chown=node yarn.lock ./
 
 RUN yarn install
 
-ENV PORT=3066
+ENV PORT=3067
 # Bundle app source code
 COPY --chown=node . .
 

@@ -24,7 +24,6 @@ pipeline {
         stage('Unit tests') {
             steps {
                 script {
-                    env.DATABASE_URL ='sadsa:/dasdasdas'
                     sh "yarn install"
                     sh "yarn test"
                 }

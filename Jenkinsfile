@@ -12,6 +12,7 @@ pipeline {
         DEPLOYMENT_NAME = "inctagram-back-deployment"
         IMAGE_NAME = "${env.BUILD_ID}_${env.ENV_TYPE}_${env.GIT_COMMIT}"
         DOCKER_BUILD_NAME = "${env.REGISTRY_HOSTNAME}/${env.PROJECT}:${env.IMAGE_NAME}"
+
     }
 
     stages {
@@ -23,6 +24,7 @@ pipeline {
         stage('Unit tests') {
             steps {
                 script {
+                    env.DATABASE_URL ='sadsa:/dasdasdas'
                     sh "yarn install"
                     sh "yarn test"
                 }

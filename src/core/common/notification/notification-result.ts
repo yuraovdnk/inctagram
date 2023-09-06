@@ -8,8 +8,6 @@ import { IEvent } from '@nestjs/cqrs';
 import { Exclude } from 'class-transformer';
 
 export class NotificationResult<T = null> {
-  constructor() {}
-
   @ApiProperty({
     type: Number,
     description: JSON.stringify(NotificationCodesEnumSwagger),

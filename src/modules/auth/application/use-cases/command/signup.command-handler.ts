@@ -4,7 +4,6 @@ import { UsersRepository } from '../../../../users/instrastructure/repository/us
 import { SignUpDto } from '../../dto/request/sign-up.dto';
 import {
   BadResult,
-  NotificationResult,
   SuccessResult,
 } from '../../../../../core/common/notification/notification-result';
 import { AuthService } from '../../service/auth.service';
@@ -55,7 +54,7 @@ export class SignupCommandHandler
 
     await this.usersRepository.create(user, this.prismaClient);
 
-    const codeEntityRes = EmailConfirmationEntity.create(user.id);
+    const codeEntityRes = EmailConfirmationEntity.create(user);
 
     await this.authRepository.createEmailConfirmCode(
       codeEntityRes.data,

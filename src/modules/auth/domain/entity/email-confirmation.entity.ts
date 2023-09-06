@@ -6,6 +6,7 @@ import {
   SuccessResult,
 } from '../../../../core/common/notification/notification-result';
 import { EmailConfirmationCode } from '@prisma/client';
+import { UserCreatedEvent } from '../../../users/domain/events/user.created.event';
 
 export class EmailConfirmationEntity implements EmailConfirmationCode {
   userId: string;
@@ -14,12 +15,12 @@ export class EmailConfirmationEntity implements EmailConfirmationCode {
   expireAt: Date;
   user?: UserEntity;
 
-  static create(userId: string): NotificationResult<EmailConfirmationEntity> {
+  static create(user: UserEntity): NotificationResult<EmailConfirmationEntity> {
     const confirmCode = new EmailConfirmationEntity();
     confirmCode.code = crypto.webcrypto.randomUUID();
-    confirmCode.userId = userId;
+    confirmCode.userId = user.id;
     confirmCode.expireAt = add(new Date(), { hours: 1 });
-
+    user.apply(new UserCreatedEvent(user, confirmCode.code));
     return new SuccessResult(confirmCode);
   }
 }

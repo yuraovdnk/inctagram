@@ -9,12 +9,14 @@ export class LoginDto {
     description: 'email must comply with RFC 5322',
     required: true,
     type: 'string',
+    example: 'test@email.com',
   })
   @IsEmailInRFC5322()
   email: string;
 
   @ApiProperty({
-    description: 'password',
+    description: `password, valid characters: A-Za-z0-9!#$%*+-?^_`,
+    example: 'Testpassword1*',
     required: true,
     type: 'string',
     minLength: 6,

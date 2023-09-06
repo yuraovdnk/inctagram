@@ -17,7 +17,7 @@ import { PasswordRecoveryDto } from '../../application/dto/request/password-reco
 import { PasswordRecoveryCommand } from '../../application/use-cases/command/password-recovery.command-handler';
 import { ThrottlerGuard } from '@nestjs/throttler';
 import { LocalAuthGuard } from '../../application/strategies/local.strategy';
-import { AuthService, JwtTokens } from '../../application/service/auth.service';
+import { JwtTokens } from '../../application/service/auth.service';
 import { CurrentUser } from '../../../../core/common/decorators/current-user.decorator';
 import { Response } from 'express';
 import { EmailConfirmCommand } from '../../application/use-cases/command/email-confirm.command.handler';
@@ -49,18 +49,20 @@ import { JwtGuard } from '../../../../core/common/guards/jwt.guard';
 import { SignupCommand } from '../../application/use-cases/command/signup.command-handler';
 import { ApiGetUserInfo } from '../../application/dto/swagger/me-required.swagger-decorator';
 import { ApiNewPassword } from '../../application/dto/swagger/new-password.swagger.decorator';
+import { SignUpViewDto } from '../../application/dto/response/sign-up.view.dto';
+import { LoginViewDto } from '../../application/dto/response/login.view.dto';
+import { RefreshTokenViewDto } from '../../application/dto/response/refresh-token.view.dto';
 
 @ApiTags('AUTH')
 @Controller('auth')
 export class AuthController {
   constructor(
     private commandBus: CommandBus,
-    private readonly authService: AuthService,
     private readonly usersRepository: UsersRepository,
   ) {}
 
   //register in the system
-  @SignupRequired()
+  @SignupRequired(SignUpViewDto)
   @HttpCode(HttpStatus.OK)
   @Post('signup')
   async signUp(@Body() signUpDto: SignUpDto): Promise<NotificationResult> {
@@ -80,14 +82,16 @@ export class AuthController {
   }
 
   //login in the system
-  @LoginRequired()
+  @LoginRequired(LoginViewDto)
   @UseGuards(LocalAuthGuard)
+  @HttpCode(HttpStatus.OK)
   @Post('login')
   async login(
     @Res() res: Response,
     @CurrentUser() userId: string,
     @DeviceMeta() deviceInfo: DeviceInfoType,
   ) {
+    console.log('login', userId);
     const result = await this.commandBus.execute<
       CreateAuthSessionCommand,
       NotificationResult<JwtTokens>
@@ -148,7 +152,7 @@ export class AuthController {
   }
 
   //refreshToken
-  @RefreshTokenRequired()
+  @RefreshTokenRequired(RefreshTokenViewDto)
   @UseGuards(JwtCookieGuard)
   @HttpCode(HttpStatus.OK)
   @Post('refresh-token')

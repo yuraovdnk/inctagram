@@ -11,7 +11,7 @@ window.onload = function() {
   "swaggerDoc": {
     "openapi": "3.0.0",
     "paths": {
-      "/auth/signup": {
+      "/back-api/auth/signup": {
         "post": {
           "operationId": "AuthController_signUp",
           "summary": "signup",
@@ -32,7 +32,19 @@ window.onload = function() {
               "content": {
                 "application/json": {
                   "schema": {
-                    "$ref": "#/components/schemas/NotificationResult"
+                    "allOf": [
+                      {
+                        "$ref": "#/components/schemas/NotificationResult"
+                      },
+                      {
+                        "properties": {
+                          "data": {
+                            "$ref": "#/components/schemas/SignUpViewDto",
+                            "nullable": true
+                          }
+                        }
+                      }
+                    ]
                   }
                 }
               }
@@ -43,7 +55,7 @@ window.onload = function() {
           ]
         }
       },
-      "/auth/registration-confirmation": {
+      "/back-api/auth/registration-confirmation": {
         "post": {
           "operationId": "AuthController_confirmationEmail",
           "summary": "confirm registration",
@@ -60,13 +72,27 @@ window.onload = function() {
           },
           "responses": {
             "200": {
-              "description": ""
-            },
-            "204": {
-              "description": "Congratulations! Your email has been confirmed"
-            },
-            "400": {
-              "description": "If the confirmation code is incorrect, expired or already been applied"
+              "description": "",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "allOf": [
+                      {
+                        "$ref": "#/components/schemas/NotificationResult"
+                      },
+                      {
+                        "properties": {
+                          "data": {
+                            "type": "object",
+                            "nullable": true,
+                            "default": null
+                          }
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
             }
           },
           "tags": [
@@ -74,7 +100,7 @@ window.onload = function() {
           ]
         }
       },
-      "/auth/login": {
+      "/back-api/auth/login": {
         "post": {
           "operationId": "AuthController_login",
           "summary": "login",
@@ -91,27 +117,26 @@ window.onload = function() {
           },
           "responses": {
             "200": {
-              "description": "Returns JWT accessToken in body and JWT refreshToken in cookie (http-only, secure)",
+              "description": "",
               "content": {
                 "application/json": {
                   "schema": {
-                    "properties": {
-                      "accessToken": {
-                        "type": "string"
+                    "allOf": [
+                      {
+                        "$ref": "#/components/schemas/NotificationResult"
+                      },
+                      {
+                        "properties": {
+                          "data": {
+                            "$ref": "#/components/schemas/LoginViewDto",
+                            "nullable": true
+                          }
+                        }
                       }
-                    }
+                    ]
                   }
                 }
               }
-            },
-            "201": {
-              "description": ""
-            },
-            "400": {
-              "description": "If the inputModel has incorrect values"
-            },
-            "401": {
-              "description": "If the password or login is wrong"
             }
           },
           "tags": [
@@ -119,7 +144,7 @@ window.onload = function() {
           ]
         }
       },
-      "/auth/password-recovery": {
+      "/back-api/auth/password-recovery": {
         "post": {
           "operationId": "AuthController_passwordRecovery",
           "summary": "Password recovery",
@@ -167,7 +192,7 @@ window.onload = function() {
           ]
         }
       },
-      "/auth/new-password": {
+      "/back-api/auth/new-password": {
         "post": {
           "operationId": "AuthController_newPassword",
           "summary": "Confirm Password recovery",
@@ -215,20 +240,34 @@ window.onload = function() {
           ]
         }
       },
-      "/auth/logout": {
+      "/back-api/auth/logout": {
         "post": {
           "operationId": "AuthController_logout",
           "summary": "In cookie client must send correct refreshToken that will be revoked",
           "parameters": [],
           "responses": {
             "200": {
-              "description": ""
-            },
-            "204": {
-              "description": ""
-            },
-            "401": {
-              "description": "If the JWT refreshToken inside cookie is missing, expired or incorrect"
+              "description": "",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "allOf": [
+                      {
+                        "$ref": "#/components/schemas/NotificationResult"
+                      },
+                      {
+                        "properties": {
+                          "data": {
+                            "type": "object",
+                            "nullable": true,
+                            "default": null
+                          }
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
             }
           },
           "tags": [
@@ -236,28 +275,33 @@ window.onload = function() {
           ]
         }
       },
-      "/auth/refresh-token": {
+      "/back-api/auth/refresh-token": {
         "post": {
           "operationId": "AuthController_refreshToken",
           "summary": "Generate new pair of access and refresh tokens (in cookie client must send correct refreshToken that will be revoked after refreshing)",
           "parameters": [],
           "responses": {
             "200": {
-              "description": "Returns JWT accessToken in body and JWT refreshToken in cookie (http-only, secure)",
+              "description": "",
               "content": {
                 "application/json": {
                   "schema": {
-                    "properties": {
-                      "accessToken": {
-                        "type": "string"
+                    "allOf": [
+                      {
+                        "$ref": "#/components/schemas/NotificationResult"
+                      },
+                      {
+                        "properties": {
+                          "data": {
+                            "$ref": "#/components/schemas/RefreshTokenViewDto",
+                            "nullable": true
+                          }
+                        }
                       }
-                    }
+                    ]
                   }
                 }
               }
-            },
-            "401": {
-              "description": "If the JWT refreshToken inside cookie is missing, expired or incorrect"
             }
           },
           "tags": [
@@ -265,7 +309,7 @@ window.onload = function() {
           ]
         }
       },
-      "/auth/registration-email-resending": {
+      "/back-api/auth/registration-email-resending": {
         "post": {
           "operationId": "AuthController_resendEmailConfirmation",
           "summary": "registration email resending",
@@ -297,7 +341,7 @@ window.onload = function() {
           ]
         }
       },
-      "/auth/me": {
+      "/back-api/auth/me": {
         "get": {
           "operationId": "AuthController_getAuthInfo",
           "summary": "get user information",
@@ -336,7 +380,7 @@ window.onload = function() {
           ]
         }
       },
-      "/oauth/github": {
+      "/back-api/oauth/github": {
         "get": {
           "operationId": "OauthController_githubSignup",
           "parameters": [],
@@ -350,7 +394,7 @@ window.onload = function() {
           ]
         }
       },
-      "/oauth/github/callback": {
+      "/back-api/oauth/github/callback": {
         "get": {
           "operationId": "OauthController_githubAuthCallback",
           "summary": "auth via oauth",
@@ -372,7 +416,7 @@ window.onload = function() {
           ]
         }
       },
-      "/oauth/google": {
+      "/back-api/oauth/google": {
         "get": {
           "operationId": "OauthController_googleSignup",
           "parameters": [],
@@ -386,7 +430,7 @@ window.onload = function() {
           ]
         }
       },
-      "/oauth/google/callback": {
+      "/back-api/oauth/google/callback": {
         "get": {
           "operationId": "OauthController_googleSignupRedirect",
           "summary": "auth via oauth",
@@ -408,7 +452,7 @@ window.onload = function() {
           ]
         }
       },
-      "/users/profile/{id}": {
+      "/back-api/users/profile/{id}": {
         "post": {
           "operationId": "UserController_createProfile",
           "summary": "Create user profile",
@@ -581,26 +625,43 @@ window.onload = function() {
     "servers": [],
     "components": {
       "schemas": {
+        "SignUpViewDto": {
+          "type": "object",
+          "properties": {
+            "email": {
+              "type": "string",
+              "format": "email",
+              "example": "test@email.com"
+            }
+          },
+          "required": [
+            "email"
+          ]
+        },
         "SignUpDto": {
           "type": "object",
           "properties": {
             "username": {
               "type": "string",
-              "description": "username",
+              "description": "username, valid characters: A-Za-z0-9-_",
+              "example": "Username",
               "minLength": 6,
               "maxLength": 30
             },
             "email": {
               "type": "string",
-              "description": "email. It must comply with RFC 5322"
+              "description": "email. It must comply with RFC 5322",
+              "example": "test@email.com"
             },
             "password": {
               "type": "string",
-              "description": "password"
+              "description": "password, valid characters: A-Za-z0-9!#$%*+-?^_",
+              "example": "Testpassword1*"
             },
             "passwordConfirm": {
               "type": "string",
-              "description": "password confirmation",
+              "description": "password confirmation, valid characters: A-Za-z0-9!#$%*+-?^_",
+              "example": "Testpassword1*",
               "minLength": 6,
               "maxLength": 30
             }
@@ -612,50 +673,11 @@ window.onload = function() {
             "passwordConfirm"
           ]
         },
-        "NotificationExtension": {
-          "type": "object",
-          "properties": {
-            "key": {
-              "type": "string"
-            },
-            "message": {
-              "type": "string"
-            }
-          },
-          "required": [
-            "message"
-          ]
-        },
-        "NotificationResult": {
-          "type": "object",
-          "properties": {
-            "resultCode": {
-              "type": "number",
-              "description": "{\"OK\":0,\"ERROR\":1,\"BAD_REQUEST\":2,\"UNAUTHORIZED\":3,\"FORBIDDEN\":4,\"NOT_FOUND\":5,\"NOT_CONFIRMED\":6,\"NOT_EXIST\":7,\"CREATED\":8}"
-            },
-            "extensions": {
-              "default": [],
-              "type": "array",
-              "items": {
-                "$ref": "#/components/schemas/NotificationExtension"
-              }
-            },
-            "data": {
-              "type": "object",
-              "properties": {}
-            }
-          },
-          "required": [
-            "resultCode",
-            "extensions",
-            "data"
-          ]
-        },
         "ConfirmEmailDto": {
           "type": "object",
           "properties": {
             "code": {
-              "type": "string",
+              "type": "uuid",
               "description": "Code that be sent via Email inside link"
             }
           },
@@ -663,16 +685,31 @@ window.onload = function() {
             "code"
           ]
         },
+        "LoginViewDto": {
+          "type": "object",
+          "properties": {
+            "accessToken": {
+              "type": "string",
+              "format": "accessToken",
+              "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIzN2Q1M2JhMi0xNDg5LTQyMWYtYmZkZS0zYTU4OWYwYmJiODYiLCJkZXZpY2VJZCI6Ijg1ZDI5MzE3LTVjOTctNDE2Yi1iZDFmLWZmM2U1YTQxNDNkYSIsImlhdCI6MTY5Mzk4ODQxNCwiZXhwIjoxNjkzOTg5MzE0fQ.y5YR19d3t16JL7v8IJpn0y3eZsMMzVxlqMgKdctDt7g"
+            }
+          },
+          "required": [
+            "accessToken"
+          ]
+        },
         "LoginDto": {
           "type": "object",
           "properties": {
             "email": {
               "type": "string",
-              "description": "email must comply with RFC 5322"
+              "description": "email must comply with RFC 5322",
+              "example": "test@email.com"
             },
             "password": {
               "type": "string",
-              "description": "password",
+              "description": "password, valid characters: A-Za-z0-9!#$%*+-?^_",
+              "example": "Testpassword1*",
               "minLength": 6,
               "maxLength": 30
             }
@@ -717,17 +754,70 @@ window.onload = function() {
             "recoveryCode"
           ]
         },
+        "RefreshTokenViewDto": {
+          "type": "object",
+          "properties": {
+            "accessToken": {
+              "type": "string",
+              "format": "accessToken",
+              "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIzN2Q1M2JhMi0xNDg5LTQyMWYtYmZkZS0zYTU4OWYwYmJiODYiLCJkZXZpY2VJZCI6Ijg1ZDI5MzE3LTVjOTctNDE2Yi1iZDFmLWZmM2U1YTQxNDNkYSIsImlhdCI6MTY5Mzk4ODQxNCwiZXhwIjoxNjkzOTg5MzE0fQ.y5YR19d3t16JL7v8IJpn0y3eZsMMzVxlqMgKdctDt7g"
+            }
+          },
+          "required": [
+            "accessToken"
+          ]
+        },
         "ResendConfirmationEmailDto": {
           "type": "object",
           "properties": {
             "email": {
               "type": "string",
-              "description": "email",
-              "pattern": "^[w-.]+@([w-]+.)+[w-]{2,4}$"
+              "description": "email.It must comply with RFC 5322",
+              "pattern": "^[w-.]+@([w-]+.)+[w-]{2,4}$",
+              "example": "test@email.com"
             }
           },
           "required": [
             "email"
+          ]
+        },
+        "NotificationExtension": {
+          "type": "object",
+          "properties": {
+            "key": {
+              "type": "string"
+            },
+            "message": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "message"
+          ]
+        },
+        "NotificationResult": {
+          "type": "object",
+          "properties": {
+            "resultCode": {
+              "type": "number",
+              "description": "{\"OK\":0,\"ERROR\":1,\"BAD_REQUEST\":2,\"UNAUTHORIZED\":3,\"FORBIDDEN\":4,\"NOT_FOUND\":5,\"NOT_CONFIRMED\":6,\"NOT_EXIST\":7,\"CREATED\":8}"
+            },
+            "extensions": {
+              "default": [],
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/NotificationExtension"
+              }
+            },
+            "data": {
+              "type": "object",
+              "properties": {}
+            }
+          },
+          "required": [
+            "resultCode",
+            "extensions",
+            "data"
           ]
         },
         "UserInfoViewDto": {

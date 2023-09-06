@@ -1,13 +1,11 @@
-import { applyDecorators } from '@nestjs/common';
-import { ApiBody, ApiOkResponse, ApiOperation } from '@nestjs/swagger';
+import { applyDecorators, Type } from '@nestjs/common';
+import { ApiBody, ApiOperation } from '@nestjs/swagger';
 import { SignUpDto } from '../request/sign-up.dto';
-import { NotificationResult } from '../../../../../core/common/notification/notification-result';
+import { ApiNotificationResult } from './nofication-result.swagger';
 
-export const SignupRequired = () =>
+export const SignupRequired = <T extends Type<any>>(notificationDataType: T) =>
   applyDecorators(
-    ApiOkResponse({
-      type: NotificationResult,
-    }),
+    ApiNotificationResult(notificationDataType),
     ApiBody({ type: SignUpDto }),
     ApiOperation({ summary: 'signup' }),
   );

@@ -1,5 +1,4 @@
 import { AggregateRoot } from '@nestjs/cqrs';
-import { UserCreatedEvent } from '../events/user.created.event';
 import { v4 as uuid } from 'uuid';
 import { ExternalAccountEntity } from './external-account.entity';
 import { UserProfileEntity } from './user-profile.entity';
@@ -30,7 +29,6 @@ export class UserEntity extends AggregateRoot {
     user.username = username;
     user.passwordHash = passwordHash;
     user.isConfirmedEmail = isConfirmed;
-    user.apply(new UserCreatedEvent(user));
     return user;
   }
 
@@ -38,9 +36,6 @@ export class UserEntity extends AggregateRoot {
     this.isConfirmedEmail = true;
   }
 
-  updateUsername(username: string) {
-    this.username = username;
-  }
   setProfile(dto: UserProfileDto) {
     this.username = dto.username;
     this.profile = new UserProfileEntity(dto);

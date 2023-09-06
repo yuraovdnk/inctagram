@@ -5,7 +5,7 @@ export class ConfirmEmailDto {
   @ApiProperty({
     description: 'Code that be sent via Email inside link',
     required: true,
-    type: 'string',
+    type: 'uuid',
   })
   @IsUUID()
   code: string;

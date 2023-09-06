@@ -6,7 +6,8 @@ import { IsEqualToField } from '../../../../../core/common/validate-decorators/i
 
 export class SignUpDto {
   @ApiProperty({
-    description: 'username',
+    description: 'username, valid characters: A-Za-z0-9-_',
+    example: 'Username',
     required: true,
     type: 'string',
     minLength: 6,
@@ -19,12 +20,14 @@ export class SignUpDto {
     description: 'email. It must comply with RFC 5322',
     required: true,
     type: 'string',
+    example: 'test@email.com',
   })
   @IsEmailInRFC5322()
   email: string;
 
   @ApiProperty({
-    description: 'password',
+    description: `password, valid characters: A-Za-z0-9!#$%*+-?^_`,
+    example: 'Testpassword1*',
     required: true,
     type: 'string',
   })
@@ -32,7 +35,8 @@ export class SignUpDto {
   password: string;
 
   @ApiProperty({
-    description: 'password confirmation',
+    description: 'password confirmation, valid characters: A-Za-z0-9!#$%*+-?^_',
+    example: 'Testpassword1*',
     required: true,
     type: 'string',
     minLength: 6,

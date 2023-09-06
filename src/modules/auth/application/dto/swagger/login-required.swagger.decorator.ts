@@ -1,28 +1,11 @@
-import { applyDecorators } from '@nestjs/common';
-import {
-  ApiBadRequestResponse,
-  ApiBody,
-  ApiOkResponse,
-  ApiOperation,
-  ApiUnauthorizedResponse,
-} from '@nestjs/swagger';
+import { applyDecorators, Type } from '@nestjs/common';
+import { ApiBody, ApiOperation } from '@nestjs/swagger';
 import { LoginDto } from '../request/login.dto';
+import { ApiNotificationResult } from './nofication-result.swagger';
 
-export const LoginRequired = () =>
+export const LoginRequired = <T extends Type<any>>(notificationData?: T) =>
   applyDecorators(
-    ApiUnauthorizedResponse({
-      description: 'If the password or login is wrong',
-    }),
-    ApiBadRequestResponse({
-      description: 'If the inputModel has incorrect values',
-    }),
-    ApiOkResponse({
-      description:
-        'Returns JWT accessToken in body and JWT refreshToken in cookie (http-only, secure)',
-      schema: {
-        properties: { accessToken: { type: 'string' } },
-      },
-    }),
+    ApiNotificationResult(notificationData),
     ApiBody({ type: LoginDto }),
     ApiOperation({ summary: 'login' }),
   );

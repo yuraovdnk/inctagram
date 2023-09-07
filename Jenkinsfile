@@ -50,6 +50,8 @@ pipeline {
         stage('e2e tests') {
             steps {
                 script {
+
+                    echo "Value of env.SMTP_HOST is ${env.SMTP_HOST}"
                     echo "Value of env.SOME is ${env.SOME}"
                     echo "Value of env.PORT is ${env.PORT}"
                     echo "Value of env.DATABASE_URL is ${env.DATABASE_URL}"

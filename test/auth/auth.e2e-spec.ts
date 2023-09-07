@@ -14,6 +14,7 @@ import { EmailService } from '../../src/core/adapters/mailer/mail.service';
 import { EventBus } from '@nestjs/cqrs';
 import { EmailConfirmationEntity } from '../../src/modules/auth/domain/entity/email-confirmation.entity';
 import crypto from 'crypto';
+import process from 'process';
 
 describe('AuthController (e2e)', () => {
   jest.setTimeout(20000);
@@ -26,6 +27,7 @@ describe('AuthController (e2e)', () => {
   let emailService: EmailService;
 
   beforeAll(async () => {
+    console.log(process.env.DATABASE_URL, 'db url');
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [AppModule],
     })

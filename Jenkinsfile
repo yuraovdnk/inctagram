@@ -40,7 +40,6 @@ pipeline {
         stage('Unit tests') {
             steps {
                 script {
-                    echo "Value of env.DATABASE_URL is ${env.DATABASE_URL}"
                     sh "yarn install"
                     sh "yarn test"
                 }
@@ -49,6 +48,7 @@ pipeline {
         stage('e2e tests') {
             steps {
                 script {
+                    echo "Value of env.DATABASE_URL is ${env.DATABASE_URL}"
                     sh "yarn test:e2e"
                 }
             }

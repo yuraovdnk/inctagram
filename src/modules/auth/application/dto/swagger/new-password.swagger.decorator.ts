@@ -10,9 +10,6 @@ import { ApiNotificationResult } from './nofication-result.swagger';
 export const ApiNewPassword = () =>
   applyDecorators(
     ApiOperation({ summary: 'Confirm Password recovery' }),
-    ApiTooManyRequestsResponse({
-      description: 'More than 5 attempts from one IP-address during 10 seconds',
-    }),
     ApiNotificationResult(),
     ApiBody({ type: NewPasswordDto }),
   );

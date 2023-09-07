@@ -9,5 +9,7 @@ export const RegistrationEmailResendingRequiredSwaggerDecorator = () =>
       type: NotificationResult,
     }),
     ApiBody({ type: ResendConfirmationEmailDto }),
-    ApiOperation({ summary: 'registration email resending' }),
+    ApiOperation({
+      summary: 'Resend confirmation registration Email if user exists',
+    }),
   );

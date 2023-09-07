@@ -7,5 +7,8 @@ export const SignupRequired = <T extends Type<any>>(notificationDataType: T) =>
   applyDecorators(
     ApiNotificationResult(notificationDataType),
     ApiBody({ type: SignUpDto }),
-    ApiOperation({ summary: 'signup' }),
+    ApiOperation({
+      summary:
+        'Registration in the system. Email with confirmation code will be send to passed email address',
+    }),
   );

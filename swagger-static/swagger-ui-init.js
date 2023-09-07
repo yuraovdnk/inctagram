@@ -14,7 +14,7 @@ window.onload = function() {
       "/back-api/auth/signup": {
         "post": {
           "operationId": "AuthController_signUp",
-          "summary": "signup",
+          "summary": "Registration in the system. Email with confirmation code will be send to passed email address",
           "parameters": [],
           "requestBody": {
             "required": true,
@@ -28,7 +28,7 @@ window.onload = function() {
           },
           "responses": {
             "200": {
-              "description": "",
+              "description": "Returns ResultNotification",
               "content": {
                 "application/json": {
                   "schema": {
@@ -58,7 +58,7 @@ window.onload = function() {
       "/back-api/auth/registration-confirmation": {
         "post": {
           "operationId": "AuthController_confirmationEmail",
-          "summary": "confirm registration",
+          "summary": "To confirm registration, you need to send a code from the email",
           "parameters": [],
           "requestBody": {
             "required": true,
@@ -72,7 +72,7 @@ window.onload = function() {
           },
           "responses": {
             "200": {
-              "description": "",
+              "description": "Returns ResultNotification",
               "content": {
                 "application/json": {
                   "schema": {
@@ -103,7 +103,7 @@ window.onload = function() {
       "/back-api/auth/login": {
         "post": {
           "operationId": "AuthController_login",
-          "summary": "login",
+          "summary": "Try login user to the system",
           "parameters": [],
           "requestBody": {
             "required": true,
@@ -117,7 +117,7 @@ window.onload = function() {
           },
           "responses": {
             "200": {
-              "description": "",
+              "description": "Returns resultNotification in body (JWT accessToken in data) and JWT refreshToken in cookie (http-only, secure)",
               "content": {
                 "application/json": {
                   "schema": {
@@ -161,7 +161,7 @@ window.onload = function() {
           },
           "responses": {
             "200": {
-              "description": "",
+              "description": "Returns ResultNotification",
               "content": {
                 "application/json": {
                   "schema": {
@@ -209,7 +209,7 @@ window.onload = function() {
           },
           "responses": {
             "200": {
-              "description": "",
+              "description": "Returns ResultNotification",
               "content": {
                 "application/json": {
                   "schema": {
@@ -230,9 +230,6 @@ window.onload = function() {
                   }
                 }
               }
-            },
-            "429": {
-              "description": "More than 5 attempts from one IP-address during 10 seconds"
             }
           },
           "tags": [
@@ -247,7 +244,7 @@ window.onload = function() {
           "parameters": [],
           "responses": {
             "200": {
-              "description": "",
+              "description": "Returns ResultNotification",
               "content": {
                 "application/json": {
                   "schema": {
@@ -272,6 +269,11 @@ window.onload = function() {
           },
           "tags": [
             "AUTH"
+          ],
+          "security": [
+            {
+              "refreshToken": []
+            }
           ]
         }
       },
@@ -282,7 +284,7 @@ window.onload = function() {
           "parameters": [],
           "responses": {
             "200": {
-              "description": "",
+              "description": "Returns ResultNotification",
               "content": {
                 "application/json": {
                   "schema": {
@@ -306,13 +308,18 @@ window.onload = function() {
           },
           "tags": [
             "AUTH"
+          ],
+          "security": [
+            {
+              "refreshToken": []
+            }
           ]
         }
       },
       "/back-api/auth/registration-email-resending": {
         "post": {
           "operationId": "AuthController_resendEmailConfirmation",
-          "summary": "registration email resending",
+          "summary": "Resend confirmation registration Email if user exists",
           "parameters": [],
           "requestBody": {
             "required": true,
@@ -344,11 +351,11 @@ window.onload = function() {
       "/back-api/auth/me": {
         "get": {
           "operationId": "AuthController_getAuthInfo",
-          "summary": "get user information",
+          "summary": "Get information about current user",
           "parameters": [],
           "responses": {
             "200": {
-              "description": "",
+              "description": "Returns ResultNotification",
               "content": {
                 "application/json": {
                   "schema": {
@@ -375,7 +382,7 @@ window.onload = function() {
           ],
           "security": [
             {
-              "bearer": []
+              "accessToken": []
             }
           ]
         }
@@ -478,7 +485,7 @@ window.onload = function() {
           },
           "responses": {
             "200": {
-              "description": "",
+              "description": "Returns ResultNotification",
               "content": {
                 "application/json": {
                   "schema": {
@@ -503,6 +510,11 @@ window.onload = function() {
           },
           "tags": [
             "Users"
+          ],
+          "security": [
+            {
+              "accessToken": []
+            }
           ]
         },
         "put": {
@@ -530,7 +542,7 @@ window.onload = function() {
           },
           "responses": {
             "200": {
-              "description": "",
+              "description": "Returns ResultNotification",
               "content": {
                 "application/json": {
                   "schema": {
@@ -555,6 +567,11 @@ window.onload = function() {
           },
           "tags": [
             "Users"
+          ],
+          "security": [
+            {
+              "accessToken": []
+            }
           ]
         },
         "get": {
@@ -582,7 +599,7 @@ window.onload = function() {
           },
           "responses": {
             "200": {
-              "description": "",
+              "description": "Returns ResultNotification",
               "content": {
                 "application/json": {
                   "schema": {
@@ -606,6 +623,11 @@ window.onload = function() {
           },
           "tags": [
             "Users"
+          ],
+          "security": [
+            {
+              "accessToken": []
+            }
           ]
         }
       }
@@ -616,14 +638,23 @@ window.onload = function() {
       "version": "1.0",
       "contact": {}
     },
-    "tags": [
-      {
-        "name": "cats",
-        "description": ""
-      }
-    ],
+    "tags": [],
     "servers": [],
     "components": {
+      "securitySchemes": {
+        "accessToken": {
+          "scheme": "bearer",
+          "bearerFormat": "JWT",
+          "type": "http",
+          "description": "JWT accessToken in headers",
+          "in": "header"
+        },
+        "refreshToken": {
+          "type": "apiKey",
+          "in": "cookie",
+          "name": "refreshToken"
+        }
+      },
       "schemas": {
         "SignUpViewDto": {
           "type": "object",
@@ -677,8 +708,9 @@ window.onload = function() {
           "type": "object",
           "properties": {
             "code": {
-              "type": "uuid",
-              "description": "Code that be sent via Email inside link"
+              "type": "string",
+              "description": "Code that be sent via Email inside link",
+              "format": "uuid"
             }
           },
           "required": [

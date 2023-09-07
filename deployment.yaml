@@ -22,16 +22,6 @@ spec:
             - containerPort: PORT_CONTAINER
 
           env:
-            - name: SHADOW_DB_URL
-              valueFrom:
-                secretKeyRef:
-                  name: inctagram-back-config-secret
-                  key: SHADOW_DB_URL
-            - name: DATABASE_URL
-              valueFrom:
-                secretKeyRef:
-                  name: inctagram-back-config-secret
-                  key: DATABASE_URL
             - name: PORT
               valueFrom:
                 secretKeyRef:
@@ -112,3 +102,13 @@ spec:
                 secretKeyRef:
                   name: inctagram-back-config-secret
                   key: GH_CLIENT_SECRET
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: inctagram-back-config-secret
+                  key: DATABASE_URL
+            - name: SHADOW_DB_URL
+              valueFrom:
+                secretKeyRef:
+                  name: inctagram-back-config-secret
+                  key: SHADOW_DB_URL

@@ -3,7 +3,6 @@ import { ResendConfirmationEmailDto } from '../../dto/request/resend-confirmatio
 import { UsersRepository } from '../../../../users/instrastructure/repository/users.repository';
 import {
   ForbiddenResult,
-  NotFoundResult,
   NotificationResult,
   SuccessResult,
 } from '../../../../../core/common/notification/notification-result';
@@ -30,7 +29,7 @@ export class ResendEmailConfirmationCommandHandler
       message.resendConfirmationEmailDto.email,
     );
     if (!user) {
-      return new NotFoundResult('user not found'); //show stack error if  it throws in app
+      return new SuccessResult();
     }
 
     if (user.isConfirmedEmail) {

@@ -573,13 +573,13 @@ describe('AuthController (e2e)', () => {
       expectNotification(res, NotificationCodesEnum.BAD_REQUEST);
     });
 
-    it('should return not found result if user is not exist', async function () {
+    it('should return success if user is not exist', async function () {
       const res = await request(app.getHttpServer())
         .post('/auth/registration-email-resending')
         .send({
           email: 'dsfsd@gmai.com',
         });
-      expectNotification(res, NotificationCodesEnum.NOT_FOUND);
+      expectNotification(res, NotificationCodesEnum.OK);
     });
 
     it('should return forbidden result if user is already confirmed', async function () {

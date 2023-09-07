@@ -10,7 +10,24 @@ export class SwaggerConfig {
       .setTitle('Inctagram')
       .setDescription('The Inctagram API description')
       .setVersion('1.0')
-      .addTag('cats')
+      .addBearerAuth(
+        {
+          type: 'http',
+          scheme: 'bearer',
+          bearerFormat: 'JWT',
+          description: 'JWT accessToken in headers',
+          in: 'header',
+        },
+        'accessToken',
+      )
+      .addCookieAuth(
+        'refreshToken',
+        {
+          type: 'apiKey',
+          in: 'cookie',
+        },
+        'refreshToken',
+      )
       .build();
     const document = SwaggerModule.createDocument(app, config);
     SwaggerModule.setup('swagger', app, document);

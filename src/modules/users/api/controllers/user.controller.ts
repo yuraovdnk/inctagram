@@ -11,7 +11,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { CommandBus } from '@nestjs/cqrs';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import {
   NotificationResult,
   SuccessResult,
@@ -28,6 +28,7 @@ import { CurrentUser } from '../../../../core/common/decorators/current-user.dec
 import { ApiUpdateUserProfile } from '../../application/swagger/api-update-user-profile.swagger.decorator';
 
 @ApiTags('Users')
+@ApiBearerAuth('accessToken')
 @UseGuards(JwtGuard)
 @Controller('users')
 export class UserController {

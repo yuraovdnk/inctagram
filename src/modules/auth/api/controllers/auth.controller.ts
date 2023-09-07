@@ -153,7 +153,6 @@ export class AuthController {
 
   //refreshToken
   @RefreshTokenRequired(RefreshTokenViewDto)
-  @UseGuards(JwtCookieGuard)
   @HttpCode(HttpStatus.OK)
   @Post('refresh-token')
   async refreshToken(

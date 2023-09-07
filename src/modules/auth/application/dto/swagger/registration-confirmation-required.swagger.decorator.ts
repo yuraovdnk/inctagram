@@ -7,5 +7,8 @@ export const RegistrationConfirmationRequired = () =>
   applyDecorators(
     ApiNotificationResult(),
     ApiBody({ type: ConfirmEmailDto }),
-    ApiOperation({ summary: 'confirm registration' }),
+    ApiOperation({
+      summary:
+        'To confirm registration, you need to send a code from the email',
+    }),
   );

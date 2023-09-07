@@ -3,14 +3,17 @@ import {
   ApiExtraModels,
   ApiOkResponse,
   ApiResponseOptions,
+  ApiResponseSchemaHost,
   getSchemaPath,
 } from '@nestjs/swagger';
 import { NotificationResult } from '../../../../../core/common/notification/notification-result';
 
 export const ApiNotificationResult = <T extends Type<any>>(
   notificationData?: T,
+  description = 'Returns ResultNotification',
 ) => {
   const options: ApiResponseOptions = {
+    description,
     schema: {
       allOf: [
         { $ref: getSchemaPath(NotificationResult) },

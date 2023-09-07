@@ -5,7 +5,7 @@ import { ApiNotificationResult } from './nofication-result.swagger';
 
 export const ApiGetUserInfo = <T extends Type<any>>(notificationData: T) =>
   applyDecorators(
-    ApiBearerAuth(),
+    ApiBearerAuth('accessToken'),
     ApiNotificationResult(notificationData),
-    ApiOperation({ summary: 'get user information' }),
+    ApiOperation({ summary: 'Get information about current user' }),
   );

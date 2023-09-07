@@ -17,8 +17,11 @@ import { NotificationResult } from '../../src/core/common/notification/notificat
 import { NotificationCodesEnum } from '../../src/core/common/notification/notification-codes.enum';
 import { EmailService } from '../../src/core/adapters/mailer/mail.service';
 import { EventBus } from '@nestjs/cqrs';
+import process from 'process';
 
 describe('UserController (e2e)', () => {
+  console.log(process.env.DATABASE_URL, 'db url');
+
   jest.setTimeout(20000);
   let app: INestApplication;
   const dbTestHelper = new DbTestHelper();

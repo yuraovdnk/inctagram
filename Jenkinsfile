@@ -12,8 +12,8 @@ pipeline {
         DEPLOYMENT_NAME = "inctagram-back-deployment"
         IMAGE_NAME = "${env.BUILD_ID}_${env.ENV_TYPE}_${env.GIT_COMMIT}"
         DOCKER_BUILD_NAME = "${env.REGISTRY_HOSTNAME}/${env.PROJECT}:${env.IMAGE_NAME}"
-        DATABASE_URL = "{env.DATABASE_URL}"
-        SHADOW_DB_URL = "{env.SHADOW_DB_URL}"
+        DATABASE_URL = ${env.DATABASE_URL}
+        SHADOW_DB_URL = ${env.SHADOW_DB_URL}
         SECRET_ACCESS_TOKEN = "{env.SECRET_ACCESS_TOKEN}"
         SECRET_REFRESH_TOKEN = "{env.SECRET_REFRESH_TOKEN}"
         TIME_EXPIRING_ACCESS_TOKEN = "{env.TIME_EXPIRING_ACCESS_TOKEN}"

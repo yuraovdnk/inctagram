@@ -61,7 +61,8 @@ export class EmailService {
         <h1>Confirm Email</h1>
         <p>email confirmation code: ${code} <br>
         To confirm your email please follow the link below:
-        <a href="https://somesite.com/password-recovery?code=${code}">recovery password</a>
+        <a href="http://localhost:3000/auth/email-confirmed?emailCode=${code}">recovery password</a>
+
         </p>
         `,
       //template: 'confirm-email-code',

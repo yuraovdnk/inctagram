@@ -19,13 +19,12 @@ COPY prisma ./prisma/
 
 RUN yarn install --frozen-lockfile
 
-ENV PORT=3067
+ENV PORT=3069
 # Bundle app source code
 COPY --chown=node . .
 
 RUN yarn prisma generate
 RUN yarn build
-
 
 # Bind to all network interfaces so that it can be mapped to the host OS
 

@@ -12,6 +12,8 @@ pipeline {
         DEPLOYMENT_NAME = "inctagram-back-deployment"
         IMAGE_NAME = "${env.BUILD_ID}_${env.ENV_TYPE}_${env.GIT_COMMIT}"
         DOCKER_BUILD_NAME = "${env.REGISTRY_HOSTNAME}/${env.PROJECT}:${env.IMAGE_NAME}"
+        DATABASE_URL = "{env.DATABASE_URL}"
+        SHADOW_DB_URL = "{env.SHADOW_DB_URL}"
 
     }
 
@@ -63,6 +65,17 @@ pipeline {
                  }
              }
         }
+       stage('DB Migration') {
+              steps {
+                  echo "Migration started..."
+                     script {
+                        sh 'ls -ltr'
+                        sh 'pwd'
+                        sh 'prisma migrate deploy'
+                     }
+                  echo "Migration finished..."
+              }
+       }
         stage('Preparing deployment') {
              steps {
                  echo "Preparing started..."

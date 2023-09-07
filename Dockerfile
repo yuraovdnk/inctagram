@@ -17,14 +17,13 @@ COPY --chown=node package*.json ./
 COPY --chown=node yarn.lock ./
 COPY prisma ./prisma/
 
-RUN yarn install
-RUN yarn prisma generate
-RUN yarn prisma migrate deploy
+RUN yarn install --frozen-lockfile
 
 ENV PORT=3067
 # Bundle app source code
 COPY --chown=node . .
 
+RUN yarn prisma generate
 RUN yarn build
 
 

@@ -4,12 +4,12 @@ pipeline {
     agent any
     environment {
         ENV_TYPE = "production"
-        PORT = 3067
+        PORT = 3069
         NAMESPACE = "inctagram-space"
         REGISTRY_HOSTNAME = "inctagram"
-        PROJECT = "inctagram-back"
+        PROJECT = "pirates-inctagram-back"
         REGISTRY = "registry.hub.docker.com"
-        DEPLOYMENT_NAME = "inctagram-back-deployment"
+        DEPLOYMENT_NAME = "pirates-inctagram-back-deployment"
         IMAGE_NAME = "${env.BUILD_ID}_${env.ENV_TYPE}_${env.GIT_COMMIT}"
         DOCKER_BUILD_NAME = "${env.REGISTRY_HOSTNAME}/${env.PROJECT}:${env.IMAGE_NAME}"
         DATABASE_URL = "${env.DATABASE_URL}"
@@ -30,7 +30,6 @@ pipeline {
         GH_CLIENT_ID = "${env.GH_CLIENT_ID}"
         GH_CLIENT_SECRET = "${env.GH_CLIENT_SECRET}"
         SOME = 12
-
     }
 
     stages {
@@ -50,10 +49,7 @@ pipeline {
         stage('e2e tests') {
             steps {
                 script {
-
-                    echo "Value of env.SMTP_HOST is ${env.SMTP_HOST}"
                     echo "Value of env.SOME is ${env.SOME}"
-                    echo "Value of env.PORT is ${env.PORT}"
                     echo "Value of env.DATABASE_URL is ${env.DATABASE_URL}"
                     sh "yarn test:e2e"
                 }
@@ -87,15 +83,15 @@ pipeline {
              }
         }
        stage('DB Migration') {
-              steps {
-                  echo "Migration started..."
-                     script {
+            steps {
+                echo "Migration started..."
+                    script {
                         sh 'ls -ltr'
                         sh 'pwd'
                         sh 'prisma migrate deploy'
-                     }
-                  echo "Migration finished..."
-              }
+                    }
+                echo "Migration finished..."
+            }
        }
         stage('Preparing deployment') {
              steps {

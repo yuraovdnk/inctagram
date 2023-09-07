@@ -39,6 +39,9 @@ jobs:
       - name: Prisma generate schemas
         run: yarn prisma generate --schema=prisma/schema.prisma
 
+      - name: Prisma migrate
+        run: yarn prisma migrate deploy
+
       - name: Test
         run: yarn test # запускаем скрипт тестами
 

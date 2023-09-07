@@ -29,6 +29,8 @@ pipeline {
         GOOGLE_CLIENT_SECRET = "${env.GOOGLE_CLIENT_SECRET}"
         GH_CLIENT_ID = "${env.GH_CLIENT_ID}"
         GH_CLIENT_SECRET = "${env.GH_CLIENT_SECRET}"
+        SOME = 12
+
     }
 
     stages {
@@ -48,6 +50,8 @@ pipeline {
         stage('e2e tests') {
             steps {
                 script {
+                    echo "Value of env.SOME is ${env.SOME}"
+                    echo "Value of env.PORT is ${env.PORT}"
                     echo "Value of env.DATABASE_URL is ${env.DATABASE_URL}"
                     sh "yarn test:e2e"
                 }

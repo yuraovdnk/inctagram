@@ -2,7 +2,6 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { UsersRepository } from '../../src/modules/users/instrastructure/repository/users.repository';
 import { AppModule } from '../../src/app.module';
 import { INestApplication } from '@nestjs/common';
-import { setupApp } from '../../src/main';
 import { DbTestHelper } from '../test-helpers/db-test-helper';
 import { GoogleGuard } from '../../src/modules/auth/application/strategies/google.strategy';
 import { OauthExternalAccountDto } from '../../src/modules/auth/application/dto/request/oauth-external-account.dto';
@@ -12,6 +11,7 @@ import { UserEntity } from '../../src/modules/users/domain/entity/user.entity';
 import request from 'supertest';
 import { EventBus } from '@nestjs/cqrs';
 import { EmailService } from '../../src/core/adapters/mailer/mail.service';
+import { setupApp } from '../../src/setup-app';
 
 describe('oauth', () => {
   jest.setTimeout(20000);

@@ -11,7 +11,7 @@ import {
 } from '../mocks/mocks';
 import { UsersRepository } from '../../src/modules/users/instrastructure/repository/users.repository';
 import { AuthTestHelper } from '../test-helpers/auth-test.helper';
-import { setupApp } from '../../src/main';
+
 import { Test, TestingModule } from '@nestjs/testing';
 import { AppModule } from '../../src/app.module';
 import { NotificationResult } from '../../src/core/common/notification/notification-result';
@@ -22,6 +22,7 @@ import { EmailConfirmationEntity } from '../../src/modules/auth/domain/entity/em
 import crypto from 'crypto';
 import { GoogleGuard } from '../../src/modules/auth/application/strategies/google.strategy';
 import { GithubGuard } from '../../src/modules/auth/application/strategies/github.strategy';
+import { setupApp } from '../../src/setup-app';
 
 describe('AuthController (e2e)', () => {
   jest.setTimeout(20000);
@@ -53,6 +54,10 @@ describe('AuthController (e2e)', () => {
     usersRepository = app.get(UsersRepository);
     authHelper = new AuthTestHelper(app);
     userTestHelper = new UserTestHelper(app);
+  });
+
+  afterAll(async () => {
+    await app.close();
   });
 
   function expectNotification(
@@ -615,8 +620,4 @@ describe('AuthController (e2e)', () => {
     });
   });
   ////////////////////////////////
-
-  afterAll(async () => {
-    await app.close();
-  });
 });

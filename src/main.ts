@@ -53,9 +53,7 @@ async function bootstrap() {
   app = setupApp(app);
   app.setGlobalPrefix('back-api');
   SwaggerConfig.setup(app);
-  console.log(process.env.PORT, 'port');
-  console.log(process.env.SMTP_USER, 'SMTP_USER');
-  console.log(process.env.DATABASE_URL);
+
   await app.listen(process.env.PORT || 3000);
   SwaggerConfig.writeSwaggerFile();
 }

@@ -20,11 +20,12 @@ export class GithubStrategy extends PassportStrategy(Strategy, 'github') {
     private usersRepository: UsersRepository,
     private configService: ConfigService<ConfigEnvType, true>,
   ) {
+    const settings = configService.get('settings', { infer: true });
+    const secrets = configService.get('secrets', { infer: true });
     super({
-      clientID: configService.get('secrets', { infer: true }).githubClientId,
-      clientSecret: configService.get('secrets', { infer: true })
-        .githubClientSecret,
-      callbackURL: 'http://localhost:3000/oauth/github/callback', //TODO to env
+      clientID: secrets.githubClientId,
+      clientSecret: secrets.githubClientSecret,
+      callbackURL: `${settings.appDomainName}/oauth/github/callback`,
       scope: ['public_profile', 'user:email'],
     });
   }

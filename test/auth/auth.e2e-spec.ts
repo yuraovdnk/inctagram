@@ -2,7 +2,13 @@ import { HttpStatus, INestApplication } from '@nestjs/common';
 import request from 'supertest';
 import { DbTestHelper } from '../test-helpers/db-test-helper';
 import { ExtendedUser, UserTestHelper } from '../test-helpers/user.test.helper';
-import { mockToken, userMock, userMock2 } from '../mocks/mocks';
+import {
+  emailServiceMock,
+  eventBusMock,
+  mockToken,
+  userMock,
+  userMock2,
+} from '../mocks/mocks';
 import { UsersRepository } from '../../src/modules/users/instrastructure/repository/users.repository';
 import { AuthTestHelper } from '../test-helpers/auth-test.helper';
 import { setupApp } from '../../src/main';
@@ -14,7 +20,8 @@ import { EmailService } from '../../src/core/adapters/mailer/mail.service';
 import { EventBus } from '@nestjs/cqrs';
 import { EmailConfirmationEntity } from '../../src/modules/auth/domain/entity/email-confirmation.entity';
 import crypto from 'crypto';
-import process from 'process';
+import { GoogleGuard } from '../../src/modules/auth/application/strategies/google.strategy';
+import { GithubGuard } from '../../src/modules/auth/application/strategies/github.strategy';
 
 describe('AuthController (e2e)', () => {
   jest.setTimeout(20000);
@@ -24,19 +31,19 @@ describe('AuthController (e2e)', () => {
   let usersRepository: UsersRepository;
   let userTestHelper: UserTestHelper;
   let authHelper: AuthTestHelper;
-  let emailService: EmailService;
 
   beforeAll(async () => {
-    console.log(process.env.DATABASE_URL, 'db url');
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [AppModule],
     })
       .overrideProvider(EventBus)
-      .useValue({
-        register: jest.fn(),
-        registerSagas: jest.fn(),
-        publish: jest.fn(),
-      })
+      .useValue(eventBusMock)
+      .overrideProvider(EmailService)
+      .useValue(emailServiceMock)
+      .overrideProvider(GoogleGuard)
+      .useValue({ canActivate: () => true })
+      .overrideGuard(GithubGuard)
+      .useValue({ canActivate: () => true })
       .compile();
 
     app = moduleFixture.createNestApplication();
@@ -46,8 +53,6 @@ describe('AuthController (e2e)', () => {
     usersRepository = app.get(UsersRepository);
     authHelper = new AuthTestHelper(app);
     userTestHelper = new UserTestHelper(app);
-    emailService = app.get(EmailService);
-    jest.spyOn(emailService, 'sendConfirmCode').mockImplementation();
   });
 
   function expectNotification(
@@ -491,6 +496,7 @@ describe('AuthController (e2e)', () => {
         .post('/auth/logout')
         .set('Cookie', token)
         .expect(HttpStatus.OK);
+      console.log(result.body, 'resultBody');
       expectNotification(result2, NotificationCodesEnum.OK);
     });
   });

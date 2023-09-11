@@ -36,3 +36,14 @@ export const createUserProfileDtoMock: UserProfileDto = {
   firstName: 'John',
   lastName: 'Smith',
 };
+
+export const emailServiceMock = {
+  sendPasswordRecoveryCodeEmail: jest.fn(),
+  sendConfirmCode: jest.fn(),
+  sendMailWithSuccessRegistration: jest.fn(),
+};
+export const eventBusMock = {
+  register: jest.fn(),
+  registerSagas: jest.fn(),
+  publish: jest.fn(),
+};

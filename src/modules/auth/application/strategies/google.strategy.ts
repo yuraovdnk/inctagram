@@ -19,11 +19,12 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
     private usersRepository: UsersRepository,
     private configService: ConfigService<ConfigEnvType, true>,
   ) {
+    const settings = configService.get('settings', { infer: true });
+    const secrets = configService.get('secrets', { infer: true });
     super({
-      clientID: configService.get('secrets', { infer: true }).googleClientId,
-      clientSecret: configService.get('secrets', { infer: true })
-        .googleClientSecret,
-      callbackURL: 'http://localhost:3000/oauth/google/callback', //TODO to env
+      clientID: secrets.googleClientId,
+      clientSecret: secrets.googleClientSecret,
+      callbackURL: `${settings.appDomainName}/oauth/google/callback`, //TODO to env
       scope: ['email', 'profile'],
     });
   }

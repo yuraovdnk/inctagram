@@ -12,24 +12,6 @@ pipeline {
         DEPLOYMENT_NAME = "pirates-inctagram-back-deployment"
         IMAGE_NAME = "${env.BUILD_ID}_${env.ENV_TYPE}_${env.GIT_COMMIT}"
         DOCKER_BUILD_NAME = "${env.REGISTRY_HOSTNAME}/${env.PROJECT}:${env.IMAGE_NAME}"
-        DATABASE_URL = "${env.DATABASE_URL}"
-        SHADOW_DB_URL = "${env.SHADOW_DB_URL}"
-        SECRET_ACCESS_TOKEN = "${env.SECRET_ACCESS_TOKEN}"
-        SECRET_REFRESH_TOKEN = "${env.SECRET_REFRESH_TOKEN}"
-        TIME_EXPIRING_ACCESS_TOKEN = "${env.TIME_EXPIRING_ACCESS_TOKEN}"
-        TIME_EXPIRING_REFRESH_TOKEN = "${env.TIME_EXPIRING_REFRESH_TOKEN}"
-        SMTP_USER = "${env.SMTP_USER}"
-        SMTP_PASS = "${env.SMTP_PASS}"
-        SMTP_HOST = "${env.SMTP_HOST}"
-        SMTP_PORT = "${env.SMTP_PORT}"
-        EMAIL1 = "${env.EMAIL1}"
-        EMAIL2 = "${env.EMAIL2}"
-        SALT_HASH = "${env.SALT_HASH}"
-        GOOGLE_CLIENT_ID = "${env.GOOGLE_CLIENT_ID}"
-        GOOGLE_CLIENT_SECRET = "${env.GOOGLE_CLIENT_SECRET}"
-        GH_CLIENT_ID = "${env.GH_CLIENT_ID}"
-        GH_CLIENT_SECRET = "${env.GH_CLIENT_SECRET}"
-        SOME = 12
     }
 
     stages {

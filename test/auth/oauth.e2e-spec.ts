@@ -7,9 +7,11 @@ import { DbTestHelper } from '../test-helpers/db-test-helper';
 import { GoogleGuard } from '../../src/modules/auth/application/strategies/google.strategy';
 import { OauthExternalAccountDto } from '../../src/modules/auth/application/dto/request/oauth-external-account.dto';
 import { GithubGuard } from '../../src/modules/auth/application/strategies/github.strategy';
-import { userMock } from '../mocks/mocks';
+import { emailServiceMock, eventBusMock, userMock } from '../mocks/mocks';
 import { UserEntity } from '../../src/modules/users/domain/entity/user.entity';
 import request from 'supertest';
+import { EventBus } from '@nestjs/cqrs';
+import { EmailService } from '../../src/core/adapters/mailer/mail.service';
 
 describe('oauth', () => {
   jest.setTimeout(20000);
@@ -22,7 +24,17 @@ describe('oauth', () => {
   beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
       imports: [AppModule],
-    }).compile();
+    })
+      .overrideProvider(EventBus)
+      .useValue(eventBusMock)
+      .overrideProvider(EmailService)
+      .useValue(emailServiceMock)
+      .overrideProvider(GoogleGuard)
+      .useValue({ canActivate: () => true })
+      .overrideGuard(GithubGuard)
+      .useValue({ canActivate: () => true })
+      .compile();
+
     app = module.createNestApplication();
     setupApp(app);
     await app.init();
@@ -50,9 +62,6 @@ describe('oauth', () => {
       'yuriiovdnk@gmail.com',
       'yuraovdnk',
     );
-    it('should ', function () {
-      expect(1).toBe(1);
-    });
 
     it('registration via github', async () => {
       mockGuard(googleGuard, mockExternalAccount);

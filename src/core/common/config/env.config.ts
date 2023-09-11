@@ -14,6 +14,30 @@ export const getEnvConfig = () => ({
     githubClientId: process.env.GH_CLIENT_ID,
     githubClientSecret: process.env.GH_CLIENT_SECRET,
   },
+  settings: {
+    appDomainName: process.env.APP_DOMAIN_NAME,
+    githubRedirectUrl: process.env.GH_REDIRECT_URL,
+    googleRedirectUrl: process.env.GOOGLE_REDIRECT_URL,
+  },
   database: {},
   mailer: {},
 });
+
+enum EnvFile {
+  Test = '.env.test',
+  Dev = '.env',
+  Prod = '.env.prod',
+}
+export const getEnvFile = (): string => {
+  const env = process.env.NODE_ENV;
+  switch (env) {
+    case 'development':
+      return EnvFile.Dev;
+    case 'test':
+      return EnvFile.Test;
+    case 'production':
+      return EnvFile.Prod;
+    default:
+      return EnvFile.Prod;
+  }
+};

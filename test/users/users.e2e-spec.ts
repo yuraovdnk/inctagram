@@ -2,26 +2,17 @@ import { HttpStatus, INestApplication } from '@nestjs/common';
 import request from 'supertest';
 import { DbTestHelper } from '../test-helpers/db-test-helper';
 import { ExtendedUser, UserTestHelper } from '../test-helpers/user.test.helper';
-import {
-  createUserProfileDtoMock,
-  mockToken,
-  userMock,
-  userMock2,
-} from '../mocks/mocks';
+import { createUserProfileDtoMock } from '../mocks/mocks';
 import { UsersRepository } from '../../src/modules/users/instrastructure/repository/users.repository';
 import { AuthTestHelper } from '../test-helpers/auth-test.helper';
-import { setupApp } from '../../src/main';
 import { Test, TestingModule } from '@nestjs/testing';
 import { AppModule } from '../../src/app.module';
 import { NotificationResult } from '../../src/core/common/notification/notification-result';
 import { NotificationCodesEnum } from '../../src/core/common/notification/notification-codes.enum';
 import { EmailService } from '../../src/core/adapters/mailer/mail.service';
-import { EventBus } from '@nestjs/cqrs';
-import process from 'process';
+import { setupApp } from '../../src/setup-app';
 
 describe('UserController (e2e)', () => {
-  console.log(process.env.DATABASE_URL, 'db url');
-
   jest.setTimeout(20000);
   let app: INestApplication;
   const dbTestHelper = new DbTestHelper();

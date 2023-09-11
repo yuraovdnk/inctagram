@@ -14,6 +14,7 @@ import {
   HttpExceptionFilter,
 } from './core/common/exception/exception.filter';
 import { NotificationExtension } from './core/common/notification/notification-extension';
+import { getEnvFile } from './core/common/config/env.config';
 
 export const setupApp = (app: INestApplication) => {
   app.use(cookieParser());
@@ -53,6 +54,9 @@ async function bootstrap() {
   app = setupApp(app);
   app.setGlobalPrefix('back-api');
   SwaggerConfig.setup(app);
+
+  console.log(`env from:${getEnvFile()}`);
+  console.log(process.env.PORT, 'port');
 
   await app.listen(process.env.PORT || 3000);
   SwaggerConfig.writeSwaggerFile();

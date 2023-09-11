@@ -6,7 +6,6 @@ import { ConfigService } from '@nestjs/config';
 import { UsersRepository } from '../../../users/instrastructure/repository/users.repository';
 import { AuthRepository } from '../../infrastructure/repository/auth.repository';
 import { ConfigEnvType } from '../../../../core/common/config/env.config';
-import { getLogger } from 'nodemailer/lib/shared';
 
 @Injectable()
 export class JwtCookieGuard extends AuthGuard('jwt-cookie') {

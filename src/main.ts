@@ -55,6 +55,7 @@ async function bootstrap() {
   app.setGlobalPrefix('back-api');
   SwaggerConfig.setup(app);
 
+  console.log(process.env.NODE_ENV, 'nodeenv');
   console.log(`env from:${getEnvFile()}`);
   console.log(process.env.PORT, 'port');
 

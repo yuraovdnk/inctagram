@@ -9,7 +9,6 @@ async function bootstrap() {
   app = setupApp(app);
   app.setGlobalPrefix('back-api');
   SwaggerConfig.setup(app);
-
   await app.listen(process.env.PORT || 3000);
   SwaggerConfig.writeSwaggerFile();
 }

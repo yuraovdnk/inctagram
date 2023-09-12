@@ -17,7 +17,7 @@ COPY --chown=node package*.json ./
 COPY --chown=node yarn.lock ./
 #COPY prisma ./prisma/
 
-RUN yarn install --frozen-lockfile --cache-folder /app/cache/yarn
+RUN yarn install --frozen-lockfile --cache-folder /home/node/.cache/yarn
 
 ENV PORT=3069
 # Bundle app source code

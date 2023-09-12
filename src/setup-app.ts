@@ -16,7 +16,7 @@ export const setupApp = (app: INestApplication) => {
   app.use(cookieParser());
   useContainer(app.select(AppModule), { fallbackOnErrors: true });
   app.enableCors({
-    origin: '*',
+    origin: 'http://localhost:3000',
     methods: 'GET, HEAD, PUT, PATCH, POST, DELETE, OPTIONS',
     preflightContinue: false,
     optionsSuccessStatus: 204,

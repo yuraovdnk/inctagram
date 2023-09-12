@@ -22,10 +22,6 @@ export class GithubStrategy extends PassportStrategy(Strategy, 'github') {
   ) {
     const settings = configService.get('settings', { infer: true });
     const secrets = configService.get('secrets', { infer: true });
-    console.log(
-      `${settings.appDomainName}/back-api/oauth/github/callback`,
-      'callback url',
-    );
     super({
       clientID: secrets.githubClientId,
       clientSecret: secrets.githubClientSecret,

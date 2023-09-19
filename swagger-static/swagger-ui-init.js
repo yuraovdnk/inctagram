@@ -11,7 +11,7 @@ window.onload = function() {
   "swaggerDoc": {
     "openapi": "3.0.0",
     "paths": {
-      "/back-api/auth/signup": {
+      "/api/v1/auth/signup": {
         "post": {
           "operationId": "AuthController_signUp",
           "summary": "Registration in the system. Email with confirmation code will be send to passed email address",
@@ -55,7 +55,7 @@ window.onload = function() {
           ]
         }
       },
-      "/back-api/auth/registration-confirmation": {
+      "/api/v1/auth/registration-confirmation": {
         "post": {
           "operationId": "AuthController_confirmationEmail",
           "summary": "To confirm registration, you need to send a code from the email",
@@ -100,7 +100,7 @@ window.onload = function() {
           ]
         }
       },
-      "/back-api/auth/login": {
+      "/api/v1/auth/login": {
         "post": {
           "operationId": "AuthController_login",
           "summary": "Try login user to the system",
@@ -144,7 +144,7 @@ window.onload = function() {
           ]
         }
       },
-      "/back-api/auth/password-recovery": {
+      "/api/v1/auth/password-recovery": {
         "post": {
           "operationId": "AuthController_passwordRecovery",
           "summary": "Password recovery",
@@ -192,7 +192,7 @@ window.onload = function() {
           ]
         }
       },
-      "/back-api/auth/new-password": {
+      "/api/v1/auth/new-password": {
         "post": {
           "operationId": "AuthController_newPassword",
           "summary": "Confirm Password recovery",
@@ -237,7 +237,7 @@ window.onload = function() {
           ]
         }
       },
-      "/back-api/auth/logout": {
+      "/api/v1/auth/logout": {
         "post": {
           "operationId": "AuthController_logout",
           "summary": "In cookie client must send correct refreshToken that will be revoked",
@@ -277,7 +277,7 @@ window.onload = function() {
           ]
         }
       },
-      "/back-api/auth/refresh-token": {
+      "/api/v1/auth/refresh-token": {
         "post": {
           "operationId": "AuthController_refreshToken",
           "summary": "Generate new pair of access and refresh tokens (in cookie client must send correct refreshToken that will be revoked after refreshing)",
@@ -316,7 +316,7 @@ window.onload = function() {
           ]
         }
       },
-      "/back-api/auth/registration-email-resending": {
+      "/api/v1/auth/registration-email-resending": {
         "post": {
           "operationId": "AuthController_resendEmailConfirmation",
           "summary": "Resend confirmation registration Email if user exists",
@@ -348,7 +348,7 @@ window.onload = function() {
           ]
         }
       },
-      "/back-api/auth/me": {
+      "/api/v1/auth/me": {
         "get": {
           "operationId": "AuthController_getAuthInfo",
           "summary": "Get information about current user",
@@ -387,7 +387,7 @@ window.onload = function() {
           ]
         }
       },
-      "/back-api/oauth/github": {
+      "/api/v1/oauth/github": {
         "get": {
           "operationId": "OauthController_githubSignup",
           "parameters": [],
@@ -401,7 +401,7 @@ window.onload = function() {
           ]
         }
       },
-      "/back-api/oauth/github/callback": {
+      "/api/v1/oauth/github/callback": {
         "get": {
           "operationId": "OauthController_githubAuthCallback",
           "summary": "auth via oauth",
@@ -423,7 +423,7 @@ window.onload = function() {
           ]
         }
       },
-      "/back-api/oauth/google": {
+      "/api/v1/oauth/google": {
         "get": {
           "operationId": "OauthController_googleSignup",
           "parameters": [],
@@ -437,7 +437,7 @@ window.onload = function() {
           ]
         }
       },
-      "/back-api/oauth/google/callback": {
+      "/api/v1/oauth/google/callback": {
         "get": {
           "operationId": "OauthController_googleSignupRedirect",
           "summary": "auth via oauth",
@@ -459,7 +459,7 @@ window.onload = function() {
           ]
         }
       },
-      "/back-api/users/profile/{id}": {
+      "/api/v1/users/profile/{id}": {
         "post": {
           "operationId": "UserController_createProfile",
           "summary": "Create user profile",
@@ -631,7 +631,7 @@ window.onload = function() {
           ]
         }
       },
-      "/back-api/users/profile/avatar/upload": {
+      "/api/v1/users/profile/avatar/upload": {
         "post": {
           "operationId": "UserController_saveProfileAvatar",
           "parameters": [],

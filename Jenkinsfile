@@ -64,17 +64,6 @@ pipeline {
                  }
              }
         }
-       stage('DB Migration') {
-            steps {
-                echo "Migration started..."
-                    script {
-                        sh 'ls -ltr'
-                        sh 'pwd'
-                        sh 'prisma migrate deploy'
-                    }
-                echo "Migration finished..."
-            }
-       }
         stage('Preparing deployment') {
              steps {
                  echo "Preparing started..."

@@ -15,7 +15,7 @@ WORKDIR /home/node/dist/app
 
 COPY --chown=node package*.json ./
 COPY --chown=node yarn.lock ./
-#COPY prisma ./prisma/
+COPY prisma ./prisma/
 
 RUN yarn install --frozen-lockfile
 

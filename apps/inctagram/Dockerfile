@@ -17,12 +17,10 @@ WORKDIR /home/node/dist/${SERVICE}
 # A wildcard is used to ensure both package.json AND package-lock.json are copied
 # where available (npm@5+)
 
-
-
 COPY --chown=node package*.json ./
 COPY --chown=node yarn.lock ./
 COPY --chown=node /prisma ./
-COPY --chown=node libs ./
+COPY --chown=node /libs ./
 
 RUN yarn install --frozen-lockfile
 

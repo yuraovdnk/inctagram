@@ -630,6 +630,25 @@ window.onload = function() {
             }
           ]
         }
+      },
+      "/back-api/users/profile/avatar/upload": {
+        "post": {
+          "operationId": "UserController_saveProfileAvatar",
+          "parameters": [],
+          "responses": {
+            "200": {
+              "description": ""
+            }
+          },
+          "tags": [
+            "Users"
+          ],
+          "security": [
+            {
+              "accessToken": []
+            }
+          ]
+        }
       }
     },
     "info": {
@@ -832,7 +851,7 @@ window.onload = function() {
           "properties": {
             "resultCode": {
               "type": "number",
-              "description": "{\"OK\":0,\"ERROR\":1,\"BAD_REQUEST\":2,\"UNAUTHORIZED\":3,\"FORBIDDEN\":4,\"NOT_FOUND\":5,\"NOT_CONFIRMED\":6,\"NOT_EXIST\":7,\"CREATED\":8}"
+              "description": "{\"OK\":0,\"ERROR\":1,\"BAD_REQUEST\":2,\"UNAUTHORIZED\":3,\"FORBIDDEN\":4,\"NOT_FOUND\":5,\"NOT_CONFIRMED\":6,\"NOT_EXIST\":7,\"CREATED\":8,\"UPLOADED\":9}"
             },
             "extensions": {
               "default": [],

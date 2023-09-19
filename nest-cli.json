@@ -1,12 +1,38 @@
 {
   "$schema": "https://json.schemastore.org/nest-cli",
   "collection": "@nestjs/schematics",
-  "sourceRoot": "src",
+  "sourceRoot": "apps/inctagram/src",
   "compilerOptions": {
     "assets": [
       "**/*.hbs"
     ],
-    "plugins": ["@nestjs/swagger"],
-    "watchAssets": true
+    "plugins": [
+      "@nestjs/swagger"
+    ],
+    "watchAssets": true,
+    "webpack": false,
+    "tsConfigPath": "apps/inctagram/tsconfig.app.json"
+  },
+  "monorepo": true,
+  "root": "apps/inctagram",
+  "projects": {
+    "inctagram": {
+      "type": "application",
+      "root": "apps/inctagram",
+      "entryFile": "main",
+      "sourceRoot": "apps/inctagram/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/inctagram/tsconfig.app.json"
+      }
+    },
+    "files-microservice": {
+      "type": "application",
+      "root": "apps/files-microservice",
+      "entryFile": "main",
+      "sourceRoot": "apps/files-microservice/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/files-microservice/tsconfig.app.json"
+      }
+    }
   }
 }

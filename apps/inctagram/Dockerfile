@@ -14,14 +14,14 @@ WORKDIR /home/node/dist/app
 # where available (npm@5+)
 
 COPY --chown=node package*.json ./
-COPY --chown=node yarn.lock ./
-COPY prisma ./prisma/
+COPY --chown=node ../../yarn.lock ./
+COPY ../../prisma ./prisma/
 
 RUN yarn install --frozen-lockfile
 
 ENV PORT=3069
 # Bundle app source code
-COPY --chown=node . .
+COPY --chown=node ../.. .
 
 #RUN yarn prisma generate
 RUN yarn build

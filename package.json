@@ -10,7 +10,6 @@
     "build": "nest build",
     "format": "prettier --write \"apps/**/*.ts\" \"libs/**/*.ts\"",
     "start": "nest start",
-    "start:files-microservice": "nest start files-microservice",
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/apps/inctagram/main",
@@ -20,7 +19,13 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./apps/inctagram/test/jest-e2e.json --runInBand --forceExit",
-    "postinstall": "prisma generate"
+    "postinstall": "prisma generate",
+    "build:inctagram": "nest build inctagram",
+    "start:inctagram": "node dist/apps/inctagram/main",
+    "start:dev:inctagram": "nest start inctagram --watch",
+    "build:files-microservice": "nest build files-microservice",
+    "start:files-microservice": "node dist/apps/files-microservice/main",
+    "start:dev:files-microservice": "nest start files-microservice --watch"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.412.0",

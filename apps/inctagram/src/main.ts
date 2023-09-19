@@ -6,8 +6,8 @@ import { SwaggerConfig } from '../../../libs/adapters/api-doc/swagger.setup';
 
 async function bootstrap() {
   let app = await NestFactory.create(AppModule);
+  app.setGlobalPrefix('api');
   app = setupApp(app);
-  app.setGlobalPrefix('back-api');
   SwaggerConfig.setup(app);
   await app.listen(process.env.PORT || 3000);
   SwaggerConfig.writeSwaggerFile();

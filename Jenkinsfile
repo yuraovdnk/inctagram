@@ -4,7 +4,7 @@ pipeline {
     agent any
     environment {
         ENV_TYPE = "production"
-        PORT = 3069
+        PORT = 3091
         NAMESPACE = "inctagram-space"
         REGISTRY_HOSTNAME = "inctagram"
         PROJECT = "pirates-inctagram-back"

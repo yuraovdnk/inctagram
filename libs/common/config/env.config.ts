@@ -19,7 +19,7 @@ export const getEnvConfig = () => ({
     awsBucket: process.env.BUCKET,
   },
   settings: {
-    appDomainName: process.env.APP_DOMAIN_NAME,
+    apiHomeUrl: process.env.API_HOME_URL,
     githubRedirectUrl: process.env.GH_REDIRECT_URL,
     googleRedirectUrl: process.env.GOOGLE_REDIRECT_URL,
   },

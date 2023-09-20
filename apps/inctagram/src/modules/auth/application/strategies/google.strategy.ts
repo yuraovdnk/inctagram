@@ -5,6 +5,7 @@ import { ConfigEnvType } from '../../../../../../../libs/common/config/env.confi
 import { Injectable } from '@nestjs/common';
 import { UsersRepository } from '../../../users/instrastructure/repository/users.repository';
 import { OauthExternalAccountDto } from '../dto/request/oauth-external-account.dto';
+import process from 'process';
 
 @Injectable()
 export class GoogleGuard extends AuthGuard('google') {
@@ -24,7 +25,7 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
     super({
       clientID: secrets.googleClientId,
       clientSecret: secrets.googleClientSecret,
-      callbackURL: `${settings.appDomainName}/back-api/oauth/google/callback`, //TODO to env
+      callbackURL: `${settings.apiHomeUrl}/oauth/google/callback`, //TODO to env
       scope: ['email', 'profile'],
     });
   }

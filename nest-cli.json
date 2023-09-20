@@ -10,7 +10,7 @@
       "@nestjs/swagger"
     ],
     "watchAssets": true,
-    "webpack": false,
+    "webpack": true,
     "tsConfigPath": "apps/inctagram/tsconfig.app.json"
   },
   "monorepo": true,

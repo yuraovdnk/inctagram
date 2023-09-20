@@ -7,7 +7,7 @@ import { ImagesModule } from './modules/images/images.module';
   imports: [
     ConfigModule.forRoot({
       load: [getEnvConfig],
-      envFilePath: '.env',
+      envFilePath: ['.env', '.env.test'],
       isGlobal: true,
     }),
 

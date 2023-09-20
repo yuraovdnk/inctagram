@@ -7,6 +7,7 @@ import { CqrsModule } from '@nestjs/cqrs';
 import { UpdateUserProfileCommandHandler } from './application/use-cases/update-user-profile.command-handler';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { UploadUserAvatarCommandHandler } from './application/use-cases/upload-user-avatar.command.handler';
+import process from 'process';
 
 const commandHandlers = [
   CreateUserProfileCommandHandler,
@@ -22,8 +23,8 @@ const eventsHandler = [];
         name: 'FILES_SERVICE',
         transport: Transport.TCP,
         options: {
-          host: '0.0.0.0',
-          port: 3001,
+          host: process.env.FILE_SERVICE_HOST,
+          port: +process.env.FILE_SERVICE_PORT,
         },
       },
     ]),

@@ -52,4 +52,6 @@ export class FileStorageService {
       fileName,
     });
   }
+
+  async uploadPostImages() {}
 }

@@ -649,6 +649,27 @@ window.onload = function() {
             }
           ]
         }
+      },
+      "/api/v1/post/create": {
+        "post": {
+          "operationId": "PostController_createPost",
+          "parameters": [],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreatePostDto"
+                }
+              }
+            }
+          },
+          "responses": {
+            "201": {
+              "description": ""
+            }
+          }
+        }
       }
     },
     "info": {
@@ -999,6 +1020,19 @@ window.onload = function() {
             "dateOfBirth",
             "aboutMe",
             "avatar"
+          ]
+        },
+        "CreatePostDto": {
+          "type": "object",
+          "properties": {
+            "description": {
+              "type": "string",
+              "minLength": 0,
+              "maxLength": 500
+            }
+          },
+          "required": [
+            "description"
           ]
         }
       }

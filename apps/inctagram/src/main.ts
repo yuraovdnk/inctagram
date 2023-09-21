@@ -9,7 +9,11 @@ async function bootstrap() {
   app.setGlobalPrefix('api/v1');
   app = setupApp(app);
   SwaggerConfig.setup(app);
-  await app.listen(process.env.PORT || 3000);
+
+  await app.listen(process.env.PORT || 3000, () => {
+    console.log(`App listening at:${process.env.PORT || 3000} `);
+  });
+
   SwaggerConfig.writeSwaggerFile();
 }
 bootstrap();

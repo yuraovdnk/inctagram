@@ -946,8 +946,7 @@ window.onload = function() {
           "required": [
             "username",
             "firstName",
-            "lastName",
-            "dateOfBirth"
+            "lastName"
           ]
         },
         "UserProfileViewDto": {

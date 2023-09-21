@@ -62,6 +62,9 @@ describe(`Testing for ${dtoTitle}`, () => {
       'el-Madji-Amor',
       'de Beech',
       'O',
+      'Алёшка',
+      'Ёлка',
+      'Йо-маё',
     ];
     const invalidValues = [
       '',
@@ -70,6 +73,7 @@ describe(`Testing for ${dtoTitle}`, () => {
       undefined,
       'abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghij',
       'LastNameWith*',
+      'Ваня1',
     ];
     dtoFieldTest('firstName', getMockDto(), validValues, invalidValues);
   });

@@ -6,14 +6,14 @@ export class UserProfileEntity {
   firstName: string;
   lastName: string;
   city: string;
-  dateOfBirth: Date;
-  aboutMe: string;
-  avatar: string;
+  dateOfBirth?: Date;
+  aboutMe?: string;
+  avatar?: string;
   constructor(dto: UserProfileDto) {
     this.firstName = dto.firstName;
     this.lastName = dto.lastName;
     this.city = dto.city;
-    this.dateOfBirth = new Date(dto.dateOfBirth);
+    this.dateOfBirth = dto.dateOfBirth ? new Date(dto.dateOfBirth) : undefined;
     this.aboutMe = dto.aboutMe;
     this.avatar = dto.avatar;
   }

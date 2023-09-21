@@ -19,7 +19,7 @@ export function IsFirstNameValid(
       options: validationOptions,
       validator: {
         validate(value: string) {
-          const firstNameRegex = /^[A-Za-z0-9А-Яа-я' -]+$/;
+          const nameRegex = /^[A-Za-zА-Яа-яЁё' -]+$/;
           if (typeof value !== 'string' || !value) {
             return false;
           }
@@ -29,7 +29,7 @@ export function IsFirstNameValid(
           ) {
             return false;
           }
-          return firstNameRegex.test(value);
+          return nameRegex.test(value);
         },
         defaultMessage(args: ValidationArguments) {
           return `${

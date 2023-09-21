@@ -56,11 +56,12 @@ export class UserProfileDto {
 
   @ApiProperty({
     description: 'dateOfBirth',
-    required: true,
+    required: false,
     example: '2003-09-01T20:22:39.762Z',
   })
   @IsOlderThan(13)
-  @IsDateString()
+  @IsDateString({ strict: false, strictSeparator: false })
+  @IsOptional()
   dateOfBirth: string;
 
   @ApiProperty({

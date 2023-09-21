@@ -120,24 +120,15 @@ describe('AuthController (e2e)', () => {
       users = await userTestHelper.createUsers(1);
     });
 
-    xit('POST:[HOST]/auth/password-recovery: should return NotificationCode 2 If email is incorrect', async () => {
+    it('POST:[HOST]/auth/password-recovery: should return NotificationCode 2 If email is incorrect', async () => {
       const { body } = await request(app.getHttpServer())
         .post('/auth/password-recovery')
         .send({
           email: 'fake^^gmail.com',
         })
         .expect(HttpStatus.OK);
-
-      expect(body).toEqual({
-        extensions: [
-          {
-            message: expect.any(String),
-            key: 'email',
-          },
-        ],
-        data: null,
-        resultCode: 2,
-      });
+      expect(body.resultCode).toBe(2);
+      expect(body.extensions[0].key).toBe('email');
     });
     it('POST:[HOST]/auth/password-recovery: should return NotificationCode 0 If the email is correct', async () => {
       const { body } = await request(app.getHttpServer())
@@ -356,7 +347,7 @@ describe('AuthController (e2e)', () => {
         })
         .expect(HttpStatus.OK);
     });
-    xit('POST:[HOST]/auth/new-password: should return NotificationResult (Code 2) if new password is too short', async () => {
+    it('POST:[HOST]/auth/new-password: should return NotificationResult (Code 2) if new password is too short', async () => {
       const recoveryCode = await dbTestHelper.getPasswordRecoveryCode(
         users[2].id,
       );
@@ -367,16 +358,8 @@ describe('AuthController (e2e)', () => {
           recoveryCode,
         })
         .expect(HttpStatus.OK);
-      expect(body).toEqual({
-        extensions: [
-          {
-            message: expect.any(String),
-            key: 'newPassword',
-          },
-        ],
-        data: null,
-        resultCode: 2,
-      });
+      expect(body.resultCode).toBe(2);
+      expect(body.extensions[0].key).toBe('newPassword');
     });
     it('POST:[HOST]/auth/new-password: should return NotificationResult (Code 2) If  RecoveryCode is incorrect', async () => {
       const { body } = await request(app.getHttpServer())
@@ -503,7 +486,6 @@ describe('AuthController (e2e)', () => {
         .post('/auth/logout')
         .set('Cookie', token)
         .expect(HttpStatus.OK);
-      console.log(result.body, 'resultBody');
       expectNotification(result2, NotificationCodesEnum.OK);
     });
   });

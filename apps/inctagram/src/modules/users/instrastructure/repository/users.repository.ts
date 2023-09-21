@@ -112,7 +112,7 @@ export class UsersRepository {
     const profileData = {
       aboutMe: user.profile.aboutMe ?? null,
       city: user.profile.city ?? null,
-      dateOfBirth: user.profile.dateOfBirth,
+      dateOfBirth: user.profile.dateOfBirth ?? null,
       lastName: user.profile.lastName,
       firstName: user.profile.firstName,
       avatar: user.profile.avatar ?? null,

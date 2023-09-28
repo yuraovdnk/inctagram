@@ -3,6 +3,7 @@ import {
   Catch,
   ExceptionFilter,
   HttpException,
+  Logger,
 } from '@nestjs/common';
 import { Response } from 'express';
 
@@ -19,6 +20,7 @@ import { isArray } from 'class-validator';
 @Catch(Error)
 export class ErrorExceptionFilter implements ExceptionFilter {
   catch(exception: Error, host: ArgumentsHost) {
+    new Logger(ErrorExceptionFilter.name).error(exception.stack);
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
 
@@ -37,6 +39,7 @@ export class ErrorExceptionFilter implements ExceptionFilter {
 @Catch(HttpException)
 export class HttpExceptionFilter implements ExceptionFilter {
   catch(exception: HttpException, host: ArgumentsHost) {
+    new Logger(HttpExceptionFilter.name).error(exception.stack);
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
 

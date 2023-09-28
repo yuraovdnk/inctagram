@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { AuthModule } from './modules/auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
 import { getEnvConfig } from '../../../libs/common/config/env.config';
@@ -7,6 +7,8 @@ import { PrismaModule } from '../../../libs/adapters/db/prisma/prisma.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import process from 'process';
+import { LoggerMiddleware } from '../../../libs/logger/logger.middleware';
+import { AdminModule } from './modules/admin/admin.module';
 
 @Module({
   imports: [
@@ -25,13 +27,14 @@ import process from 'process';
       limit: 5,
     }),
     AuthModule,
+    AdminModule,
   ],
   controllers: [],
   providers: [],
 })
-export class AppModule {}
-// export class AppModule implements NestModule {
-// configure(consumer: MiddlewareConsumer): any {
-//   consumer.apply(AsyncStorageMiddleware).forRoutes('*');
-// }
-//}
+// export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(LoggerMiddleware).forRoutes('*');
+  }
+}

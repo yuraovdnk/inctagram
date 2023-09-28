@@ -28,7 +28,7 @@ export abstract class BaseUseCase<Message> {
     try {
       await this.prismaService.$transaction(async (prisma) => {
         this.prismaClient = prisma;
-        console.log('transaction started');
+        console.log('transaction started!!!');
         notificationResult = await this.onExecute(message);
         if (notificationResult.hasError()) {
           throw new Error();

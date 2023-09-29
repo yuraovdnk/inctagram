@@ -670,6 +670,37 @@ window.onload = function() {
             }
           }
         }
+      },
+      "/api/v1/post": {
+        "get": {
+          "operationId": "PostController_getAll",
+          "parameters": [],
+          "responses": {
+            "200": {
+              "description": ""
+            }
+          }
+        }
+      },
+      "/api/v1/post/{id}": {
+        "delete": {
+          "operationId": "PostController_deletePost",
+          "parameters": [
+            {
+              "name": "id",
+              "required": true,
+              "in": "path",
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": ""
+            }
+          }
+        }
       }
     },
     "info": {

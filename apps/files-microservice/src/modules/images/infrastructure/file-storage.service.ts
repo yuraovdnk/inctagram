@@ -12,6 +12,8 @@ import {
   SuccessResult,
 } from '../../../../../../libs/common/notification/notification-result';
 import { FileUploadUserAvatar } from '../../../../../../libs/contracts/file/file.upload-user-avatar';
+import { generateS3Url } from '../../../utils/generateS3Url';
+import { ResizedPostImageDto } from '../application/dtos/resized-post-image.dto';
 
 @Injectable()
 export class FileStorageService {
@@ -27,6 +29,7 @@ export class FileStorageService {
       },
     });
   }
+
   async uploadUserAvatar(
     buffer: Buffer,
     originalName: string,
@@ -53,5 +56,33 @@ export class FileStorageService {
     });
   }
 
-  async uploadPostImages() {}
+  async uploadPostImages(
+    image: ResizedPostImageDto,
+    postId: string,
+    numCount?: number,
+  ) {
+    const secrets = this.configService.get('secrets', { infer: true });
+
+    for (const item of image.images) {
+      const imageName = `${postId}_image_${item.variant}_${numCount}.${item.format}`;
+      await this.s3.send(
+        new PutObjectCommand({
+          Bucket: secrets.awsBucket,
+          Key: `post-images/${imageName}`,
+          Body: item.buffer as Buffer,
+          ContentType: 'image/jpeg',
+        }),
+      );
+      const s3Url = generateS3Url(
+        secrets.awsBucket,
+        `post-images/${imageName}`,
+        process.env.AWS_S3_REGION,
+      );
+      item.url = s3Url;
+    }
+
+    return new SuccessResult({
+      image,
+    });
+  }
 }

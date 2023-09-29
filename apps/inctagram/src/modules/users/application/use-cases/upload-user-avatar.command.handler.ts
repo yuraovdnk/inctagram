@@ -41,10 +41,10 @@ export class UploadUserAvatarCommandHandler
       return resultUploadFile;
     }
 
-    await this.userRepo.saveUserAvatar(
-      command.userId,
-      resultUploadFile.data.fileName,
-    );
+    // await this.userRepo.saveUserAvatar(
+    //   command.userId,
+    //   resultUploadFile.data.fileName,
+    // );
 
     return new SuccessResult(resultUploadFile.data);
   }

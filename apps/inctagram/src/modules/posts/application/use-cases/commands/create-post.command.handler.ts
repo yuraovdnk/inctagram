@@ -5,6 +5,10 @@ import { Inject } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { lastValueFrom } from 'rxjs';
 import { FileUploadPostImages } from '../../../../../../../../libs/contracts/file/file.upload-post-images';
+import {
+  NotificationResult,
+  SuccessResult,
+} from '../../../../../../../../libs/common/notification/notification-result';
 
 export class CreatePostCommand {
   constructor(
@@ -22,22 +26,25 @@ export class CreatePostCommandHandler
     private postsRepository: PostsRepository,
     @Inject('FILES_SERVICE') private clientTCP: ClientProxy,
   ) {}
-  async execute(command: CreatePostCommand): Promise<any> {
+  async execute(command: CreatePostCommand): Promise<NotificationResult> {
     const post = await this.postsRepository.save(
       command.createPostDto,
       command.userId,
     );
 
     const resultUpload = await lastValueFrom(
-      this.clientTCP.send<
-        FileUploadPostImages.Response,
-        FileUploadPostImages.Request
-      >(FileUploadPostImages.topic, {
-        userId: command.userId,
-        postId: post.id,
-        images: command.images,
-      }),
+      this.clientTCP.send<NotificationResult, FileUploadPostImages.Request>(
+        FileUploadPostImages.topic,
+        {
+          postId: post.id,
+          images: command.images,
+        },
+      ),
     );
-    console.log(resultUpload);
+
+    if (!!resultUpload.extensions.length) {
+      return resultUpload;
+    }
+    return new SuccessResult();
   }
 }

@@ -1,10 +1,10 @@
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
 import {
   PostImage,
   PostImageDocument,
 } from '../domain/entities/post-image.schema';
 import { Injectable } from '@nestjs/common';
+import { Model } from 'mongoose';
 
 @Injectable()
 export class ImagesRepository {

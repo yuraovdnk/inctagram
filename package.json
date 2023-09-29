@@ -58,6 +58,7 @@
     "date-fns": "^2.30.0",
     "eslint": "8.22.0",
     "latest": "^0.2.0",
+    "mongoose": "^7.5.3",
     "nest-winston": "^1.9.4",
     "nodemailer": "^6.9.4",
     "passport": "^0.6.0",
@@ -118,5 +119,4 @@
       "<rootDir>/apps/"
     ]
   }
-
 }

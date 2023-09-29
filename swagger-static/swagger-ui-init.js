@@ -1087,8 +1087,7 @@ window.onload = function() {
           "required": [
             "username",
             "firstName",
-            "lastName",
-            "dateOfBirth"
+            "lastName"
           ]
         },
         "UserProfileViewDto": {
@@ -1140,6 +1139,19 @@ window.onload = function() {
             "dateOfBirth",
             "aboutMe",
             "avatar"
+          ]
+        },
+        "CreatePostDto": {
+          "type": "object",
+          "properties": {
+            "description": {
+              "type": "string",
+              "minLength": 0,
+              "maxLength": 500
+            }
+          },
+          "required": [
+            "description"
           ]
         }
       }

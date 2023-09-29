@@ -264,9 +264,9 @@ describe('AuthController (e2e)', () => {
       const result1 = await authHelper.signUp(userMock, HttpStatus.OK);
       expectNotification(result1, NotificationCodesEnum.OK);
 
-      //if already registered
+      //if already registered but email has not been confirmed
       const result2 = await authHelper.signUp(userMock, HttpStatus.OK);
-      expectNotification(result2, NotificationCodesEnum.BAD_REQUEST);
+      expectNotification(result2, NotificationCodesEnum.OK);
 
       //user should be not confirmed
       const user = await usersRepository.findByEmail(userMock.email);
@@ -333,6 +333,31 @@ describe('AuthController (e2e)', () => {
         })
         .expect(HttpStatus.OK);
       expectNotification(result, NotificationCodesEnum.BAD_REQUEST);
+    });
+  });
+  //////////////////////////////
+  describe('User re-registration if email has not been confirmed', () => {
+    let emailConfirmCode: EmailConfirmationEntity;
+
+    beforeAll(async () => {
+      await dbTestHelper.clearDb();
+      const createdUser = await authHelper.createUser(userMock);
+      emailConfirmCode = await authHelper.createConfirmCode(createdUser, 15);
+    });
+
+    it('should confirm email', async function () {
+      const result1 = await request(app.getHttpServer())
+        .post('/auth/registration-confirmation')
+        .send({
+          code: emailConfirmCode.code,
+        })
+        .expect(HttpStatus.OK);
+      expectNotification(result1, NotificationCodesEnum.OK);
+    });
+
+    it('should not register user', async function () {
+      const result1 = await authHelper.signUp(userMock, HttpStatus.OK);
+      expectNotification(result1, NotificationCodesEnum.BAD_REQUEST);
     });
   });
   //////////////////////////////

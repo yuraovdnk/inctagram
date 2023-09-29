@@ -32,8 +32,10 @@ export class SignupCommandHandler
 
   protected async onExecute(message: SignupCommand) {
     const [userByEmail, userByUsername] = await Promise.all([
-      this.usersRepository.findByEmail(message.signupDto.email),
-      this.usersRepository.findByUsername(message.signupDto.username),
+      this.usersRepository.findByConfirmedEmail(message.signupDto.email),
+      this.usersRepository.findByUsernameConfirmedEmail(
+        message.signupDto.username,
+      ),
     ]);
 
     if (userByEmail || userByUsername) {
@@ -42,7 +44,10 @@ export class SignupCommandHandler
         'email or username',
       );
     }
-
+    await this.usersRepository.deleteUserUnconfirmedEmail(
+      message.signupDto.email,
+      message.signupDto.username,
+    );
     const passwordHash = this.authService.getPasswordHash(
       message.signupDto.password,
     );

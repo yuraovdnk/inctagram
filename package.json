@@ -57,6 +57,7 @@
     "date-fns": "^2.30.0",
     "eslint": "8.22.0",
     "latest": "^0.2.0",
+    "nest-winston": "^1.9.4",
     "nodemailer": "^6.9.4",
     "passport": "^0.6.0",
     "passport-github": "^1.1.0",
@@ -68,7 +69,9 @@
     "rimraf": "^3.0.2",
     "rxjs": "^7.8.1",
     "uuid": "^9.0.0",
-    "vercel": "^31.2.1"
+    "vercel": "^31.2.1",
+    "winston": "^3.10.0",
+    "winston-mongodb": "^5.1.1"
   },
   "devDependencies": {
     "@nestjs/cli": "^10.1.10",
@@ -112,5 +115,4 @@
       "<rootDir>/apps/"
     ]
   }
-
 }

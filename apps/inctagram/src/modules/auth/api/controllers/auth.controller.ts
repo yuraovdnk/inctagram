@@ -4,12 +4,12 @@ import {
   Get,
   HttpCode,
   HttpStatus,
-  Inject,
   ParseUUIDPipe,
   Post,
   Res,
   UnauthorizedException,
   UseGuards,
+  Logger,
 } from '@nestjs/common';
 import { CommandBus } from '@nestjs/cqrs';
 import { SignUpDto } from '../../application/dto/request/sign-up.dto';
@@ -53,11 +53,11 @@ import { ApiNewPassword } from '../../application/dto/swagger/new-password.swagg
 import { SignUpViewDto } from '../../application/dto/response/sign-up.view.dto';
 import { LoginViewDto } from '../../application/dto/response/login.view.dto';
 import { RefreshTokenViewDto } from '../../application/dto/response/refresh-token.view.dto';
-import { ClientProxy } from '@nestjs/microservices';
 
 @ApiTags('AUTH')
 @Controller('auth')
 export class AuthController {
+  private readonly logger = new Logger(AuthController.name);
   constructor(
     private commandBus: CommandBus,
     private readonly usersRepository: UsersRepository,
@@ -197,6 +197,9 @@ export class AuthController {
   ): Promise<NotificationResult<UserInfoViewDto>> {
     const user = await this.usersRepository.findById(userId);
     if (!user) new UnauthorizedException();
+    this.logger.log('Logger test');
+    this.logger.warn('Logger test warn');
+    this.logger.error('Logger test error');
     return new SuccessResult(new UserInfoViewDto(user));
   }
 }

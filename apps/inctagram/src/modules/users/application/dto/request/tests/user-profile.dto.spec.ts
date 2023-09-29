@@ -62,6 +62,9 @@ describe(`Testing for ${dtoTitle}`, () => {
       'el-Madji-Amor',
       'de Beech',
       'O',
+      'Алёшка',
+      'Ёлка',
+      'Йо-маё',
     ];
     const invalidValues = [
       '',
@@ -70,6 +73,7 @@ describe(`Testing for ${dtoTitle}`, () => {
       undefined,
       'abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghij',
       'LastNameWith*',
+      'Ваня1',
     ];
     dtoFieldTest('firstName', getMockDto(), validValues, invalidValues);
   });
@@ -98,16 +102,8 @@ describe(`Testing for ${dtoTitle}`, () => {
     dtoFieldTest('city', getMockDto(), validValues, invalidValues);
   });
   describe('field: dateOfBirth', () => {
-    const validValues = ['2003-09-01T20:22:39.762Z', '2003'];
-    const invalidValues = [
-      1,
-      true,
-      '',
-      null,
-      undefined,
-      '2013-09-01T20:22:39.762Z',
-      '2023',
-    ];
+    const validValues = ['2003-09-01T20:22:39.762Z', '2003', null, undefined];
+    const invalidValues = [1, true, '', '2013-09-01T20:22:39.762Z', '2023'];
     dtoFieldTest('dateOfBirth', getMockDto(), validValues, invalidValues);
   });
   describe('field: aboutMe', () => {

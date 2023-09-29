@@ -48,10 +48,62 @@ export class UsersRepository {
     return user ? UserMapper.toEntity(user) : null;
   }
 
-  findByUsername(username: string) {
+  async findByConfirmedEmail(email: string): Promise<UserEntity | null> {
+    const user = await this.prismaService.user.findUnique({
+      where: {
+        email,
+        isEmailConfirmed: true,
+      },
+      include: {
+        profile: true,
+      },
+    });
+
+    return user ? UserMapper.toEntity(user) : null;
+  }
+
+  async deleteUserUnconfirmedEmail(email: string, username: string) {
+    const deleteUser = async (userId: string) => {
+      await this.prismaService.emailConfirmationCode.delete({
+        where: { userId },
+      });
+      await this.prismaService.user.delete({
+        where: {
+          id: userId,
+          isEmailConfirmed: false,
+        },
+      });
+    };
+
+    const userByEmail = await this.prismaService.user.findUnique({
+      where: {
+        email,
+        isEmailConfirmed: false,
+      },
+    });
+    if (userByEmail) await deleteUser(userByEmail.id);
+    const userByUserName = await this.prismaService.user.findUnique({
+      where: {
+        username,
+        isEmailConfirmed: false,
+      },
+    });
+    if (userByUserName) await deleteUser(userByUserName.id);
+  }
+
+  async findByUsername(username: string) {
     return this.prismaService.user.findUnique({
       where: {
         username,
+      },
+    });
+  }
+
+  async findByUsernameConfirmedEmail(username: string) {
+    return this.prismaService.user.findUnique({
+      where: {
+        username,
+        isEmailConfirmed: true,
       },
     });
   }
@@ -112,7 +164,7 @@ export class UsersRepository {
     const profileData = {
       aboutMe: user.profile.aboutMe ?? null,
       city: user.profile.city ?? null,
-      dateOfBirth: user.profile.dateOfBirth,
+      dateOfBirth: user.profile.dateOfBirth ?? null,
       lastName: user.profile.lastName,
       firstName: user.profile.firstName,
       avatar: user.profile.avatar ?? null,

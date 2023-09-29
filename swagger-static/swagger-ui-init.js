@@ -650,6 +650,95 @@ window.onload = function() {
           ]
         }
       },
+      "/api/v1/admin/logs/download/all": {
+        "get": {
+          "operationId": "AdminController_getAllLogFiles",
+          "summary": "Get all log files",
+          "parameters": [],
+          "responses": {
+            "200": {
+              "description": "Returns ResultNotification",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "allOf": [
+                      {
+                        "$ref": "#/components/schemas/NotificationResult"
+                      },
+                      {
+                        "properties": {
+                          "data": {
+                            "type": "object",
+                            "nullable": true,
+                            "default": null
+                          }
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "tags": [
+            "Admin"
+          ],
+          "security": [
+            {
+              "accessToken": []
+            }
+          ]
+        }
+      },
+      "/api/v1/admin/logs/read/{number}": {
+        "get": {
+          "operationId": "AdminController_readLogFile",
+          "summary": "Read last log file",
+          "parameters": [
+            {
+              "name": "number",
+              "required": true,
+              "in": "path",
+              "schema": {
+                "type": "number"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Returns ResultNotification",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "allOf": [
+                      {
+                        "$ref": "#/components/schemas/NotificationResult"
+                      },
+                      {
+                        "properties": {
+                          "data": {
+                            "type": "object",
+                            "nullable": true,
+                            "default": null
+                          }
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "tags": [
+            "Admin"
+          ],
+          "security": [
+            {
+              "accessToken": []
+            }
+          ]
+        }
+      },
       "/api/v1/post/create": {
         "post": {
           "operationId": "PostController_createPost",
@@ -1051,19 +1140,6 @@ window.onload = function() {
             "dateOfBirth",
             "aboutMe",
             "avatar"
-          ]
-        },
-        "CreatePostDto": {
-          "type": "object",
-          "properties": {
-            "description": {
-              "type": "string",
-              "minLength": 0,
-              "maxLength": 500
-            }
-          },
-          "required": [
-            "description"
           ]
         }
       }

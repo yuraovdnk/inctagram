@@ -56,7 +56,7 @@ To set up the Inctagram backend on your local machine, follow these steps:
 1. Clone this repository to your local environment.
 
    ```bash
-  git clone https://github.com/InctaRepo/inctagram-back.git
+   git clone https://github.com/InctaRepo/inctagram-back.git
    ```
 
 2. Navigate to the project directory.

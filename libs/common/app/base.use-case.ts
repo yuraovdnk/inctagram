@@ -15,7 +15,7 @@ export abstract class BaseUseCase<Message> {
   protected abstract onExecute(message: Message);
 
   async execute(message: Message) {
-    return this.executeWithTransaction(message); //1
+    return this.executeWithTransaction(message);
   }
 
   async handle(event: Message) {

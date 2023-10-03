@@ -127,6 +127,36 @@ spec:
                  secretKeyRef:
                    name: pirates-inctagram-back-main-config-secret
                    key: FILE_SERVICE_PORT
+             - name: LOG_DIRECTORY
+               valueFrom:
+                 secretKeyRef:
+                   name: pirates-inctagram-back-main-config-secret
+                   key: LOG_DIRECTORY
+             - name: LOG_FILE_NAME
+               valueFrom:
+                 secretKeyRef:
+                   name: pirates-inctagram-back-main-config-secret
+                   key: LOG_FILE_NAME
+             - name: LOGS_FILE_LEVEL
+               valueFrom:
+                 secretKeyRef:
+                   name: pirates-inctagram-back-main-config-secret
+                   key: LOGS_FILE_LEVEL
+             - name: LOGS_DB_LEVEL
+               valueFrom:
+                 secretKeyRef:
+                   name: pirates-inctagram-back-main-config-secret
+                   key: LOGS_DB_LEVEL
+             - name: LOGS_CONSOLE_LEVEL
+               valueFrom:
+                 secretKeyRef:
+                   name: pirates-inctagram-back-main-config-secret
+                   key: LOGS_CONSOLE_LEVEL
+             - name: MONGODB_URL
+               valueFrom:
+                 secretKeyRef:
+                   name: pirates-inctagram-back-main-config-secret
+                   key: MONGODB_URL
              - name: DATABASE_URL
                valueFrom:
                  secretKeyRef:

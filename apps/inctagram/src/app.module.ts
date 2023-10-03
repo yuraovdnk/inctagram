@@ -9,6 +9,7 @@ import { join } from 'path';
 import process from 'process';
 import { LoggerMiddleware } from '../../../libs/logger/logger.middleware';
 import { AdminModule } from './modules/admin/admin.module';
+import { PostsModule } from './modules/posts/posts.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { AdminModule } from './modules/admin/admin.module';
     }),
     AuthModule,
     AdminModule,
+    PostsModule,
   ],
   controllers: [],
   providers: [],

@@ -43,6 +43,16 @@ model UserProfile {
   @@map("user_profiles")
 }
 
+model Post {
+  id          String    @id @default(uuid())
+  userId      String
+  description String
+  createdAt   DateTime? @default(now())
+  location    String?
+
+  @@map("posts")
+}
+
 model ExternalAccount {
   providerId String   @id
   email      String

@@ -738,6 +738,58 @@ window.onload = function() {
             }
           ]
         }
+      },
+      "/api/v1/post/create": {
+        "post": {
+          "operationId": "PostController_createPost",
+          "parameters": [],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreatePostDto"
+                }
+              }
+            }
+          },
+          "responses": {
+            "201": {
+              "description": ""
+            }
+          }
+        }
+      },
+      "/api/v1/post": {
+        "get": {
+          "operationId": "PostController_getAll",
+          "parameters": [],
+          "responses": {
+            "200": {
+              "description": ""
+            }
+          }
+        }
+      },
+      "/api/v1/post/{id}": {
+        "delete": {
+          "operationId": "PostController_deletePost",
+          "parameters": [
+            {
+              "name": "id",
+              "required": true,
+              "in": "path",
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": ""
+            }
+          }
+        }
       }
     },
     "info": {
@@ -1087,6 +1139,19 @@ window.onload = function() {
             "dateOfBirth",
             "aboutMe",
             "avatar"
+          ]
+        },
+        "CreatePostDto": {
+          "type": "object",
+          "properties": {
+            "description": {
+              "type": "string",
+              "minLength": 0,
+              "maxLength": 500
+            }
+          },
+          "required": [
+            "description"
           ]
         }
       }

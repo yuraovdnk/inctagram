@@ -22,7 +22,6 @@ export class AvatarsController {
 
   @MessagePattern(FileUploadPostImages.topic)
   async uploadPostImages(dto: FileUploadPostImages.Request) {
-    throw new Error();
     return this.commandBus.execute<UploadPostImagesCommand, NotificationResult>(
       new UploadPostImagesCommand(dto.images, dto.postId),
     );

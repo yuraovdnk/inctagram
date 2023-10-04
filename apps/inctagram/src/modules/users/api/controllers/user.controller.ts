@@ -36,8 +36,7 @@ import { ConfigEnvType } from '../../../../../../../libs/common/config/env.confi
 import { ParseUserAvatarPipe } from '../../../../../../../libs/common/validators/parse-user-avatar.pipe';
 import { UploadUserAvatarCommand } from '../../application/use-cases/upload-user-avatar.command.handler';
 import { JwtGuard } from '../../../auth/application/strategies/jwt.strategy';
-import sharp from 'sharp';
-import { Worker } from 'worker_threads';
+
 @ApiTags('Users')
 @ApiBearerAuth('accessToken')
 @UseGuards(JwtGuard)

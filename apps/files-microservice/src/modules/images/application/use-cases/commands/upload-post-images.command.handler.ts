@@ -10,6 +10,7 @@ import {
   SuccessResult,
 } from '../../../../../../../../libs/common/notification/notification-result';
 import { ResizedPostImageDto } from '../../dtos/resized-post-image.dto';
+import * as path from 'path';
 
 export class UploadPostImagesCommand {
   constructor(
@@ -32,7 +33,7 @@ export class UploadPostImagesCommandHandler
     const resizedPostImages: ResizedPostImageDto[] = await this.workerPool.run(
       command.postImages,
       {
-        filename: __dirname + '/resize-post-images.js',
+        filename: path.join(__dirname, 'resize-post-images.js'),
       },
     );
 

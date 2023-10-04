@@ -18,7 +18,6 @@ import { CurrentUser } from '../../../../../../libs/common/decorators/current-us
 export class PostController {
   constructor(private commandBus: CommandBus) {}
 
-  //TODO authorized user
   @UseGuards(JwtGuard)
   @Post('create')
   @UseInterceptors(FilesInterceptor('images', 10))

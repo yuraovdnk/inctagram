@@ -2,14 +2,22 @@ import { Controller } from '@nestjs/common';
 import { MessagePattern } from '@nestjs/microservices';
 import { CommandBus } from '@nestjs/cqrs';
 import { UploadAvatarCommand } from '../application/use-cases/commands/upload-avatar-command.handler';
-import { NotificationResult } from '../../../../../../libs/common/notification/notification-result';
+import {
+  NotificationResult,
+  SuccessResult,
+} from '../../../../../../libs/common/notification/notification-result';
 import { FileUploadUserAvatar } from '../../../../../../libs/contracts/file/file.upload-user-avatar';
 import { FileUploadPostImages } from 'libs/contracts/file/file.upload-post-images';
 import { UploadPostImagesCommand } from '../application/use-cases/commands/upload-post-images.command.handler';
+import { ImagesRepository } from '../infrastructure/images.repository';
+import { FilesGetPostImages } from '../../../../../../libs/contracts/file/files.get-post-images';
 
 @Controller()
-export class AvatarsController {
-  constructor(private commandBus: CommandBus) {}
+export class ImagesController {
+  constructor(
+    private commandBus: CommandBus,
+    private imagesRepository: ImagesRepository,
+  ) {}
 
   @MessagePattern(FileUploadUserAvatar.topic)
   async uploadUserAvatar(
@@ -23,7 +31,13 @@ export class AvatarsController {
   @MessagePattern(FileUploadPostImages.topic)
   async uploadPostImages(dto: FileUploadPostImages.Request) {
     return this.commandBus.execute<UploadPostImagesCommand, NotificationResult>(
-      new UploadPostImagesCommand(dto.images, dto.postId),
+      new UploadPostImagesCommand(dto.images, dto.postId, dto.userId),
     );
+  }
+
+  @MessagePattern(FilesGetPostImages.topic)
+  async getPostImages(dto: FilesGetPostImages.Request) {
+    const posts = await this.imagesRepository.getPostImages(dto.postId);
+    return new SuccessResult(posts);
   }
 }

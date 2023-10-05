@@ -1,5 +1,5 @@
 import { Module, Scope } from '@nestjs/common';
-import { AvatarsController } from './api/avatars.controller';
+import { ImagesController } from './api/images.controller';
 import { FileStorageService } from './infrastructure/file-storage.service';
 import { CqrsModule } from '@nestjs/cqrs';
 import { UploadAvatarCommandHandler } from './application/use-cases/commands/upload-avatar-command.handler';
@@ -40,6 +40,6 @@ const commands = [UploadAvatarCommandHandler, UploadPostImagesCommandHandler];
       scope: Scope.DEFAULT,
     },
   ],
-  controllers: [AvatarsController],
+  controllers: [ImagesController],
 })
 export class ImagesModule {}

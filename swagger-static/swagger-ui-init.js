@@ -739,7 +739,7 @@ window.onload = function() {
           ]
         }
       },
-      "/api/v1/post/create": {
+      "/api/v1/posts/create": {
         "post": {
           "operationId": "PostController_createPost",
           "parameters": [],
@@ -756,6 +756,46 @@ window.onload = function() {
           "responses": {
             "201": {
               "description": ""
+            }
+          }
+        }
+      },
+      "/api/v1/posts/{userId}": {
+        "get": {
+          "operationId": "PostController_getPosts",
+          "parameters": [
+            {
+              "name": "userId",
+              "required": true,
+              "in": "path",
+              "schema": {
+                "type": "string"
+              }
+            },
+            {
+              "name": "sortDirection",
+              "required": true,
+              "in": "query",
+              "schema": {
+                "default": "desc",
+                "enum": [
+                  "asc",
+                  "desc"
+                ],
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/UserProfileViewDto"
+                  }
+                }
+              }
             }
           }
         }

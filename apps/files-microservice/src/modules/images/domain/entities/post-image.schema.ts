@@ -9,8 +9,10 @@ export type PostImageDocument = HydratedDocument<PostImage>;
 export class ImageVersion {
   @Prop()
   size: number;
+
   @Prop()
   variant: ImageVariants;
+
   @Prop()
   url: string | null;
 
@@ -25,6 +27,9 @@ export const ImageVersionSchema = SchemaFactory.createForClass(ImageVersion);
 @Schema({ versionKey: false })
 export class PostImage {
   @Prop()
+  userId: string;
+
+  @Prop()
   postId: string;
 
   @Prop({ default: () => Date.now() })
@@ -33,8 +38,9 @@ export class PostImage {
   @Prop({ type: [ImageVersionSchema] })
   versions: ImageVersion[] = [];
 
-  constructor(postId: string, image: ResizedPostImageDto) {
+  constructor(postId: string, image: ResizedPostImageDto, userId: string) {
     this.postId = postId;
+    this.userId = userId;
     this.versions = image.images.map((i) => {
       return new ImageVersion(i.size, i.variant, i.url);
     });

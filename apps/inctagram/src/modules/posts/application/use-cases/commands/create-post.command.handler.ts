@@ -9,6 +9,7 @@ import {
   NotificationResult,
   SuccessResult,
 } from '../../../../../../../../libs/common/notification/notification-result';
+import { FILES_SERVICE } from '../../../../../clients/services.module';
 
 export class CreatePostCommand {
   constructor(
@@ -24,7 +25,7 @@ export class CreatePostCommandHandler
 {
   constructor(
     private postsRepository: PostsRepository,
-    @Inject('FILES_SERVICE') private clientTCP: ClientProxy,
+    @Inject(FILES_SERVICE) private clientTCP: ClientProxy,
   ) {}
   async execute(command: CreatePostCommand): Promise<NotificationResult> {
     const post = await this.postsRepository.save(
@@ -37,6 +38,7 @@ export class CreatePostCommandHandler
         FileUploadPostImages.topic,
         {
           postId: post.id,
+          userId: command.userId,
           images: command.images,
         },
       ),

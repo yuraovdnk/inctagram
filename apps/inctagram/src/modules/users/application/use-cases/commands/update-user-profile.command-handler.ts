@@ -1,7 +1,7 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { UsersRepository } from '../../instrastructure/repository/users.repository';
-import { UserProfileDto } from '../dto/request/user-profile.dto';
-import { SuccessResult } from '../../../../../../../libs/common/notification/notification-result';
+import { UsersRepository } from '../../../instrastructure/repository/users.repository';
+import { UserProfileDto } from '../../dto/request/user-profile.dto';
+import { SuccessResult } from '../../../../../../../../libs/common/notification/notification-result';
 import { BadRequestException } from '@nestjs/common';
 
 export class UpdateUserProfileCommand {

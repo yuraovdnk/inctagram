@@ -40,15 +40,18 @@ model UserProfile {
   avatar      String?
   user        User?     @relation(fields: [userId], references: [id])
 
+  posts Post[]
+
   @@map("user_profiles")
 }
 
 model Post {
-  id          String    @id @default(uuid())
+  id          String       @id @default(uuid())
   userId      String
   description String
-  createdAt   DateTime? @default(now())
+  createdAt   DateTime?    @default(now())
   location    String?
+  UserProfile UserProfile? @relation(fields: [userId], references: [userId])
 
   @@map("posts")
 }

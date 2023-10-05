@@ -1,10 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../../../../../../libs/adapters/db/prisma/prisma.service';
 import { UserEntity } from '../../domain/entity/user.entity';
-import { PrismaClient, User } from '@prisma/client';
+import { PrismaClient, User, UserProfile } from '@prisma/client';
 import { UserMapper } from '../user.mapper';
 import { ExternalAccountEntity } from '../../domain/entity/external-account.entity';
 import * as runtime from '@prisma/client/runtime/library';
+import { plainToClass } from 'class-transformer';
+import { UserProfileEntity } from '../../domain/entity/user-profile.entity';
 
 @Injectable()
 export class UsersRepository {
@@ -194,6 +196,21 @@ export class UsersRepository {
       },
     });
     return UserMapper.toEntity(res);
+  }
+
+  async getUserProfileByUsername(username: string) {
+    const profile = await this.prismaService.user.findUnique({
+      where: { username },
+      include: {
+        profile: {
+          include: {
+            posts: true,
+          },
+        },
+      },
+    });
+
+    return profile ? UserMapper.toEntity(profile) : null;
   }
 
   async saveUserAvatar(userId: string, fileName: string) {

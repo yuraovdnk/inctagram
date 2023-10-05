@@ -2,12 +2,13 @@ import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { Inject } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { lastValueFrom } from 'rxjs';
-import { UsersRepository } from '../../instrastructure/repository/users.repository';
+import { UsersRepository } from '../../../instrastructure/repository/users.repository';
 import {
   NotificationResult,
   SuccessResult,
-} from '../../../../../../../libs/common/notification/notification-result';
-import { FileUploadUserAvatar } from '../../../../../../../libs/contracts/file/file.upload-user-avatar';
+} from '../../../../../../../../libs/common/notification/notification-result';
+import { FileUploadUserAvatar } from '../../../../../../../../libs/contracts/file/file.upload-user-avatar';
+import { FILES_SERVICE } from '../../../../../clients/services.module';
 
 export class UploadUserAvatarCommand {
   constructor(
@@ -22,7 +23,7 @@ export class UploadUserAvatarCommandHandler
 {
   constructor(
     private userRepo: UsersRepository,
-    @Inject('FILES_SERVICE') private clientTCP: ClientProxy,
+    @Inject(FILES_SERVICE) private clientTCP: ClientProxy,
   ) {}
   async execute(
     command: UploadUserAvatarCommand,

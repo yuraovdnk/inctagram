@@ -24,6 +24,7 @@ pipeline {
             steps {
                 script {
                     sh "yarn install"
+                    echo "${env}"
                     sh "yarn test"
                 }
             }
@@ -31,8 +32,6 @@ pipeline {
         stage('e2e tests') {
             steps {
                 script {
-                    sh "yarn prisma generate --schema=prisma/schema.prisma"
-                    sh "yarn migrate:prod"
                     sh "yarn test:e2e"
                 }
             }

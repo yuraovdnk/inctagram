@@ -32,6 +32,7 @@ pipeline {
         stage('e2e tests') {
             steps {
                 script {
+                    sh "npx prisma migrate deploy"
                     sh "yarn test:e2e"
                 }
             }

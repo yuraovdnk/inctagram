@@ -39,7 +39,6 @@ model UserProfile {
   aboutMe     String?
   avatar      String?
   user        User?     @relation(fields: [userId], references: [id])
-
   posts Post[]
 
   @@map("user_profiles")

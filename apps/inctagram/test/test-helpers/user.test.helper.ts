@@ -6,6 +6,7 @@ import { AuthService } from '../../src/modules/auth/application/service/auth.ser
 import { createUserProfileDtoMock } from '../mocks/mocks';
 import request from 'supertest';
 
+
 export type ExtendedUser = User & { password: string };
 export class UserTestHelper {
   private dbTestHelper: DbTestHelper;
@@ -39,6 +40,7 @@ export class UserTestHelper {
     }
     return users;
   }
+
   async createProfile(userId: string, accessTokenUser: string) {
     return request(this.app.getHttpServer())
       .post(`/users/profile/${userId}`)

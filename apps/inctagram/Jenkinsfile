@@ -31,7 +31,7 @@ pipeline {
         stage('e2e tests') {
             steps {
                 script {
-                    echo "${env.DATABASE_URl}"
+                    sh "yarn prisma generate --schema=prisma/schema.prisma"
                     sh "yarn migrate:prod"
                     sh "yarn test:e2e"
                 }

@@ -41,6 +41,5 @@ const commands = [UploadAvatarCommandHandler, UploadPostImagesCommandHandler];
     },
   ],
   controllers: [ImagesController],
-
 })
 export class ImagesModule {}

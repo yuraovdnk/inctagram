@@ -41,6 +41,8 @@ model UserProfile {
   user        User?     @relation(fields: [userId], references: [id])
   posts Post[]
 
+  posts Post[]
+
   @@map("user_profiles")
 }
 

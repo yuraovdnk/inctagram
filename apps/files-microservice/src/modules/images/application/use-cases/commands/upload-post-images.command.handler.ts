@@ -17,7 +17,6 @@ export class UploadPostImagesCommand {
     public postImages: Express.Multer.File[],
     public postId: string,
     public userId: string,
-
   ) {}
 }
 
@@ -54,7 +53,6 @@ export class UploadPostImagesCommandHandler
           resultUpload.data.image,
           command.userId,
         );
-
         await this.imagesRepository.createPostImage(model);
       } catch (e) {
         return new InternalServerError(e);

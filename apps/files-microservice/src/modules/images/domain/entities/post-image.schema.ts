@@ -9,7 +9,7 @@ export type PostImageDocument = HydratedDocument<PostImage>;
 export class ImageVersion {
   @Prop()
   size: number;
-  
+
   @Prop()
   variant: ImageVariants;
 

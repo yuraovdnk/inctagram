@@ -3,7 +3,6 @@ import {
   ApiExtraModels,
   ApiOkResponse,
   ApiResponseOptions,
-  ApiResponseSchemaHost,
   getSchemaPath,
 } from '@nestjs/swagger';
 import { NotificationResult } from '../../../../../../../../libs/common/notification/notification-result';

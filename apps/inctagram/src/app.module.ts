@@ -10,9 +10,11 @@ import process from 'process';
 import { LoggerMiddleware } from '../../../libs/logger/logger.middleware';
 import { AdminModule } from './modules/admin/admin.module';
 import { PostsModule } from './modules/posts/posts.module';
+import { ServicesModule } from './clients/services.module';
 
 @Module({
   imports: [
+    ServicesModule,
     ConfigModule.forRoot({
       load: [getEnvConfig],
       envFilePath: ['.env', '.env.test'],
@@ -34,7 +36,6 @@ import { PostsModule } from './modules/posts/posts.module';
   controllers: [],
   providers: [],
 })
-// export class AppModule {}
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer.apply(LoggerMiddleware).forRoutes('*');

@@ -1,6 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../../../../../libs/adapters/db/prisma/prisma.service';
 import { CreatePostDto } from '../application/dto/create-post.dto';
+import { PostMapper } from './post.mapper';
+import { GetPostsFindOptions } from '../application/dto/get-posts-find.options';
+import { PostEntity } from '../domain/post.entity';
 
 @Injectable()
 export class PostsRepository {
@@ -13,5 +16,26 @@ export class PostsRepository {
         description: createPostDto.description,
       },
     });
+  }
+  async getAll(
+    userId: string,
+    findOptions: GetPostsFindOptions,
+  ): Promise<[PostEntity[], number]> {
+    const [posts, totalCount] = await Promise.all([
+      this.prisma.post.findMany({
+        where: {
+          userId,
+        },
+        take: findOptions.pageSize,
+        skip: findOptions.skip,
+      }),
+      this.prisma.post.count({
+        where: {
+          userId,
+        },
+      }),
+    ]);
+
+    return [posts.map((post) => PostMapper.toEntity(post)), totalCount];
   }
 }

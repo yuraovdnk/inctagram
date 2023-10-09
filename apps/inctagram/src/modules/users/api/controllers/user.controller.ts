@@ -5,7 +5,6 @@ import {
   Get,
   HttpCode,
   HttpStatus,
-  Inject,
   Param,
   Post,
   Put,
@@ -13,7 +12,7 @@ import {
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
-import { CommandBus } from '@nestjs/cqrs';
+import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import {
   NotificationResult,
@@ -22,20 +21,16 @@ import {
 import { UserProfileDto } from '../../application/dto/request/user-profile.dto';
 import { ApiCreateUserProfile } from '../../application/swagger/api-create-user-profile.swagger.decorator';
 import { UsersRepository } from '../../instrastructure/repository/users.repository';
-import { CreateUserProfileCommand } from '../../application/use-cases/create-user-profile.command-handler';
-import { UserProfileViewDto } from '../../application/dto/response/user-profile.view.dto';
-import { ApiGetUserProfile } from '../../application/swagger/api-get-user-profile.swagger.decorator';
-import { UpdateUserProfileCommand } from '../../application/use-cases/update-user-profile.command-handler';
+import { CreateUserProfileCommand } from '../../application/use-cases/commands/create-user-profile.command-handler';
+import { UpdateUserProfileCommand } from '../../application/use-cases/commands/update-user-profile.command-handler';
 import { CurrentUser } from '../../../../../../../libs/common/decorators/current-user.decorator';
 import { ApiUpdateUserProfile } from '../../application/swagger/api-update-user-profile.swagger.decorator';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { ClientProxy } from '@nestjs/microservices';
-import { ConfigService } from '@nestjs/config';
-import { ConfigEnvType } from '../../../../../../../libs/common/config/env.config';
-
 import { ParseUserAvatarPipe } from '../../../../../../../libs/common/validators/parse-user-avatar.pipe';
-import { UploadUserAvatarCommand } from '../../application/use-cases/upload-user-avatar.command.handler';
+import { UploadUserAvatarCommand } from '../../application/use-cases/commands/upload-user-avatar.command.handler';
 import { JwtGuard } from '../../../auth/application/strategies/jwt.strategy';
+import { UserProfileViewDto } from '../../application/dto/response/user-profile.view.dto';
+import { ApiGetUserProfile } from '../../application/swagger/api-get-user-profile.swagger.decorator';
 
 @ApiTags('Users')
 @ApiBearerAuth('accessToken')
@@ -44,9 +39,8 @@ import { JwtGuard } from '../../../auth/application/strategies/jwt.strategy';
 export class UserController {
   constructor(
     private commandBus: CommandBus,
-    private readonly usersRepository: UsersRepository,
-    @Inject('FILES_SERVICE') private clientTCP: ClientProxy,
-    private configService: ConfigService<ConfigEnvType, true>,
+    private usersRepository: UsersRepository,
+    private queryBus: QueryBus,
   ) {}
 
   //create user profile
@@ -98,7 +92,7 @@ export class UserController {
     @CurrentUser() userId: string,
     @UploadedFile(new ParseUserAvatarPipe())
     file: Express.Multer.File,
-  ) {
+  ): Promise<NotificationResult> {
     return this.commandBus.execute<UploadUserAvatarCommand, NotificationResult>(
       new UploadUserAvatarCommand(userId, file),
     );

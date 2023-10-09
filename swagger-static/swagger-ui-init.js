@@ -739,14 +739,15 @@ window.onload = function() {
           ]
         }
       },
-      "/api/v1/post/create": {
+      "/api/v1/posts/create": {
         "post": {
           "operationId": "PostController_createPost",
+          "summary": "Create post",
           "parameters": [],
           "requestBody": {
             "required": true,
             "content": {
-              "application/json": {
+              "multipart/form-data": {
                 "schema": {
                   "$ref": "#/components/schemas/CreatePostDto"
                 }
@@ -754,10 +755,102 @@ window.onload = function() {
             }
           },
           "responses": {
-            "201": {
-              "description": ""
+            "200": {
+              "description": "Returns ResultNotification",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "allOf": [
+                      {
+                        "$ref": "#/components/schemas/NotificationResult"
+                      },
+                      {
+                        "properties": {
+                          "data": {
+                            "type": "object",
+                            "nullable": true,
+                            "default": null
+                          }
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
             }
-          }
+          },
+          "tags": [
+            "Posts"
+          ],
+          "security": [
+            {
+              "bearer": []
+            }
+          ]
+        }
+      },
+      "/api/v1/posts/{userId}": {
+        "get": {
+          "operationId": "PostController_getPosts",
+          "summary": "Get all user`s posts",
+          "parameters": [
+            {
+              "name": "userId",
+              "required": true,
+              "in": "path",
+              "schema": {
+                "type": "string"
+              }
+            },
+            {
+              "name": "sortDirection",
+              "required": true,
+              "in": "query",
+              "schema": {
+                "default": "desc",
+                "enum": [
+                  "asc",
+                  "desc"
+                ],
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "allOf": [
+                      {
+                        "$ref": "#/components/schemas/NotificationResult"
+                      },
+                      {
+                        "properties": {
+                          "data": {
+                            "type": "object",
+                            "$ref": "#/components/schemas/PageDto",
+                            "properties": {
+                              "items": {
+                                "type": "array",
+                                "items": {
+                                  "$ref": "#/components/schemas/PostViewModel"
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "tags": [
+            "Posts"
+          ]
         }
       }
     },
@@ -1116,11 +1209,107 @@ window.onload = function() {
             "description": {
               "type": "string",
               "minLength": 0,
-              "maxLength": 500
+              "maxLength": 500,
+              "description": "post description"
+            },
+            "images": {
+              "type": "array",
+              "description": "Array of uploaded images (PNG or JPEG format,maximum 10 images allowed, maximum size: 20MB each)",
+              "items": {
+                "type": "file",
+                "items": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
             }
           },
           "required": [
-            "description"
+            "images"
+          ]
+        },
+        "PageDto": {
+          "type": "object",
+          "properties": {
+            "pagesCount": {
+              "type": "number"
+            },
+            "page": {
+              "type": "number"
+            },
+            "pageSize": {
+              "type": "number"
+            },
+            "totalCount": {
+              "type": "number"
+            },
+            "items": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "required": [
+            "pagesCount",
+            "page",
+            "pageSize",
+            "totalCount",
+            "items"
+          ]
+        },
+        "PostImageViewModel": {
+          "type": "object",
+          "properties": {
+            "size": {
+              "type": "number"
+            },
+            "variant": {
+              "type": "string"
+            },
+            "url": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "size",
+            "variant",
+            "url"
+          ]
+        },
+        "PostViewModel": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "userId": {
+              "type": "string"
+            },
+            "createdAt": {
+              "format": "date-time",
+              "type": "string"
+            },
+            "description": {
+              "type": "string"
+            },
+            "location": {
+              "type": "string"
+            },
+            "images": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/PostImageViewModel"
+              }
+            }
+          },
+          "required": [
+            "id",
+            "userId",
+            "createdAt",
+            "description",
+            "location",
+            "images"
           ]
         }
       }

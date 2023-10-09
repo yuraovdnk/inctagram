@@ -11,6 +11,32 @@ CREATE TABLE "users" (
 );
 
 -- CreateTable
+CREATE TABLE "user_profiles" (
+    "userId" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+    "firstName" TEXT NOT NULL,
+    "lastName" TEXT NOT NULL,
+    "city" TEXT,
+    "dateOfBirth" TIMESTAMP(3),
+    "aboutMe" TEXT,
+    "avatar" TEXT,
+
+    CONSTRAINT "user_profiles_pkey" PRIMARY KEY ("userId")
+);
+
+-- CreateTable
+CREATE TABLE "posts" (
+    "id" TEXT NOT NULL,
+    "userId" TEXT NOT NULL,
+    "description" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP,
+    "location" TEXT,
+
+    CONSTRAINT "posts_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
 CREATE TABLE "external_accounts" (
     "providerId" TEXT NOT NULL,
     "email" TEXT NOT NULL,
@@ -60,6 +86,9 @@ CREATE UNIQUE INDEX "users_username_key" ON "users"("username");
 CREATE UNIQUE INDEX "users_email_key" ON "users"("email");
 
 -- CreateIndex
+CREATE UNIQUE INDEX "user_profiles_userId_key" ON "user_profiles"("userId");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "email_confirmation_codes_userId_key" ON "email_confirmation_codes"("userId");
 
 -- CreateIndex
@@ -67,6 +96,12 @@ CREATE UNIQUE INDEX "password_recovery_codes_userId_key" ON "password_recovery_c
 
 -- CreateIndex
 CREATE UNIQUE INDEX "auth_sessions_deviceId_key" ON "auth_sessions"("deviceId");
+
+-- AddForeignKey
+ALTER TABLE "user_profiles" ADD CONSTRAINT "user_profiles_userId_fkey" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "posts" ADD CONSTRAINT "posts_userId_fkey" FOREIGN KEY ("userId") REFERENCES "user_profiles"("userId") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "external_accounts" ADD CONSTRAINT "external_accounts_userId_fkey" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

@@ -28,6 +28,17 @@ pipeline {
                 }
             }
         }
+        stage {
+            steps {
+                echo " Migrations started.."
+                script {
+                    sh 'ls -ltr'
+                    sh 'pwd'
+                    sh 'prisma migrate deploy'
+                }
+                 echo " Migrations finished.."
+            }
+        }
         stage('e2e tests') {
             steps {
                 script {

@@ -31,7 +31,6 @@ pipeline {
         stage('e2e tests') {
             steps {
                 script {
-                    sh "yarn prisma migrate deploy"
                     sh "yarn test:e2e"
                 }
             }

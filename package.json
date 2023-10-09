@@ -19,7 +19,7 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./apps/inctagram/test/jest-e2e.json --runInBand --forceExit",
-    "postinstall": "prisma generate && prisma migrate deploy",
+    "postinstall": "prisma generate",
     "build:inctagram": "nest build inctagram",
     "start:inctagram": "node dist/apps/inctagram/src/main",
     "start:dev:inctagram": "nest start inctagram --watch",

@@ -47,7 +47,6 @@ describe('AuthController (e2e)', () => {
       .overrideGuard(GithubGuard)
       .useValue({ canActivate: () => true })
       .compile();
-
     app = moduleFixture.createNestApplication();
     app = setupApp(app);
     await app.init();

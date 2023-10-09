@@ -34,7 +34,7 @@ import { ApiGetUserProfile } from '../../application/swagger/api-get-user-profil
 
 @ApiTags('Users')
 @ApiBearerAuth('accessToken')
-//@UseGuards(JwtGuard)
+@UseGuards(JwtGuard)
 @Controller('users')
 export class UserController {
   constructor(

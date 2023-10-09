@@ -34,6 +34,27 @@ export class NotificationResult<T = null> {
     const { events, ...viewResponse } = this;
     return viewResponse;
   }
+
+  static Failure<T>(
+    code: NotificationCodesEnum,
+    message: string,
+    key?: string,
+  ) {
+    const notificationResult = new NotificationResult<T>();
+    notificationResult.extensions.push(new NotificationExtension(message, key));
+    notificationResult.resultCode = code;
+    return notificationResult;
+  }
+
+  static Success<T>(
+    data: T = null,
+    code: NotificationCodesEnum = NotificationCodesEnum.OK,
+  ) {
+    const notificationResult = new NotificationResult<T>();
+    notificationResult.data = data;
+    notificationResult.resultCode = code;
+    return notificationResult;
+  }
 }
 
 export class BadResult extends NotificationResult {
@@ -77,24 +98,6 @@ export class SuccessResult<T> extends NotificationResult<T> {
     if (events) {
       this.events = [...events];
     }
-  }
-}
-
-export class CreatedResult extends NotificationResult {
-  resultCode: NotificationCodesEnum = NotificationCodesEnum.CREATED;
-
-  constructor(data: any = null) {
-    super();
-    this.data = data;
-  }
-}
-
-export class SuccessUploaded extends NotificationResult {
-  resultCode: NotificationCodesEnum = NotificationCodesEnum.ERROR;
-
-  constructor(error: string, key?: string) {
-    super();
-    this.extensions.push(new NotificationExtension(error, key));
   }
 }
 

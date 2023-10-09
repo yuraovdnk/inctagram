@@ -34,7 +34,6 @@ enum EnvFile {
 }
 export const getEnvFile = (): string => {
   const env = process.env.NODE_ENV;
-  console.log(env);
   switch (env) {
     case 'development':
       return EnvFile.Dev;

@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../../../../../libs/adapters/db/prisma/prisma.service';
 import { CreatePostDto } from '../application/dto/create-post.dto';
 import { PostMapper } from './post.mapper';
-import { GetPostsOptions } from '../application/dto/get-posts.options';
+import { GetPostsFindOptions } from '../application/dto/get-posts-find.options';
 import { PostEntity } from '../domain/post.entity';
 
 @Injectable()
@@ -19,21 +19,23 @@ export class PostsRepository {
   }
   async getAll(
     userId: string,
-    findOptions: GetPostsOptions,
+    findOptions: GetPostsFindOptions,
   ): Promise<[PostEntity[], number]> {
-    const count = await this.prisma.post.count({
-      where: {
-        userId,
-      },
-    });
-    const post = await this.prisma.post.findMany({
-      where: {
-        userId,
-      },
-      take: findOptions.pageSize,
-      skip: findOptions.skip,
-    });
+    const [posts, totalCount] = await Promise.all([
+      this.prisma.post.findMany({
+        where: {
+          userId,
+        },
+        take: findOptions.pageSize,
+        skip: findOptions.skip,
+      }),
+      this.prisma.post.count({
+        where: {
+          userId,
+        },
+      }),
+    ]);
 
-    return [post.map((p) => PostMapper.toEntity(p)), count];
+    return [posts.map((post) => PostMapper.toEntity(post)), totalCount];
   }
 }

@@ -1,14 +1,15 @@
+export const FILES_SERVICE = Symbol('FILES_SERVICE');
 import { Global, Module } from '@nestjs/common';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import process from 'process';
-export const FILES_SERVICE = Symbol('FILES_SERVICE');
+import { FilesServiceFacade } from './files-ms/files-service.fasade';
 
 @Global()
 @Module({
   imports: [
     ClientsModule.register([
       {
-        name: FILES_SERVICE,
+        name: 'FILES_SERVICE',
         transport: Transport.TCP,
         options: {
           host: process.env.FILE_SERVICE_HOST,
@@ -17,6 +18,9 @@ export const FILES_SERVICE = Symbol('FILES_SERVICE');
       },
     ]),
   ],
-  exports: [ClientsModule],
+  providers: [FilesServiceFacade],
+  exports: [FilesServiceFacade],
 })
-export class ServicesModule {}
+export class ServicesModule {
+  constructor() {}
+}

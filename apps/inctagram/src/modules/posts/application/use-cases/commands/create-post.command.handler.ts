@@ -1,15 +1,10 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { CreatePostDto } from '../../dto/create-post.dto';
 import { PostsRepository } from '../../../infrastructure/posts.repository';
-import { Inject } from '@nestjs/common';
-import { ClientProxy } from '@nestjs/microservices';
-import { lastValueFrom } from 'rxjs';
-import { FileUploadPostImages } from '../../../../../../../../libs/contracts/file/file.upload-post-images';
-import {
-  NotificationResult,
-  SuccessResult,
-} from '../../../../../../../../libs/common/notification/notification-result';
-import { FILES_SERVICE } from '../../../../../clients/services.module';
+import { NotificationResult } from '../../../../../../../../libs/common/notification/notification-result';
+import { FilesServiceFacade } from '../../../../../clients/files-ms/files-service.fasade';
+import { UsersRepository } from '../../../../users/instrastructure/repository/users.repository';
+import { NotificationCodesEnum } from '../../../../../../../../libs/common/notification/notification-codes.enum';
 
 export class CreatePostCommand {
   constructor(
@@ -25,28 +20,34 @@ export class CreatePostCommandHandler
 {
   constructor(
     private postsRepository: PostsRepository,
-    @Inject(FILES_SERVICE) private clientTCP: ClientProxy,
+    private usersRepository: UsersRepository,
+    private filesServiceFacade: FilesServiceFacade,
   ) {}
   async execute(command: CreatePostCommand): Promise<NotificationResult> {
+    const user = await this.usersRepository.getUserProfile(command.userId);
+
+    if (!user.profile) {
+      return NotificationResult.Failure(
+        NotificationCodesEnum.FORBIDDEN,
+        'user have to create profile',
+      );
+    }
+
     const post = await this.postsRepository.save(
       command.createPostDto,
       command.userId,
     );
 
-    const resultUpload = await lastValueFrom(
-      this.clientTCP.send<NotificationResult, FileUploadPostImages.Request>(
-        FileUploadPostImages.topic,
-        {
-          postId: post.id,
-          userId: command.userId,
-          images: command.images,
-        },
-      ),
-    );
+    const resultUpload =
+      await this.filesServiceFacade.commands.uploadPostImages(
+        post.id,
+        command.userId,
+        command.images,
+      );
 
     if (!!resultUpload.extensions.length) {
       return resultUpload;
     }
-    return new SuccessResult();
+    return NotificationResult.Success();
   }
 }

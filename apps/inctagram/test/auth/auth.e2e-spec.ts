@@ -47,7 +47,7 @@ describe('AuthController (e2e)', () => {
       .overrideGuard(GithubGuard)
       .useValue({ canActivate: () => true })
       .compile();
-    console.log(process.env.DATABASE_URL, 'DATABASE_URL inside test');
+
     app = moduleFixture.createNestApplication();
     app = setupApp(app);
     await app.init();

@@ -1,8 +1,10 @@
 import { SignUpDto } from '../../src/modules/auth/application/dto/request/sign-up.dto';
 import { DbTestHelper } from './db-test-helper';
 import { User } from '@prisma/client';
-import { INestApplication } from '@nestjs/common';
+import { HttpStatus, INestApplication } from '@nestjs/common';
 import { AuthService } from '../../src/modules/auth/application/service/auth.service';
+import { createUserProfileDtoMock } from '../mocks/mocks';
+import request from 'supertest';
 
 export type ExtendedUser = User & { password: string };
 export class UserTestHelper {
@@ -36,5 +38,20 @@ export class UserTestHelper {
       users.push({ ...user, password });
     }
     return users;
+  }
+  async createProfile(userId: string, accessTokenUser: string) {
+    return request(this.app.getHttpServer())
+      .post(`/users/profile/${userId}`)
+      .auth(accessTokenUser, { type: 'bearer' })
+      .send(createUserProfileDtoMock)
+      .expect(HttpStatus.OK);
+  }
+  async createPost(description: string, token: string) {
+    return request(this.app.getHttpServer())
+      .post('/posts/create')
+      .set('Content-Type', 'multipart/form-data')
+      .field('description', 'test'.repeat(100))
+      .attach('images', Buffer.from('t'.repeat(100000), 'utf8'), 'test.jpeg')
+      .auth(token, { type: 'bearer' });
   }
 }

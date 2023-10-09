@@ -14,6 +14,7 @@ import { ServicesModule } from './clients/services.module';
 
 @Module({
   imports: [
+    ServicesModule,
     ConfigModule.forRoot({
       load: [getEnvConfig],
       envFilePath: ['.env', '.env.test'],
@@ -23,7 +24,6 @@ import { ServicesModule } from './clients/services.module';
       rootPath: join(__dirname, '..', 'swagger-static'),
       serveRoot: process.env.NODE_ENV === 'development' ? '/' : '/swagger',
     }),
-    ServicesModule,
     PrismaModule,
     ThrottlerModule.forRoot({
       ttl: 10,
@@ -36,7 +36,6 @@ import { ServicesModule } from './clients/services.module';
   controllers: [],
   providers: [],
 })
-// export class AppModule {}
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer.apply(LoggerMiddleware).forRoutes('*');

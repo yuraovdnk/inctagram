@@ -1,62 +1,63 @@
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
 import { UsersRepository } from '../../../../users/instrastructure/repository/users.repository';
-import { Inject } from '@nestjs/common';
-import { ClientProxy } from '@nestjs/microservices';
 import { PostsRepository } from '../../../infrastructure/posts.repository';
-import { lastValueFrom } from 'rxjs';
-import {
-  NotFoundResult,
-  NotificationResult,
-  SuccessResult,
-} from '../../../../../../../../libs/common/notification/notification-result';
-import { FilesGetPostImages } from '../../../../../../../../libs/contracts/file/files.get-post-images';
-import { PostImageViewModel } from '../../../../../../../../libs/dtos/post-image.view-model';
-import { FILES_SERVICE } from '../../../../../clients/services.module';
-import { GetPostsOptions } from '../../dto/get-posts.options';
+import { NotificationResult } from '../../../../../../../../libs/common/notification/notification-result';
+import { GetPostsFindOptions } from '../../dto/get-posts-find.options';
 import { PageDto } from '../../../../../../../../libs/common/dtos/pagination.dto';
-import { PostEntity } from '../../../domain/post.entity';
+import { FilesServiceFacade } from '../../../../../clients/files-ms/files-service.fasade';
+import { NotificationCodesEnum } from '../../../../../../../../libs/common/notification/notification-codes.enum';
+import { PostViewModel } from '../../dto/post.view-model';
 
 export class GetPostsQuery {
-  constructor(readonly userId: string, readonly findOptions: GetPostsOptions) {}
+  constructor(
+    readonly userId: string,
+    readonly findOptions: GetPostsFindOptions,
+  ) {}
 }
 
 @QueryHandler(GetPostsQuery)
 export class GetPostsQueryHandler implements IQueryHandler {
   constructor(
-    private usersRepo: UsersRepository,
-    @Inject(FILES_SERVICE) private clientTCP: ClientProxy,
-    private postsRepo: PostsRepository,
+    private usersRepository: UsersRepository,
+    private postsRepository: PostsRepository,
+    private filesServiceFacade: FilesServiceFacade,
   ) {}
-  async execute(query: GetPostsQuery): Promise<any> {
-    const user = await this.usersRepo.findById(query.userId);
+  async execute(
+    query: GetPostsQuery,
+  ): Promise<NotificationResult<PageDto<PostViewModel>>> {
+    const user = await this.usersRepository.findById(query.userId);
 
     if (!user) {
-      return new NotFoundResult('user is not exist');
+      return NotificationResult.Failure(
+        NotificationCodesEnum.NOT_FOUND,
+        'user not found',
+      );
     }
 
-    const [posts, count] = await this.postsRepo.getAll(
+    const [posts, count] = await this.postsRepository.getAll(
       user.id,
       query.findOptions,
     );
 
     for (const post of posts) {
-      const notificationResult = await lastValueFrom(
-        this.clientTCP.send<
-          NotificationResult<PostImageViewModel[]>,
-          FilesGetPostImages.Request
-        >(FilesGetPostImages.topic, {
-          postId: post.id,
-        }),
-      );
+      const resultOperation =
+        await this.filesServiceFacade.queries.getPostImages(post.id);
 
-      //TODO CHECK ERROR
-      post.images.push(...notificationResult.data);
+      if (!!resultOperation.extensions.length) {
+        return NotificationResult.Failure(
+          NotificationCodesEnum.ERROR,
+          'something went wrong',
+        );
+      }
+      post.images.push(...resultOperation.data);
     }
-    const paginated = new PageDto<PostEntity[]>(
-      posts,
+
+    const paginated = new PageDto<PostViewModel>(
+      posts.map((post) => new PostViewModel(post)),
       query.findOptions,
       count,
     );
-    return new SuccessResult(paginated);
+
+    return NotificationResult.Success(paginated);
   }
 }

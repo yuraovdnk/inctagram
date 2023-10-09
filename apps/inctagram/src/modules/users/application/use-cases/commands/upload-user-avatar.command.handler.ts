@@ -8,7 +8,7 @@ import {
   SuccessResult,
 } from '../../../../../../../../libs/common/notification/notification-result';
 import { FileUploadUserAvatar } from '../../../../../../../../libs/contracts/file/file.upload-user-avatar';
-import { FILES_SERVICE } from '../../../../../clients/services.module';
+import { FilesServiceFacade } from '../../../../../clients/files-ms/files-service.fasade';
 
 export class UploadUserAvatarCommand {
   constructor(
@@ -23,20 +23,16 @@ export class UploadUserAvatarCommandHandler
 {
   constructor(
     private userRepo: UsersRepository,
-    @Inject(FILES_SERVICE) private clientTCP: ClientProxy,
+    private filesServiceFacade: FilesServiceFacade,
   ) {}
   async execute(
     command: UploadUserAvatarCommand,
   ): Promise<NotificationResult<FileUploadUserAvatar.Response>> {
-    const resultUploadFile = await lastValueFrom(
-      this.clientTCP.send<
-        NotificationResult<FileUploadUserAvatar.Response>,
-        FileUploadUserAvatar.Request
-      >(FileUploadUserAvatar.topic, {
-        userId: command.userId,
-        file: command.file,
-      }),
-    );
+    const resultUploadFile =
+      await this.filesServiceFacade.commands.uploadUserAvatar(
+        command.userId,
+        command.file,
+      );
 
     if (!!resultUploadFile.extensions.length) {
       return resultUploadFile;

@@ -1,10 +1,16 @@
 import { BaseFindOptionsDto } from './base-find-options.dto';
+import { ApiProperty } from '@nestjs/swagger';
 
 export class PageDto<T> {
+  @ApiProperty()
   pagesCount: number;
+  @ApiProperty()
   page: number;
+  @ApiProperty()
   pageSize: number;
+  @ApiProperty()
   totalCount: number;
+  @ApiProperty()
   items: T[];
   constructor(
     items: any,

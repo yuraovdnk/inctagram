@@ -25,7 +25,8 @@
     "start:dev:inctagram": "nest start inctagram --watch",
     "build:files-microservice": "nest build files-microservice",
     "start:files-microservice": "node dist/apps/files-microservice/src/main",
-    "start:dev:files-microservice": "nest start files-microservice --watch"
+    "start:dev:files-microservice": "nest start files-microservice --watch",
+    "migrate:prod": "prisma migrate deploy"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.412.0",

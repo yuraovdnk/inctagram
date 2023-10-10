@@ -40,7 +40,6 @@ export class UserController {
   constructor(
     private commandBus: CommandBus,
     private usersRepository: UsersRepository,
-    private queryBus: QueryBus,
   ) {}
 
   //create user profile

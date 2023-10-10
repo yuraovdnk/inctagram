@@ -34,12 +34,16 @@ enum EnvFile {
 }
 export const getEnvFile = (): string => {
   const env = process.env.NODE_ENV;
+  console.log(env);
   switch (env) {
     case 'development':
+      console.log(EnvFile.Dev, 'selected');
       return EnvFile.Dev;
     case 'test':
+      console.log(EnvFile.Test, 'selected');
       return EnvFile.Test;
     case 'production':
+      console.log(EnvFile.Prod, 'selected');
       return EnvFile.Prod;
     default:
       if (!env) {

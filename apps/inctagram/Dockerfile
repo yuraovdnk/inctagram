@@ -31,6 +31,8 @@ COPY --chown=node . .
 
 RUN yarn build:${SERVICE}
 
+CMD yarn 'migrate:prod'
+
 # Bind to all network interfaces so that it can be mapped to the host OS
 
 EXPOSE ${PORT}

@@ -31,7 +31,7 @@ pipeline {
         stage('e2e tests') {
             steps {
                 script {
-                    sh "dotenv -e .env.test -- npx prisma migrate deploy"
+                    sh "yarn test:migrate"
                     sh "yarn test:e2e"
                 }
             }

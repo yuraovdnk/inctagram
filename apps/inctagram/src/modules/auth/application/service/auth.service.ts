@@ -3,6 +3,7 @@ import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { ConfigEnvType } from '../../../../../../../libs/common/config/env.config';
 import * as bcrypt from 'bcrypt';
+import process from 'process';
 export type JwtTokens = { accessToken: string; refreshToken: string };
 
 @Injectable()
@@ -44,10 +45,10 @@ export class AuthService {
   }
 
   getPasswordHash(password: string): string {
-    const salt = this.configService.get('secrets.passwordSaltHash', {
+    const salt = this.configService.get('secrets', {
       infer: true,
-    });
+    }).passwordSaltHash;
 
-    return bcrypt.hashSync(password, salt);
+    return bcrypt.hashSync(password, 10);
   }
 }

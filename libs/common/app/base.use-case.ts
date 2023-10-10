@@ -3,8 +3,6 @@ import { NotificationResult } from '../notification/notification-result';
 import { PrismaClient } from '@prisma/client';
 import * as runtime from '@prisma/client/runtime/library';
 import { EventBus } from '@nestjs/cqrs';
-import { Inject, Logger } from '@nestjs/common';
-import { getLogger } from 'nodemailer/lib/shared';
 
 export abstract class BaseUseCase<Message> {
   protected prismaClient: Omit<PrismaClient, runtime.ITXClientDenyList>;

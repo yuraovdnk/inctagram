@@ -157,6 +157,11 @@ spec:
                  secretKeyRef:
                    name: pirates-inctagram-back-main-config-secret
                    key: SALT_HASH
+             - name: SALT_HASH_TEST
+               valueFrom:
+                 secretKeyRef:
+                   name: pirates-inctagram-back-main-config-secret
+                   key: SALT_HASH_TEST
              - name: DATABASE_URL
                valueFrom:
                  secretKeyRef:

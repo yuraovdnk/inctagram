@@ -49,6 +49,6 @@ export class AuthService {
       infer: true,
     }).passwordSaltHash;
 
-    return bcrypt.hashSync(password, salt);
+    return bcrypt.hashSync(password, 10);
   }
 }

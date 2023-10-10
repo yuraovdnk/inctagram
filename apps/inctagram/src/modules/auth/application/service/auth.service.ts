@@ -47,6 +47,7 @@ export class AuthService {
     const salt = this.configService.get('secrets.passwordSaltHash', {
       infer: true,
     });
+    console.log(salt, 'salt');
 
     return bcrypt.hashSync(password, salt);
   }

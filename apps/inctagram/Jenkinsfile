@@ -31,8 +31,7 @@ pipeline {
         stage('e2e tests') {
             steps {
                 script {
-                    sh "yarn test:migrate"
-                    echo "${env.DATABASE_URL}"
+                    sh "yarn migrate:test"
                     sh "yarn test:e2e"
                 }
             }

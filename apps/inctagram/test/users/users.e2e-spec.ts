@@ -18,7 +18,8 @@ import { setupApp } from '../../src/setup-app';
 import { AuthModule } from '../../src/modules/auth/auth.module';
 import { of } from 'rxjs';
 import { UsersRepository } from '../../src/modules/users/instrastructure/repository/users.repository';
-import process from 'process';
+import { FilesServiceFacade } from '../../src/clients/files-ms/files-service.fasade';
+import { FilesServiceFacadeMock } from '../mocks/files-service.facade.mock';
 
 describe('UserController (e2e)', () => {
   jest.setTimeout(20000);
@@ -27,18 +28,13 @@ describe('UserController (e2e)', () => {
   let users: ExtendedUser[];
   let userTestHelper: UserTestHelper;
   let authHelper: AuthTestHelper;
-  let usersRepository: UsersRepository;
 
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [AppModule, AuthModule],
     })
-      .overrideProvider('FILES_SERVICE')
-      .useValue({
-        send: jest.fn(() => {
-          return of(new SuccessResult(fileServiceMockResponse));
-        }),
-      })
+      .overrideProvider(FilesServiceFacade)
+      .useValue(new FilesServiceFacadeMock())
       .compile();
 
     app = moduleFixture.createNestApplication();
@@ -47,7 +43,6 @@ describe('UserController (e2e)', () => {
     await dbTestHelper.clearDb();
     authHelper = new AuthTestHelper(app);
     userTestHelper = new UserTestHelper(app);
-    usersRepository = app.get(UsersRepository);
   });
 
   function expectNotification(

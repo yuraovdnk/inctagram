@@ -31,6 +31,7 @@ pipeline {
         stage('e2e tests') {
             steps {
                 script {
+                    sh "yarn migrate:test"
                     sh "yarn test:e2e"
                 }
             }
@@ -62,7 +63,8 @@ pipeline {
                  }
              }
         }
-        stage('Preparing deployment') {
+
+       stage('Preparing deployment') {
              steps {
                  echo "Preparing started..."
                      sh 'ls -ltr'
@@ -71,8 +73,8 @@ pipeline {
                      sh "./apps/${env.SERVICE}/preparingDeploy.sh ${env.REGISTRY_HOSTNAME} ${env.PROJECT} ${env.IMAGE_NAME} ${env.DEPLOYMENT_NAME} ${env.PORT} ${env.NAMESPACE}"
                      sh "cat ./apps/${env.SERVICE}/deployment.yaml"
              }
-        }
-        stage('Deploy to Kubernetes') {
+       }
+       stage('Deploy to Kubernetes') {
              steps {
                  withKubeConfig([credentialsId: 'prod-kubernetes']) {
                     sh "kubectl apply -f ./apps/${env.SERVICE}/deployment.yaml"
@@ -80,6 +82,6 @@ pipeline {
                     sh "kubectl get services -o wide"
                  }
              }
-        }
+       }
     }
 }

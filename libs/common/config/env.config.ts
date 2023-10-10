@@ -37,10 +37,13 @@ export const getEnvFile = (): string => {
   console.log(env);
   switch (env) {
     case 'development':
+      console.log(EnvFile.Dev, 'selected');
       return EnvFile.Dev;
     case 'test':
+      console.log(EnvFile.Test, 'selected');
       return EnvFile.Test;
     case 'production':
+      console.log(EnvFile.Prod, 'selected');
       return EnvFile.Prod;
     default:
       if (!env) {

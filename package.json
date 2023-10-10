@@ -25,7 +25,10 @@
     "start:dev:inctagram": "nest start inctagram --watch",
     "build:files-microservice": "nest build files-microservice",
     "start:files-microservice": "node dist/apps/files-microservice/src/main",
-    "start:dev:files-microservice": "nest start files-microservice --watch"
+    "start:dev:files-microservice": "nest start files-microservice --watch",
+    "migrate:prod": "prisma migrate deploy",
+    "migrate:test": "dotenv -e .env.test -- npx prisma migrate deploy",
+    "migrate:dev": "prisma migrate dev"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.412.0",
@@ -56,6 +59,7 @@
     "class-validator": "^0.14.0",
     "cookie-parser": "^1.4.6",
     "date-fns": "^2.30.0",
+    "dotenv-cli": "^7.3.0",
     "eslint": "8.22.0",
     "latest": "^0.2.0",
     "mongoose": "^7.5.3",
@@ -118,5 +122,8 @@
     "roots": [
       "<rootDir>/apps/"
     ]
+  },
+  "prisma": {
+    "schema": "./prisma/schema.prisma"
   }
 }

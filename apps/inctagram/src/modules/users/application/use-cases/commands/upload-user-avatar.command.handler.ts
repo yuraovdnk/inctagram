@@ -2,12 +2,13 @@ import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { Inject } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { lastValueFrom } from 'rxjs';
-import { UsersRepository } from '../../instrastructure/repository/users.repository';
+import { UsersRepository } from '../../../instrastructure/repository/users.repository';
 import {
   NotificationResult,
   SuccessResult,
-} from '../../../../../../../libs/common/notification/notification-result';
-import { FileUploadUserAvatar } from '../../../../../../../libs/contracts/file/file.upload-user-avatar';
+} from '../../../../../../../../libs/common/notification/notification-result';
+import { FileUploadUserAvatar } from '../../../../../../../../libs/contracts/file/file.upload-user-avatar';
+import { FilesServiceFacade } from '../../../../../clients/files-ms/files-service.fasade';
 
 export class UploadUserAvatarCommand {
   constructor(
@@ -22,20 +23,16 @@ export class UploadUserAvatarCommandHandler
 {
   constructor(
     private userRepo: UsersRepository,
-    @Inject('FILES_SERVICE') private clientTCP: ClientProxy,
+    private filesServiceFacade: FilesServiceFacade,
   ) {}
   async execute(
     command: UploadUserAvatarCommand,
   ): Promise<NotificationResult<FileUploadUserAvatar.Response>> {
-    const resultUploadFile = await lastValueFrom(
-      this.clientTCP.send<
-        NotificationResult<FileUploadUserAvatar.Response>,
-        FileUploadUserAvatar.Request
-      >(FileUploadUserAvatar.topic, {
-        userId: command.userId,
-        file: command.file,
-      }),
-    );
+    const resultUploadFile =
+      await this.filesServiceFacade.commands.uploadUserAvatar(
+        command.userId,
+        command.file,
+      );
 
     if (!!resultUploadFile.extensions.length) {
       return resultUploadFile;

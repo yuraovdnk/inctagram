@@ -3,6 +3,7 @@ import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { ConfigEnvType } from '../../../../../../../libs/common/config/env.config';
 import * as bcrypt from 'bcrypt';
+import process from 'process';
 export type JwtTokens = { accessToken: string; refreshToken: string };
 
 @Injectable()
@@ -48,7 +49,9 @@ export class AuthService {
       infer: true,
     }).passwordSaltHash;
 
+    console.log(process.env.SALT_HASH, 'node env salt');
     console.log(salt, 'salt');
+    console.log(salt + 'salt string');
 
     return bcrypt.hashSync(password, salt);
   }

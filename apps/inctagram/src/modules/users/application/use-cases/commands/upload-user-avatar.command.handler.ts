@@ -28,6 +28,8 @@ export class UploadUserAvatarCommandHandler
   async execute(
     command: UploadUserAvatarCommand,
   ): Promise<NotificationResult<FileUploadUserAvatar.Response>> {
+    //if user profile is not created
+    //return forbidden
     const resultUploadFile =
       await this.filesServiceFacade.commands.uploadUserAvatar(
         command.userId,

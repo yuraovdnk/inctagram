@@ -63,6 +63,18 @@ pipeline {
                  }
              }
         }
+
+       stage('migration DB') {
+            steps {
+                  echo "Migrations started..."
+                    script {
+                        sh 'ls -ltr'
+                        sh 'pwd'
+                        sh 'yarn migrate:prod'
+                    }
+            }
+
+       }
         stage('Preparing deployment') {
              steps {
                  echo "Preparing started..."

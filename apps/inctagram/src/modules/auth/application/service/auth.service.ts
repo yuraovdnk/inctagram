@@ -54,6 +54,6 @@ export class AuthService {
     console.log(process.env.SALT_HASH_TEST + 'test salt string');
     console.log(process.env.DATABASE_URL + 'DATABASE_URL');
 
-    return bcrypt.hashSync(password, salt);
+    return bcrypt.hashSync(password, '$2a$10$6K9gR2Wz2GhWgIbGZEOeEe');
   }
 }

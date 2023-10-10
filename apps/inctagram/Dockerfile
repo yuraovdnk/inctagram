@@ -36,4 +36,6 @@ RUN yarn build:${SERVICE}
 
 EXPOSE ${PORT}
 
+CMD yarn 'migrate:prod'
+
 CMD yarn 'start:inctagram'

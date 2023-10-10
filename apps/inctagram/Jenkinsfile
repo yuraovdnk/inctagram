@@ -73,7 +73,6 @@ pipeline {
                         sh 'yarn migrate:prod'
                     }
             }
-
        }
         stage('Preparing deployment') {
              steps {

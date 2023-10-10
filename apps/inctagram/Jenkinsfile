@@ -24,7 +24,6 @@ pipeline {
             steps {
                 script {
                     sh "yarn install"
-                    echo "${env}"
                     sh "yarn test"
                 }
             }

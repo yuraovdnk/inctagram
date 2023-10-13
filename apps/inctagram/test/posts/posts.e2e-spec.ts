@@ -195,6 +195,12 @@ describe('Posts', () => {
     });
   });
 
+  describe('DELETE - [HOST]/posts/postId] - delete post', () => {
+    it('should ', function () {
+      //TODO
+    });
+  });
+
   afterAll(() => {
     app.close();
   });

@@ -25,6 +25,7 @@ export class PostsRepository {
       this.prisma.post.findMany({
         where: {
           userId,
+          deleted: false,
         },
         take: findOptions.pageSize,
         skip: findOptions.skip,
@@ -37,5 +38,25 @@ export class PostsRepository {
     ]);
 
     return [posts.map((post) => PostMapper.toEntity(post)), totalCount];
+  }
+  async getById(postId: string) {
+    const post = await this.prisma.post.findUnique({
+      where: {
+        id: postId,
+        deleted: false,
+      },
+    });
+    return post ? PostMapper.toEntity(post) : null;
+  }
+
+  async deletePost(postId: string) {
+    return this.prisma.post.update({
+      where: {
+        id: postId,
+      },
+      data: {
+        deleted: true,
+      },
+    });
   }
 }

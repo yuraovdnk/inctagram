@@ -5,8 +5,9 @@ import { CreatePostCommandHandler } from './application/use-cases/commands/creat
 import { PostsRepository } from './infrastructure/posts.repository';
 import { GetPostsQueryHandler } from './application/use-cases/queries/get-posts-query.handler';
 import { UserModule } from '../users/user.module';
+import { DeletePostCommandHandler } from './application/use-cases/commands/delete-post.command.handler';
 
-const commandHandlers = [CreatePostCommandHandler];
+const commandHandlers = [CreatePostCommandHandler, DeletePostCommandHandler];
 const queryHandlers = [GetPostsQueryHandler];
 @Module({
   imports: [CqrsModule, UserModule],

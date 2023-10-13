@@ -51,6 +51,7 @@ model Post {
   createdAt   DateTime?    @default(now())
   location    String?
   UserProfile UserProfile? @relation(fields: [userId], references: [userId])
+  deleted     Boolean      @default(false)
 
   @@map("posts")
 }

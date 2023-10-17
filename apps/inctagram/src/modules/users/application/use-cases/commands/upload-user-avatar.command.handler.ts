@@ -1,7 +1,4 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { Inject } from '@nestjs/common';
-import { ClientProxy } from '@nestjs/microservices';
-import { lastValueFrom } from 'rxjs';
 import { UsersRepository } from '../../../instrastructure/repository/users.repository';
 import {
   NotificationResult,

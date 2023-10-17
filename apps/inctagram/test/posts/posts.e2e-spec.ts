@@ -13,7 +13,7 @@ import { NotificationCodesEnum } from '../../../../libs/common/notification/noti
 import crypto from 'crypto';
 import { FilesServiceFacadeMock } from '../mocks/files-service.facade.mock';
 import { PageDto } from '../../../../libs/common/dtos/pagination.dto';
-import { PostViewModel } from '../../src/modules/posts/application/dto/post.view-model';
+import { PostViewModel } from '../../src/modules/posts/api/dto/post.view-model';
 
 describe('Posts', () => {
   let app: INestApplication;

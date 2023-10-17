@@ -2,11 +2,11 @@ import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
 import { UsersRepository } from '../../../../users/instrastructure/repository/users.repository';
 import { PostsRepository } from '../../../infrastructure/posts.repository';
 import { NotificationResult } from '../../../../../../../../libs/common/notification/notification-result';
-import { GetPostsFindOptions } from '../../dto/get-posts-find.options';
+import { GetPostsFindOptions } from '../../../api/dto/get-posts-find.options';
 import { PageDto } from '../../../../../../../../libs/common/dtos/pagination.dto';
 import { FilesServiceFacade } from '../../../../../clients/files-ms/files-service.fasade';
 import { NotificationCodesEnum } from '../../../../../../../../libs/common/notification/notification-codes.enum';
-import { PostViewModel } from '../../dto/post.view-model';
+import { PostViewModel } from '../../../api/dto/post.view-model';
 
 export class GetPostsQuery {
   constructor(

@@ -2,22 +2,14 @@ import { HttpStatus, INestApplication } from '@nestjs/common';
 import request from 'supertest';
 import { DbTestHelper } from '../test-helpers/db-test-helper';
 import { ExtendedUser, UserTestHelper } from '../test-helpers/user.test.helper';
-import {
-  createUserProfileDtoMock,
-  fileServiceMockResponse,
-} from '../mocks/mocks';
+import { createUserProfileDtoMock } from '../mocks/mocks';
 import { AuthTestHelper } from '../test-helpers/auth-test.helper';
 import { Test, TestingModule } from '@nestjs/testing';
 import { AppModule } from '../../src/app.module';
-import {
-  NotificationResult,
-  SuccessResult,
-} from '../../../../libs/common/notification/notification-result';
+import { NotificationResult } from '../../../../libs/common/notification/notification-result';
 import { NotificationCodesEnum } from '../../../../libs/common/notification/notification-codes.enum';
 import { setupApp } from '../../src/setup-app';
 import { AuthModule } from '../../src/modules/auth/auth.module';
-import { of } from 'rxjs';
-import { UsersRepository } from '../../src/modules/users/instrastructure/repository/users.repository';
 import { FilesServiceFacade } from '../../src/clients/files-ms/files-service.fasade';
 import { FilesServiceFacadeMock } from '../mocks/files-service.facade.mock';
 

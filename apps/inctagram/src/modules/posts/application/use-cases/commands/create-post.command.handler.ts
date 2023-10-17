@@ -1,5 +1,5 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { CreatePostDto } from '../../dto/create-post.dto';
+import { CreatePostDto } from '../../../api/dto/create-post.dto';
 import { PostsRepository } from '../../../infrastructure/posts.repository';
 import { NotificationResult } from '../../../../../../../../libs/common/notification/notification-result';
 import { FilesServiceFacade } from '../../../../../clients/files-ms/files-service.fasade';
@@ -33,7 +33,7 @@ export class CreatePostCommandHandler
       );
     }
 
-    const post = await this.postsRepository.save(
+    const post = await this.postsRepository.create(
       command.createPostDto,
       command.userId,
     );

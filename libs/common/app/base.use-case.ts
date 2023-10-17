@@ -44,7 +44,7 @@ export abstract class BaseUseCase<Message> {
     } finally {
       console.log('transaction ended');
     }
-
+    console.log(notificationResult, 'notificationResult');
     return notificationResult.toViewResponse();
   }
 }

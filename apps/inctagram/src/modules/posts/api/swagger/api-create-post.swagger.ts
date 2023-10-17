@@ -1,4 +1,4 @@
-import { applyDecorators, HttpCode, HttpStatus } from '@nestjs/common';
+import { applyDecorators } from '@nestjs/common';
 import {
   ApiBearerAuth,
   ApiBody,
@@ -6,7 +6,7 @@ import {
   ApiOperation,
 } from '@nestjs/swagger';
 import { ApiNotificationResult } from '../../../auth/application/dto/swagger/nofication-result.swagger';
-import { CreatePostDto } from '../../application/dto/create-post.dto';
+import { CreatePostDto } from '../dto/create-post.dto';
 
 export const ApiCreatePost = () =>
   applyDecorators(

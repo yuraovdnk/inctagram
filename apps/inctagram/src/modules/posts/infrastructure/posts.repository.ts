@@ -1,15 +1,15 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../../../../../libs/adapters/db/prisma/prisma.service';
-import { CreatePostDto } from '../application/dto/create-post.dto';
+import { CreatePostDto } from '../api/dto/create-post.dto';
 import { PostMapper } from './post.mapper';
-import { GetPostsFindOptions } from '../application/dto/get-posts-find.options';
+import { GetPostsFindOptions } from '../api/dto/get-posts-find.options';
 import { PostEntity } from '../domain/post.entity';
 
 @Injectable()
 export class PostsRepository {
   constructor(private prisma: PrismaService) {}
 
-  save(createPostDto: CreatePostDto, userId: string) {
+  create(createPostDto: CreatePostDto, userId: string) {
     return this.prisma.post.create({
       data: {
         userId,
@@ -25,6 +25,7 @@ export class PostsRepository {
       this.prisma.post.findMany({
         where: {
           userId,
+          deleted: false,
         },
         take: findOptions.pageSize,
         skip: findOptions.skip,
@@ -37,5 +38,34 @@ export class PostsRepository {
     ]);
 
     return [posts.map((post) => PostMapper.toEntity(post)), totalCount];
+  }
+  async getById(postId: string) {
+    const post = await this.prisma.post.findUnique({
+      where: {
+        id: postId,
+        deleted: false,
+      },
+    });
+    return post ? PostMapper.toEntity(post) : null;
+  }
+
+  async deletePost(postId: string) {
+    return this.prisma.post.update({
+      where: {
+        id: postId,
+      },
+      data: {
+        deleted: true,
+      },
+    });
+  }
+  async save(post: PostEntity) {
+    const model = PostMapper.toModel(post);
+    await this.prisma.post.update({
+      where: {
+        id: post.id,
+      },
+      data: model,
+    });
   }
 }

@@ -852,6 +852,112 @@ window.onload = function() {
             "Posts"
           ]
         }
+      },
+      "/api/v1/posts/{postId}": {
+        "delete": {
+          "operationId": "PostController_deletePost",
+          "summary": "Delete post",
+          "parameters": [
+            {
+              "name": "postId",
+              "required": true,
+              "in": "path",
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Returns ResultNotification",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "allOf": [
+                      {
+                        "$ref": "#/components/schemas/NotificationResult"
+                      },
+                      {
+                        "properties": {
+                          "data": {
+                            "type": "object",
+                            "nullable": true,
+                            "default": null
+                          }
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "tags": [
+            "Posts"
+          ],
+          "security": [
+            {
+              "bearer": []
+            }
+          ]
+        },
+        "put": {
+          "operationId": "PostController_editPost",
+          "summary": "Edit post",
+          "parameters": [
+            {
+              "name": "postId",
+              "required": true,
+              "in": "path",
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EditPostDto"
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "Returns ResultNotification",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "allOf": [
+                      {
+                        "$ref": "#/components/schemas/NotificationResult"
+                      },
+                      {
+                        "properties": {
+                          "data": {
+                            "type": "object",
+                            "nullable": true,
+                            "default": null
+                          }
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "tags": [
+            "Posts"
+          ],
+          "security": [
+            {
+              "bearer": []
+            }
+          ]
+        }
       }
     },
     "info": {
@@ -1311,6 +1417,17 @@ window.onload = function() {
             "location",
             "images"
           ]
+        },
+        "EditPostDto": {
+          "type": "object",
+          "properties": {
+            "description": {
+              "type": "string",
+              "minLength": 0,
+              "maxLength": 500,
+              "description": "post description"
+            }
+          }
         }
       }
     }

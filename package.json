@@ -122,8 +122,6 @@
     "roots": [
       "<rootDir>/apps/"
     ]
-  },
-  "prisma": {
-    "schema": "./prisma/schema.prisma"
   }
+
 }

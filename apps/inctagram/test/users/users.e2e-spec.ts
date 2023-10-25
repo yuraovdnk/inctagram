@@ -102,6 +102,7 @@ describe('UserController (e2e)', () => {
         username: createUserProfileDtoMock.username,
         aboutMe: createUserProfileDtoMock.aboutMe,
         city: createUserProfileDtoMock.city,
+        country: createUserProfileDtoMock.country,
         avatar: createUserProfileDtoMock.avatar,
         dateOfBirth: createUserProfileDtoMock.dateOfBirth,
         firstName: createUserProfileDtoMock.firstName,
@@ -121,6 +122,7 @@ describe('UserController (e2e)', () => {
     it('PUT:[HOST]/users/profile/:id should update user profile', async () => {
       const updateUserProfileDtoMock = { ...createUserProfileDtoMock };
       updateUserProfileDtoMock.city = null;
+      updateUserProfileDtoMock.country = null;
       updateUserProfileDtoMock.aboutMe = null;
       updateUserProfileDtoMock.avatar = null;
 
@@ -136,11 +138,13 @@ describe('UserController (e2e)', () => {
         .auth(accessTokenUser, { type: 'bearer' })
         .expect(HttpStatus.OK);
       expectNotification(result1, NotificationCodesEnum.OK);
+
       expect(result1.body.data).toEqual({
         userId: users[0].id,
         username: updateUserProfileDtoMock.username,
         aboutMe: null,
         city: null,
+        country: null,
         avatar: null,
         dateOfBirth: updateUserProfileDtoMock.dateOfBirth,
         firstName: updateUserProfileDtoMock.firstName,

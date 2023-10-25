@@ -37,6 +37,7 @@ export const createUserProfileDtoMock: UserProfileDto = {
   avatar: 'https://s3.eu-central-1.amazonaws.com/example-bucket/avatar.png',
   dateOfBirth: '2003-09-01T20:22:39.762Z',
   firstName: 'John',
+  country: 'England',
   lastName: 'Smith',
 };
 

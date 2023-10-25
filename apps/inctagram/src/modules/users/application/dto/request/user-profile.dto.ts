@@ -45,6 +45,16 @@ export class UserProfileDto {
   lastName: string;
 
   @ApiProperty({
+    description: 'country',
+    required: false,
+    nullable: true,
+    example: 'England',
+  })
+  @IsOptional()
+  @IsString()
+  country: string;
+
+  @ApiProperty({
     description: 'city',
     required: false,
     nullable: true,

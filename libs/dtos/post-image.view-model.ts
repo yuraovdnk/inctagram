@@ -1,6 +1,6 @@
 import { ImageVariants } from '../../apps/files-microservice/src/modules/images/application/types/post-image-types';
-import { ImageVersion } from '../../apps/files-microservice/src/modules/images/domain/entities/post-image.schema';
 import { ApiProperty } from '@nestjs/swagger';
+import { ImageVersion } from '../../apps/files-microservice/src/modules/images/domain/entities/image-version.schema';
 
 export class PostImageViewModel {
   id: string;

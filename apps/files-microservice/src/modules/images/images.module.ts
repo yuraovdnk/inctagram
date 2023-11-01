@@ -6,14 +6,16 @@ import { UploadAvatarCommandHandler } from './application/use-cases/commands/upl
 import { UploadPostImagesCommandHandler } from './application/use-cases/commands/upload-post-images.command.handler';
 import { MongooseModule } from '@nestjs/mongoose';
 import {
-  ImageVersion,
-  ImageVersionSchema,
   PostImage,
   PostImageSchema,
 } from './domain/entities/post-image.schema';
 import { ImagesRepository } from './infrastructure/images.repository';
 
 import Piscina from 'piscina';
+import {
+  ImageVersion,
+  ImageVersionSchema,
+} from './domain/entities/image-version.schema';
 
 const commands = [UploadAvatarCommandHandler, UploadPostImagesCommandHandler];
 @Module({

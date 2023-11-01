@@ -1,8 +1,8 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { UsersRepository } from '../../../instrastructure/repository/users.repository';
 import { UserProfileDto } from '../../dto/request/user-profile.dto';
-import { SuccessResult } from '../../../../../../../../libs/common/notification/notification-result';
-import { BadRequestException } from '@nestjs/common';
+import { NotificationResult } from '../../../../../../../../libs/common/notification/notification-result';
+import { NotificationCodesEnum } from '../../../../../../../../libs/common/notification/notification-codes.enum';
 
 export class UpdateUserProfileCommand {
   constructor(
@@ -17,12 +17,20 @@ export class UpdateUserProfileCommandHandler
 {
   constructor(private usersRepository: UsersRepository) {}
 
-  async execute(command: UpdateUserProfileCommand) {
+  async execute(
+    command: UpdateUserProfileCommand,
+  ): Promise<NotificationResult> {
     const { userId, updateDto } = command;
     const user = await this.usersRepository.findById(userId);
-    if (!user) throw new BadRequestException();
+    if (!user) {
+      return NotificationResult.Failure(
+        NotificationCodesEnum.NOT_FOUND,
+        'user not found',
+      );
+    }
     user.setProfile(updateDto);
     await this.usersRepository.upsertUserProfile(user);
-    return new SuccessResult();
+
+    return NotificationResult.Success();
   }
 }

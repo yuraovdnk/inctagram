@@ -3,7 +3,6 @@ import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { ConfigEnvType } from '../../../../../../../libs/common/config/env.config';
 import * as bcrypt from 'bcrypt';
-import process from 'process';
 export type JwtTokens = { accessToken: string; refreshToken: string };
 
 @Injectable()

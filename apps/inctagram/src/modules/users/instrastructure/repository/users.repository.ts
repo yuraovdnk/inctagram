@@ -187,13 +187,13 @@ export class UsersRepository {
   }
 
   async getUserProfile(id: string): Promise<UserEntity> {
-    const res = await this.prismaService.user.findUnique({
+    const profile = await this.prismaService.user.findUnique({
       where: { id },
       include: {
         profile: true,
       },
     });
-    return UserMapper.toEntity(res);
+    return profile ? UserMapper.toEntity(profile) : null;
   }
 
   async saveUserAvatar(userId: string, fileName: string) {

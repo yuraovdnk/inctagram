@@ -4,13 +4,10 @@ import { ImagesRepository } from '../../../infrastructure/images.repository';
 import { Inject } from '@nestjs/common';
 import Piscina from 'piscina';
 import { PostImage } from '../../../domain/entities/post-image.schema';
-import {
-  InternalServerError,
-  NotificationResult,
-  SuccessResult,
-} from '../../../../../../../../libs/common/notification/notification-result';
+import { NotificationResult } from '../../../../../../../../libs/common/notification/notification-result';
 import { ResizedPostImageDto } from '../../dtos/resized-post-image.dto';
 import * as path from 'path';
+import { NotificationCodesEnum } from '../../../../../../../../libs/common/notification/notification-codes.enum';
 
 export class UploadPostImagesCommand {
   constructor(
@@ -55,9 +52,9 @@ export class UploadPostImagesCommandHandler
         );
         await this.imagesRepository.createPostImage(model);
       } catch (e) {
-        return new InternalServerError(e);
+        return NotificationResult.Failure(NotificationCodesEnum.ERROR, e);
       }
     }
-    return new SuccessResult();
+    return NotificationResult.Success();
   }
 }

@@ -1,11 +1,8 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { UsersRepository } from '../../../instrastructure/repository/users.repository';
-import {
-  NotificationResult,
-  SuccessResult,
-} from '../../../../../../../../libs/common/notification/notification-result';
-import { FileUploadUserAvatar } from '../../../../../../../../libs/contracts/file/file.upload-user-avatar';
+import { NotificationResult } from '../../../../../../../../libs/common/notification/notification-result';
 import { FilesServiceFacade } from '../../../../../clients/files-ms/files-service.fasade';
+import { NotificationCodesEnum } from '../../../../../../../../libs/common/notification/notification-codes.enum';
 
 export class UploadUserAvatarCommand {
   constructor(
@@ -22,11 +19,14 @@ export class UploadUserAvatarCommandHandler
     private userRepo: UsersRepository,
     private filesServiceFacade: FilesServiceFacade,
   ) {}
-  async execute(
-    command: UploadUserAvatarCommand,
-  ): Promise<NotificationResult<FileUploadUserAvatar.Response>> {
-    //if user profile is not created
-    //return forbidden
+  async execute(command: UploadUserAvatarCommand): Promise<NotificationResult> {
+    const userProfile = await this.userRepo.getUserProfile(command.userId);
+    if (!userProfile || !userProfile.profile) {
+      return NotificationResult.Failure(
+        NotificationCodesEnum.NOT_EXIST,
+        'user or profile not found',
+      );
+    }
     const resultUploadFile =
       await this.filesServiceFacade.commands.uploadUserAvatar(
         command.userId,
@@ -34,7 +34,10 @@ export class UploadUserAvatarCommandHandler
       );
 
     if (!!resultUploadFile.extensions.length) {
-      return resultUploadFile;
+      return NotificationResult.Failure(
+        NotificationCodesEnum.ERROR,
+        'something went wrong with uploading avatar',
+      );
     }
 
     await this.userRepo.saveUserAvatar(
@@ -42,6 +45,6 @@ export class UploadUserAvatarCommandHandler
       resultUploadFile.data.fileName,
     );
 
-    return new SuccessResult(resultUploadFile.data);
+    return NotificationResult.Success();
   }
 }

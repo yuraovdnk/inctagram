@@ -10,6 +10,8 @@ import {
   UnauthorizedException,
   UseGuards,
   Logger,
+  Param,
+  Query,
 } from '@nestjs/common';
 import { CommandBus } from '@nestjs/cqrs';
 import { SignUpDto } from '../../application/dto/request/sign-up.dto';
@@ -70,6 +72,14 @@ export class AuthController {
   async signUp(@Body() signUpDto: SignUpDto): Promise<NotificationResult> {
     return this.commandBus.execute<SignupCommand, NotificationResult>(
       new SignupCommand(signUpDto),
+    );
+  }
+
+  @HttpCode(HttpStatus.OK)
+  @Get('email-confirm')
+  async confirmationEmailTest(@Query('code', ParseUUIDPipe) code: string) {
+    return this.commandBus.execute<EmailConfirmCommand, NotificationResult>(
+      new EmailConfirmCommand(code),
     );
   }
 

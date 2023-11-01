@@ -59,6 +59,6 @@ export class UserProfileViewDto {
     this.city = user.profile.city;
     this.dateOfBirth = user.profile.dateOfBirth.toISOString();
     this.aboutMe = user.profile.aboutMe;
-    this.avatar = user.profile.avatar;
+    this.avatar = `https://inctagram-pirates.s3.eu-central-1.amazonaws.com/user-avatars/${user.profile.avatar}`;
   }
 }

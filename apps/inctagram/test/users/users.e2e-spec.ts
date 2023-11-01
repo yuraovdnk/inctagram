@@ -103,6 +103,7 @@ describe('UserController (e2e)', () => {
         aboutMe: createUserProfileDtoMock.aboutMe,
         city: createUserProfileDtoMock.city,
         avatar: expect.any(String),
+        country: createUserProfileDtoMock.country,
         dateOfBirth: createUserProfileDtoMock.dateOfBirth,
         firstName: createUserProfileDtoMock.firstName,
         lastName: createUserProfileDtoMock.lastName,
@@ -121,6 +122,7 @@ describe('UserController (e2e)', () => {
     it('PUT:[HOST]/users/profile/:id should update user profile', async () => {
       const updateUserProfileDtoMock = { ...createUserProfileDtoMock };
       updateUserProfileDtoMock.city = null;
+      updateUserProfileDtoMock.country = null;
       updateUserProfileDtoMock.aboutMe = null;
       updateUserProfileDtoMock.avatar = null;
 
@@ -142,6 +144,7 @@ describe('UserController (e2e)', () => {
         aboutMe: null,
         city: null,
         avatar: expect.any(String),
+        country: null,
         dateOfBirth: updateUserProfileDtoMock.dateOfBirth,
         firstName: updateUserProfileDtoMock.firstName,
         lastName: updateUserProfileDtoMock.lastName,

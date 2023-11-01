@@ -27,6 +27,11 @@ export class UserProfileViewDto {
   city: string;
 
   @ApiProperty({
+    example: 'England',
+  })
+  country: string;
+
+  @ApiProperty({
     description: 'dateOfBirth',
     example: '2003-09-01T20:22:39.762Z',
   })
@@ -50,6 +55,7 @@ export class UserProfileViewDto {
     this.username = user.username;
     this.firstName = user.profile.firstName;
     this.lastName = user.profile.lastName;
+    this.country = user.profile.country;
     this.city = user.profile.city;
     this.dateOfBirth = user.profile.dateOfBirth.toISOString();
     this.aboutMe = user.profile.aboutMe;

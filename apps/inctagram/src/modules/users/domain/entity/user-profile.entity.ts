@@ -7,6 +7,7 @@ export class UserProfileEntity {
   lastName: string;
   city: string;
   dateOfBirth?: Date;
+  country: string;
   aboutMe?: string;
   avatar?: string;
   constructor(dto: UserProfileDto) {
@@ -15,6 +16,7 @@ export class UserProfileEntity {
     this.city = dto.city;
     this.dateOfBirth = dto.dateOfBirth ? new Date(dto.dateOfBirth) : undefined;
     this.aboutMe = dto.aboutMe;
+    this.country = dto.country;
     this.avatar = dto.avatar;
   }
 }

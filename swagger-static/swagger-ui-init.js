@@ -1249,6 +1249,12 @@ window.onload = function() {
               "maxLength": 50,
               "example": "Smith"
             },
+            "country": {
+              "type": "string",
+              "description": "country",
+              "nullable": true,
+              "example": "England"
+            },
             "city": {
               "type": "string",
               "description": "city",
@@ -1304,6 +1310,10 @@ window.onload = function() {
               "type": "string",
               "example": "London"
             },
+            "country": {
+              "type": "string",
+              "example": "England"
+            },
             "dateOfBirth": {
               "type": "string",
               "description": "dateOfBirth",
@@ -1327,6 +1337,7 @@ window.onload = function() {
             "firstName",
             "lastName",
             "city",
+            "country",
             "dateOfBirth",
             "aboutMe",
             "avatar"

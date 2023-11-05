@@ -1,4 +1,5 @@
 import {
+  DeleteObjectCommand,
   PutObjectCommand,
   PutObjectCommandInput,
   S3Client,
@@ -7,11 +8,7 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { ConfigEnvType } from 'libs/common/config/env.config';
 import { InternalServerError } from 'libs/common/notification/notification-result';
-import {
-  NotificationResult,
-  SuccessResult,
-} from '../../../../../../libs/common/notification/notification-result';
-import { FileUploadUserAvatar } from '../../../../../../libs/contracts/file/file.upload-user-avatar';
+import { NotificationResult } from '../../../../../../libs/common/notification/notification-result';
 import { generateS3Url } from '../../../utils/generateS3Url';
 import { ResizedPostImageDto } from '../application/dtos/resized-post-image.dto';
 
@@ -80,5 +77,16 @@ export class FileStorageService {
     }
 
     return NotificationResult.Success({ image });
+  }
+
+  async deleteUserAvatar(filename: string): Promise<NotificationResult> {
+    const secrets = this.configService.get('secrets', { infer: true });
+
+    const deleteObjectCommand = new DeleteObjectCommand({
+      Bucket: secrets.awsBucket,
+      Key: `user-avatars/${filename}`,
+    });
+    await this.s3.send(deleteObjectCommand);
+    return NotificationResult.Success();
   }
 }

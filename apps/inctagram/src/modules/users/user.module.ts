@@ -6,11 +6,13 @@ import { UserController } from './api/controllers/user.controller';
 import { CqrsModule } from '@nestjs/cqrs';
 import { UpdateUserProfileCommandHandler } from './application/use-cases/commands/update-user-profile.command-handler';
 import { UploadUserAvatarCommandHandler } from './application/use-cases/commands/upload-user-avatar.command.handler';
+import { DeleteAvatarCommandHandler } from './application/use-cases/commands/delete-avatar.command.handler';
 
 const commandHandlers = [
   CreateUserProfileCommandHandler,
   UpdateUserProfileCommandHandler,
   UploadUserAvatarCommandHandler,
+  DeleteAvatarCommandHandler,
 ];
 const queryHandlers = [];
 const eventsHandler = [];

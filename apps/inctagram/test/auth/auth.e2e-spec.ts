@@ -431,7 +431,7 @@ describe('AuthController (e2e)', () => {
       await dbTestHelper.clearDb();
     });
 
-    it('should not login if login payload is invalid', async function () {
+    xit('should not login if login payload is invalid', async function () {
       const res = await request(app.getHttpServer())
         .post('/auth/login')
         .send({

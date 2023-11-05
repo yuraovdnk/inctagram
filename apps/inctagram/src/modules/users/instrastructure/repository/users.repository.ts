@@ -206,4 +206,22 @@ export class UsersRepository {
       },
     });
   }
+
+  async deleteUserAvatar(user: UserEntity) {
+    await this.prismaService.user.update({
+      where: {
+        id: user.id,
+      },
+      include: {
+        profile: true,
+      },
+      data: {
+        profile: {
+          update: {
+            avatar: null,
+          },
+        },
+      },
+    });
+  }
 }

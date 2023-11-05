@@ -29,16 +29,12 @@ export class LocalStrategy extends PassportStrategy(Strategy, 'local') {
   }
 
   async validate(email: string, password: string): Promise<any> {
-    await validateOrReject(new LoginDto(email, password)).catch(() => {
-      throw new BadRequestException(
-        mapErrors('email or password is incorrect', 'email or password'),
-      );
-    });
-
     const candidate = await this.usersRepository.findByEmail(email);
 
     if (!candidate) {
-      throw new UnauthorizedException();
+      throw new UnauthorizedException(
+        mapErrors('login or password is not correct', 'auth'),
+      );
     }
 
     if (!candidate.isConfirmedEmail) {
@@ -55,6 +51,7 @@ export class LocalStrategy extends PassportStrategy(Strategy, 'local') {
         mapErrors('login or password is not correct', 'auth'),
       );
     }
+
     return candidate;
   }
 }

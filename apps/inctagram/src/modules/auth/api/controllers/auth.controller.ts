@@ -4,14 +4,13 @@ import {
   Get,
   HttpCode,
   HttpStatus,
+  Logger,
   ParseUUIDPipe,
   Post,
+  Query,
   Res,
   UnauthorizedException,
   UseGuards,
-  Logger,
-  Param,
-  Query,
 } from '@nestjs/common';
 import { CommandBus } from '@nestjs/cqrs';
 import { SignUpDto } from '../../application/dto/request/sign-up.dto';

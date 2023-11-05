@@ -9,17 +9,18 @@ import { format, transports } from 'winston';
 import * as Transport from 'winston-transport';
 import { MongoDB } from 'winston-mongodb';
 
-const consoleTransport: ConsoleTransportInstance = new transports.Console({
-  level: process.env.LOGS_CONSOLE_LEVEL ?? 'info',
-  format: format.combine(
-    format.timestamp(),
-    format.ms(),
-    nestWinstonModuleUtilities.format.nestLike('InctagarmAPI', {
-      colors: true,
-      prettyPrint: true,
-    }),
-  ),
-});
+export const consoleTransport: ConsoleTransportInstance =
+  new transports.Console({
+    level: process.env.LOGS_CONSOLE_LEVEL ?? 'info',
+    format: format.combine(
+      format.timestamp(),
+      format.ms(),
+      nestWinstonModuleUtilities.format.nestLike('InctagarmAPI', {
+        colors: true,
+        prettyPrint: true,
+      }),
+    ),
+  });
 
 const logsFolder = process.env.LOG_DIRECTORY ?? './logs';
 const logFileName = process.env.LOG_FILE_NAME ?? 'logs.log';

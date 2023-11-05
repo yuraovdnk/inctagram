@@ -7,12 +7,9 @@ import {
   Logger,
   ParseUUIDPipe,
   Post,
-  Query,
   Res,
   UnauthorizedException,
   UseGuards,
-  Logger,
-  Param,
   Query,
 } from '@nestjs/common';
 import { CommandBus } from '@nestjs/cqrs';

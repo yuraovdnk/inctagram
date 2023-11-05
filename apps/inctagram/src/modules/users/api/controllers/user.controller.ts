@@ -36,6 +36,7 @@ import { NotificationCodesEnum } from '../../../../../../../libs/common/notifica
 import { DeleteAvatarCommand } from '../../application/use-cases/commands/delete-avatar.command.handler';
 import { ApiDeleteProfileAvatar } from '../../application/swagger/api-delete-profile-avatar.swagger.decorator';
 
+
 @ApiTags('Users')
 @ApiBearerAuth('accessToken')
 @UseGuards(JwtGuard)

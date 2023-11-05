@@ -209,7 +209,6 @@ export class AuthController {
   ): Promise<NotificationResult<UserInfoViewDto>> {
     const user = await this.usersRepository.findById(userId);
     if (!user) new UnauthorizedException();
-    this.logger.log('Logger test');
     this.logger.warn('Logger test warn');
     this.logger.error('Logger test error');
     return new SuccessResult(new UserInfoViewDto(user));

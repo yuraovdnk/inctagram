@@ -1,4 +1,4 @@
-import { Controller } from '@nestjs/common';
+import { Controller, Logger } from '@nestjs/common';
 import { MessagePattern } from '@nestjs/microservices';
 import { CommandBus } from '@nestjs/cqrs';
 import { UploadAvatarCommand } from '../application/use-cases/commands/upload-avatar-command.handler';
@@ -11,12 +11,16 @@ import { FileUploadPostImages } from 'libs/contracts/file/file.upload-post-image
 import { UploadPostImagesCommand } from '../application/use-cases/commands/upload-post-images.command.handler';
 import { ImagesRepository } from '../infrastructure/images.repository';
 import { FilesGetPostImages } from '../../../../../../libs/contracts/file/files.get-post-images';
+import { FileStorageService } from '../infrastructure/file-storage.service';
+import { FileDeleteUserAvatar } from '../../../../../../libs/contracts/file/file.delete-user-avatar';
 
 @Controller()
 export class ImagesController {
+  private readonly logger = new Logger(ImagesController.name);
   constructor(
     private commandBus: CommandBus,
     private imagesRepository: ImagesRepository,
+    private fileStorageService: FileStorageService,
   ) {}
 
   @MessagePattern(FileUploadUserAvatar.topic)
@@ -43,5 +47,10 @@ export class ImagesController {
   ): Promise<FilesGetPostImages.Response> {
     const posts = await this.imagesRepository.getPostImages(dto.postId);
     return new SuccessResult(posts);
+  }
+
+  @MessagePattern(FileDeleteUserAvatar.topic)
+  async deleteUserAvatar(dto: FileDeleteUserAvatar.Request) {
+    return this.fileStorageService.deleteUserAvatar(dto.filename);
   }
 }

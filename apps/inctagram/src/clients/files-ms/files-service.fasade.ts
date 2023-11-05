@@ -7,6 +7,7 @@ import { PostImageViewModel } from '../../../../../libs/dtos/post-image.view-mod
 import { FilesGetPostImages } from '../../../../../libs/contracts/file/files.get-post-images';
 import { FileUploadPostImages } from '../../../../../libs/contracts/file/file.upload-post-images';
 import { FileUploadUserAvatar } from '../../../../../libs/contracts/file/file.upload-user-avatar';
+import { FileDeleteUserAvatar } from '../../../../../libs/contracts/file/file.delete-user-avatar';
 
 @Injectable()
 export class FilesServiceFacade {
@@ -24,6 +25,8 @@ export class FilesServiceFacade {
 
     uploadUserAvatar: (userId: string, file: Express.Multer.File) =>
       this.uploadUserAvatar(userId, file),
+
+    deleteUserAvatar: (fileName: string) => this.deleteUserAvatar(fileName),
   };
 
   private async getPostImages(
@@ -65,6 +68,18 @@ export class FilesServiceFacade {
       >(FileUploadUserAvatar.topic, {
         userId,
         file,
+      }),
+    );
+    return resultUploadFile;
+  }
+
+  private async deleteUserAvatar(filename: string) {
+    const resultUploadFile = await lastValueFrom(
+      this.clientTCP.send<
+        NotificationResult<FileDeleteUserAvatar.Response>,
+        FileDeleteUserAvatar.Request
+      >(FileDeleteUserAvatar.topic, {
+        filename,
       }),
     );
     return resultUploadFile;

@@ -6,6 +6,7 @@ import { InternalServerError } from '../../../../libs/common/notification/notifi
 @Catch()
 export class ExceptionFilter implements RpcExceptionFilter<RpcException> {
   catch(exception: RpcException, host: ArgumentsHost) {
+    console.log(exception, 'exception from files ms');
     const errorResponse = new InternalServerError('some error occurred');
     return of(errorResponse);
   }

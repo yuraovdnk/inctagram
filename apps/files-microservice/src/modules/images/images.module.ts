@@ -1,4 +1,4 @@
-import { Module, Scope } from '@nestjs/common';
+import { MiddlewareConsumer, Module, Scope } from '@nestjs/common';
 import { ImagesController } from './api/images.controller';
 import { FileStorageService } from './infrastructure/file-storage.service';
 import { CqrsModule } from '@nestjs/cqrs';
@@ -16,6 +16,7 @@ import {
   ImageVersion,
   ImageVersionSchema,
 } from './domain/entities/image-version.schema';
+import { LoggerMiddleware } from '../../../../../libs/logger/logger.middleware';
 
 const commands = [UploadAvatarCommandHandler, UploadPostImagesCommandHandler];
 @Module({
@@ -44,4 +45,8 @@ const commands = [UploadAvatarCommandHandler, UploadPostImagesCommandHandler];
   ],
   controllers: [ImagesController],
 })
-export class ImagesModule {}
+export class ImagesModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(LoggerMiddleware).forRoutes('*');
+  }
+}

@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   ForbiddenException,
   Get,
   HttpCode,
@@ -32,6 +33,8 @@ import { JwtGuard } from '../../../auth/application/strategies/jwt.strategy';
 import { UserProfileViewDto } from '../../application/dto/response/user-profile.view.dto';
 import { ApiGetUserProfile } from '../../application/swagger/api-get-user-profile.swagger.decorator';
 import { NotificationCodesEnum } from '../../../../../../../libs/common/notification/notification-codes.enum';
+import { DeleteAvatarCommand } from '../../application/use-cases/commands/delete-avatar.command.handler';
+import { ApiDeleteProfileAvatar } from '../../application/swagger/api-delete-profile-avatar.swagger.decorator';
 
 @ApiTags('Users')
 @ApiBearerAuth('accessToken')
@@ -103,6 +106,15 @@ export class UserController {
   ): Promise<NotificationResult> {
     return this.commandBus.execute<UploadUserAvatarCommand, NotificationResult>(
       new UploadUserAvatarCommand(userId, file),
+    );
+  }
+
+  @ApiDeleteProfileAvatar()
+  @UseGuards(JwtGuard)
+  @Delete('profile/avatar')
+  async deleteProfileAvatar(@CurrentUser() userId: string) {
+    return this.commandBus.execute<DeleteAvatarCommand, NotificationResult>(
+      new DeleteAvatarCommand(userId),
     );
   }
 }

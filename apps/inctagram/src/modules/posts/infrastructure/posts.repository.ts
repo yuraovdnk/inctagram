@@ -17,6 +17,7 @@ export class PostsRepository {
       },
     });
   }
+
   async getAll(
     userId: string,
     findOptions: GetPostsFindOptions,
@@ -39,6 +40,7 @@ export class PostsRepository {
 
     return [posts.map((post) => PostMapper.toEntity(post)), totalCount];
   }
+
   async getById(postId: string) {
     const post = await this.prisma.post.findUnique({
       where: {
@@ -59,6 +61,7 @@ export class PostsRepository {
       },
     });
   }
+
   async save(post: PostEntity) {
     const model = PostMapper.toModel(post);
     await this.prisma.post.update({

@@ -673,6 +673,46 @@ window.onload = function() {
           ]
         }
       },
+      "/api/v1/users/profile/avatar": {
+        "delete": {
+          "operationId": "UserController_deleteProfileAvatar",
+          "summary": "Delete user avatar",
+          "parameters": [],
+          "responses": {
+            "200": {
+              "description": "Returns ResultNotification",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "allOf": [
+                      {
+                        "$ref": "#/components/schemas/NotificationResult"
+                      },
+                      {
+                        "properties": {
+                          "data": {
+                            "type": "object",
+                            "nullable": true,
+                            "default": null
+                          }
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "tags": [
+            "Users"
+          ],
+          "security": [
+            {
+              "accessToken": []
+            }
+          ]
+        }
+      },
       "/api/v1/admin/logs/download/all": {
         "get": {
           "operationId": "AdminController_getAllLogFiles",

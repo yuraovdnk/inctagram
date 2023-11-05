@@ -10,7 +10,6 @@ import { ImagesModule } from './modules/images/images.module';
       envFilePath: ['.env', '.env.test'],
       isGlobal: true,
     }),
-
     ImagesModule,
   ],
   controllers: [],

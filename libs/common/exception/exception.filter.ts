@@ -71,7 +71,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
         responseBody = new NotFoundResult(test.message);
         break;
       default:
-        responseBody = new NotFoundResult('some error occurred');
+        responseBody = new InternalServerError('Oops, some error occurred');
     }
 
     response.status(200).json({ ...responseBody, stack });

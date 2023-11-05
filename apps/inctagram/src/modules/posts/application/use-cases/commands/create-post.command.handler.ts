@@ -46,8 +46,10 @@ export class CreatePostCommandHandler
       );
 
     if (!!resultUpload.extensions.length) {
+      await this.postsRepository.deletePost(post.id);
       return resultUpload;
     }
+
     return NotificationResult.Success();
   }
 }

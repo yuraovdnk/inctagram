@@ -19,6 +19,7 @@ export class UploadUserAvatarCommandHandler
     private userRepo: UsersRepository,
     private filesServiceFacade: FilesServiceFacade,
   ) {}
+
   async execute(command: UploadUserAvatarCommand): Promise<NotificationResult> {
     const userProfile = await this.userRepo.getUserProfile(command.userId);
     if (!userProfile || !userProfile.profile) {
@@ -34,6 +35,7 @@ export class UploadUserAvatarCommandHandler
       );
 
     if (!!resultUploadFile.extensions.length) {
+      //TODO thinking about return error
       return NotificationResult.Failure(
         NotificationCodesEnum.ERROR,
         'something went wrong with uploading avatar',

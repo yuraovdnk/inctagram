@@ -22,21 +22,25 @@ export class ImagesController {
   @MessagePattern(FileUploadUserAvatar.topic)
   async uploadUserAvatar(
     dto: FileUploadUserAvatar.Request,
-  ): Promise<NotificationResult> {
+  ): Promise<NotificationResult<FileUploadUserAvatar.Response>> {
     return this.commandBus.execute<UploadAvatarCommand, NotificationResult>(
       new UploadAvatarCommand(dto.userId, dto.file),
     );
   }
 
   @MessagePattern(FileUploadPostImages.topic)
-  async uploadPostImages(dto: FileUploadPostImages.Request) {
+  async uploadPostImages(
+    dto: FileUploadPostImages.Request,
+  ): Promise<FileUploadPostImages.Response> {
     return this.commandBus.execute<UploadPostImagesCommand, NotificationResult>(
       new UploadPostImagesCommand(dto.images, dto.postId, dto.userId),
     );
   }
 
   @MessagePattern(FilesGetPostImages.topic)
-  async getPostImages(dto: FilesGetPostImages.Request) {
+  async getPostImages(
+    dto: FilesGetPostImages.Request,
+  ): Promise<FilesGetPostImages.Response> {
     const posts = await this.imagesRepository.getPostImages(dto.postId);
     return new SuccessResult(posts);
   }

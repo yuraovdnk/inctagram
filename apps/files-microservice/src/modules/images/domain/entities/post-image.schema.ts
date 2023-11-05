@@ -1,28 +1,9 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument } from 'mongoose';
 import { ResizedPostImageDto } from '../../application/dtos/resized-post-image.dto';
-import { ImageVariants } from '../../application/types/post-image-types';
+import { ImageVersion, ImageVersionSchema } from './image-version.schema';
 
 export type PostImageDocument = HydratedDocument<PostImage>;
-
-@Schema()
-export class ImageVersion {
-  @Prop()
-  size: number;
-
-  @Prop()
-  variant: ImageVariants;
-
-  @Prop()
-  url: string | null;
-
-  constructor(size: number, variant: ImageVariants, url: string) {
-    this.size = size;
-    this.variant = variant;
-    this.url = url;
-  }
-}
-export const ImageVersionSchema = SchemaFactory.createForClass(ImageVersion);
 
 @Schema({ versionKey: false })
 export class PostImage {

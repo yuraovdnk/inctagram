@@ -12,7 +12,7 @@ import {
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
-import { CommandBus, QueryBus } from '@nestjs/cqrs';
+import { CommandBus } from '@nestjs/cqrs';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import {
   NotificationResult,
@@ -31,6 +31,7 @@ import { UploadUserAvatarCommand } from '../../application/use-cases/commands/up
 import { JwtGuard } from '../../../auth/application/strategies/jwt.strategy';
 import { UserProfileViewDto } from '../../application/dto/response/user-profile.view.dto';
 import { ApiGetUserProfile } from '../../application/swagger/api-get-user-profile.swagger.decorator';
+import { NotificationCodesEnum } from '../../../../../../../libs/common/notification/notification-codes.enum';
 
 @ApiTags('Users')
 @ApiBearerAuth('accessToken')
@@ -65,9 +66,13 @@ export class UserController {
     @Body() dto: UserProfileDto,
     @CurrentUser() userId: string,
   ): Promise<NotificationResult> {
-    if (userId !== id) throw new ForbiddenException();
-    await this.commandBus.execute(new UpdateUserProfileCommand(dto, id));
-    return new SuccessResult();
+    if (userId !== id) {
+      return NotificationResult.Failure(
+        NotificationCodesEnum.FORBIDDEN,
+        'you haven`t permission to update this profile',
+      );
+    }
+    return this.commandBus.execute(new UpdateUserProfileCommand(dto, id));
   }
 
   //get user profile
@@ -76,11 +81,15 @@ export class UserController {
   @Get('profile/:id')
   async getProfile(
     @Param('id') id: string,
-    @CurrentUser() userId: string,
   ): Promise<NotificationResult<UserProfileViewDto>> {
-    if (userId !== id) throw new ForbiddenException();
     const user = await this.usersRepository.getUserProfile(id);
-    return new SuccessResult(new UserProfileViewDto(user));
+    if (!user) {
+      return NotificationResult.Failure(
+        NotificationCodesEnum.NOT_FOUND,
+        'user or profile not found',
+      );
+    }
+    return NotificationResult.Success(new UserProfileViewDto(user));
   }
 
   @UseGuards(JwtGuard)

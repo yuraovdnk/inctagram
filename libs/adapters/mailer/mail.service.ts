@@ -17,19 +17,6 @@ export class EmailService {
         pass: this.configService.get('SMTP_PASS'),
       },
     });
-    // const viewsPath = __dirname + '/templates';
-    // this.transporter.use(
-    //   'compile',
-    //   hbs({
-    //     viewEngine: {
-    //       extname: '.hbs',
-    //       layoutsDir: viewsPath,
-    //       defaultLayout: false,
-    //     },
-    //     viewPath: viewsPath,
-    //     extName: '.hbs',
-    //   }),
-    // );
   }
 
   async sendPasswordRecoveryCodeEmail(email: string, recoveryCode: string) {
@@ -38,14 +25,12 @@ export class EmailService {
         to: email,
         from: this.configService.get('SMTP_USER'),
         subject: 'Password recovery email',
-        //template: 'password-recovery',
-        //context: { recoveryCode },
         html: `
-        <h1>Password recovery</h1>
-        <p>password recovery code: ${recoveryCode} <br>
-        To finish password recovery please follow the link below:
-        <a href="https://somesite.com/password-recovery?recoveryCode=${recoveryCode}">recovery password</a>
-        </p>
+          <h1>Password recovery</h1>
+          <p>password recovery code: ${recoveryCode} <br>
+          To finish password recovery please follow the link below:
+          <a href="https://somesite.com/password-recovery?recoveryCode=${recoveryCode}">recovery password</a>
+          </p>
         `,
       });
     } catch (e) {
@@ -53,6 +38,7 @@ export class EmailService {
     }
   }
   async sendConfirmCode(username: string, email: string, code: string) {
+    const homeUrl = this.configService.get('API_HOME_URL');
     await this.transporter.sendMail({
       to: email,
       from: this.configService.get('SMTP_USER'),
@@ -61,12 +47,9 @@ export class EmailService {
         <h1>Confirm Email</h1>
         <p>email confirmation code: ${code} <br>
         To confirm your email please follow the link below:
-        <a href="http://localhost:3000/auth/email-confirmed?emailCode=${code}">recovery password</a>
-
+        <a href="${homeUrl}/auth/email-confirm?code=${code}">recovery password</a>
         </p>
         `,
-      //template: 'confirm-email-code',
-      //context: { confirmationCode: code, username },
       text: `confirm code - ${code}`,
     });
   }

@@ -35,7 +35,7 @@ export class FileStorageService {
     originalName: string,
     mimeType: string,
     userId: string,
-  ): Promise<NotificationResult<FileUploadUserAvatar.Response>> {
+  ): Promise<NotificationResult<{ fileName: string }>> {
     const secrets = this.configService.get('secrets', { infer: true });
     const fileExt = originalName.split('.').pop();
     const fileName = `${userId}_avatar.${fileExt}`;
@@ -51,9 +51,7 @@ export class FileStorageService {
       return new InternalServerError(err);
     });
 
-    return new SuccessResult({
-      fileName,
-    });
+    return NotificationResult.Success({ fileName });
   }
 
   async uploadPostImages(
@@ -81,8 +79,6 @@ export class FileStorageService {
       item.url = s3Url;
     }
 
-    return new SuccessResult({
-      image,
-    });
+    return NotificationResult.Success({ image });
   }
 }

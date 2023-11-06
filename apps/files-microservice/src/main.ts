@@ -7,7 +7,6 @@ import { WinstonModule } from 'nest-winston';
 import {
   consoleTransport,
   dbTransport,
-  fileTransports,
 } from './common/providers/logger.factory';
 
 async function bootstrap() {
@@ -20,7 +19,7 @@ async function bootstrap() {
         port: +process.env.FILE_SERVICE_PORT,
       },
       logger: WinstonModule.createLogger({
-        transports: [consoleTransport, fileTransports, dbTransport],
+        transports: [consoleTransport, dbTransport],
       }),
     },
   );

@@ -20,23 +20,13 @@ export const consoleTransport: ConsoleTransportInstance =
     ),
   });
 
-const logsFolder = './logs/files-ms';
-const logFileName = 'logs.log';
-export const fileTransports: FileTransportInstance = new transports.File({
-  level: process.env.LOGS_FILE_LEVEL ?? 'info',
-  filename: `${logsFolder}/${logFileName}`,
-  format: format.combine(format.timestamp(), format.json()),
-  maxFiles: 10,
-  maxsize: 5 * 1024 * 1024,
-});
-
 export const dbTransport = new MongoDB({
   db: process.env.MONGODB_URL,
   options: {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   },
-  collection: 'logs-files-ms',
+  collection: 'logs',
   level: process.env.LOGS_DB_LEVEL ?? 'warn',
   format: format.combine(
     format.timestamp(),

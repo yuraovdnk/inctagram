@@ -4,8 +4,6 @@ import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 import process from 'process';
 import { ExceptionFilter } from './common/rpc-exception.filter';
 import { WinstonModule } from 'nest-winston';
-
-import { MongoDB } from 'winston-mongodb';
 import { format, transports } from 'winston';
 import { ConsoleTransportInstance } from 'winston/lib/winston/transports';
 import { utilities as nestWinstonModuleUtilities } from 'nest-winston/dist/winston.utilities';
@@ -21,21 +19,7 @@ const consoleTransport: ConsoleTransportInstance = new transports.Console({
     }),
   ),
 });
-const dbTransport = new MongoDB({
-  db: process.env.MONGODB_URL,
-  options: {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  },
-  collection: 'logs-files-ms',
-  level: process.env.LOGS_DB_LEVEL ?? 'warn',
-  format: format.combine(
-    format.timestamp(),
-    format.metadata({
-      fillWith: ['context'],
-    }),
-  ),
-});
+
 async function bootstrap() {
   const app = await NestFactory.createMicroservice<MicroserviceOptions>(
     FilesMicroserviceModule,
@@ -46,7 +30,7 @@ async function bootstrap() {
         port: +process.env.FILE_SERVICE_PORT,
       },
       logger: WinstonModule.createLogger({
-        transports: [dbTransport, consoleTransport],
+        transports: [consoleTransport],
       }),
     },
   );

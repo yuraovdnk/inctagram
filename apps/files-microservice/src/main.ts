@@ -4,10 +4,23 @@ import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 import process from 'process';
 import { ExceptionFilter } from './common/rpc-exception.filter';
 import { WinstonModule } from 'nest-winston';
-import { consoleTransport } from '../../../libs/logger/winston-logger.config';
-import { MongoDB } from 'winston-mongodb';
-import { format } from 'winston';
 
+import { MongoDB } from 'winston-mongodb';
+import { format, transports } from 'winston';
+import { ConsoleTransportInstance } from 'winston/lib/winston/transports';
+import { utilities as nestWinstonModuleUtilities } from 'nest-winston/dist/winston.utilities';
+
+const consoleTransport: ConsoleTransportInstance = new transports.Console({
+  level: process.env.LOGS_CONSOLE_LEVEL ?? 'info',
+  format: format.combine(
+    format.timestamp(),
+    format.ms(),
+    nestWinstonModuleUtilities.format.nestLike('Files-Service', {
+      colors: true,
+      prettyPrint: true,
+    }),
+  ),
+});
 const dbTransport = new MongoDB({
   db: process.env.MONGODB_URL,
   options: {

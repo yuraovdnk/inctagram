@@ -1,7 +1,4 @@
-import {
-  ConsoleTransportInstance,
-  FileTransportInstance,
-} from 'winston/lib/winston/transports';
+import { ConsoleTransportInstance } from 'winston/lib/winston/transports';
 import { format, transports } from 'winston';
 import process from 'process';
 import { utilities as nestWinstonModuleUtilities } from 'nest-winston/dist/winston.utilities';
@@ -26,7 +23,7 @@ export const dbTransport = new MongoDB({
     useNewUrlParser: true,
     useUnifiedTopology: true,
   },
-  collection: 'logs',
+  collection: 'files-ms',
   level: process.env.LOGS_DB_LEVEL ?? 'warn',
   format: format.combine(
     format.timestamp(),

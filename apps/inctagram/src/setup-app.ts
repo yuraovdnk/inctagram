@@ -17,7 +17,7 @@ export const setupApp = (app: INestApplication) => {
   useContainer(app.select(AppModule), { fallbackOnErrors: true });
   app.enableCors({
     origin: ['http://localhost:3000', 'https://inctagram.space'],
-    methods: 'GET, HEAD, PUT, PATCH, POST, DELETE, OPTIONS',
+    methods: ['GET, HEAD, PUT, PATCH, POST, DELETE, OPTIONS'],
     preflightContinue: false,
     optionsSuccessStatus: 204,
     credentials: true,

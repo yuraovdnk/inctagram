@@ -25,7 +25,9 @@ export class PasswordRecoveryCommandHandler
   async execute(command: PasswordRecoveryCommand): Promise<NotificationResult> {
     const { email } = command;
     const userEntity = await this.usersRepository.findByEmail(email);
-    if (!userEntity || !userEntity.isConfirmedEmail) return new SuccessResult(); //according to security requirements, in any case, we return a success result
+    if (!userEntity || !userEntity.isConfirmedEmail) {
+      return new SuccessResult();
+    } //according to security requirements, in any case, we return a success result
     const passwordRecoveryEntity = PasswordRecoveryEntity.create(userEntity);
     await this.authRepository.createPasswordRecoveryCode(
       passwordRecoveryEntity,

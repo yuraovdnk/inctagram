@@ -4,21 +4,10 @@ import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 import process from 'process';
 import { ExceptionFilter } from './common/rpc-exception.filter';
 import { WinstonModule } from 'nest-winston';
-import { format, transports } from 'winston';
-import { ConsoleTransportInstance } from 'winston/lib/winston/transports';
-import { utilities as nestWinstonModuleUtilities } from 'nest-winston/dist/winston.utilities';
-
-const consoleTransport: ConsoleTransportInstance = new transports.Console({
-  level: process.env.LOGS_CONSOLE_LEVEL ?? 'info',
-  format: format.combine(
-    format.timestamp(),
-    format.ms(),
-    nestWinstonModuleUtilities.format.nestLike('Files-Service', {
-      colors: true,
-      prettyPrint: true,
-    }),
-  ),
-});
+import {
+  consoleTransport,
+  dbTransport,
+} from './common/providers/logger.factory';
 
 async function bootstrap() {
   const app = await NestFactory.createMicroservice<MicroserviceOptions>(
@@ -30,7 +19,7 @@ async function bootstrap() {
         port: +process.env.FILE_SERVICE_PORT,
       },
       logger: WinstonModule.createLogger({
-        transports: [consoleTransport],
+        transports: [consoleTransport, dbTransport],
       }),
     },
   );

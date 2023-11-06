@@ -1,4 +1,7 @@
-import { ConsoleTransportInstance } from 'winston/lib/winston/transports';
+import {
+  ConsoleTransportInstance,
+  FileTransportInstance,
+} from 'winston/lib/winston/transports';
 import { format, transports } from 'winston';
 import process from 'process';
 import { utilities as nestWinstonModuleUtilities } from 'nest-winston/dist/winston.utilities';
@@ -16,6 +19,16 @@ export const consoleTransport: ConsoleTransportInstance =
       }),
     ),
   });
+
+const logsFolder = './logs/files-ms';
+const logFileName = 'logs.log';
+export const fileTransports: FileTransportInstance = new transports.File({
+  level: process.env.LOGS_FILE_LEVEL ?? 'info',
+  filename: `${logsFolder}/${logFileName}`,
+  format: format.combine(format.timestamp(), format.json()),
+  maxFiles: 10,
+  maxsize: 5 * 1024 * 1024,
+});
 
 export const dbTransport = new MongoDB({
   db: process.env.MONGODB_URL,

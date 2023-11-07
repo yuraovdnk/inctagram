@@ -12,8 +12,8 @@ import { InternalServerError } from '../../../../libs/common/notification/notifi
 export class ExceptionFilter implements RpcExceptionFilter<RpcException> {
   private readonly logger = new Logger(ExceptionFilter.name);
   catch(exception: RpcException, host: ArgumentsHost) {
-    this.logger.error(exception, exception.stack);
     const errorResponse = new InternalServerError('some error occurred');
+    this.logger.error(exception, exception.stack);
     return of(errorResponse);
   }
 }

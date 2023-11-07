@@ -8,7 +8,7 @@ export class UploadPostImagePipe extends ParseFilePipe {
   constructor() {
     super({
       validators: [
-        new FileTypeValidator({ fileType: '.(jpeg|png)' }),
+        new FileTypeValidator({ fileType: 'image/png' }),
         new MaxFileSizeValidator({ maxSize: 1024 * 1024 * 20 }),
       ],
       fileIsRequired: true,

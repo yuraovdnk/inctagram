@@ -20,7 +20,7 @@ import { isArray } from 'class-validator';
 @Catch(Error)
 export class ErrorExceptionFilter implements ExceptionFilter {
   catch(exception: Error, host: ArgumentsHost) {
-    new Logger(ErrorExceptionFilter.name).error(exception.stack);
+    new Logger(ErrorExceptionFilter.name).error(exception, exception.stack);
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
 
@@ -39,7 +39,7 @@ export class ErrorExceptionFilter implements ExceptionFilter {
 @Catch(HttpException)
 export class HttpExceptionFilter implements ExceptionFilter {
   catch(exception: HttpException, host: ArgumentsHost) {
-    new Logger(HttpExceptionFilter.name).error(exception.stack);
+    new Logger(HttpExceptionFilter.name).error(exception, exception.stack);
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
 
@@ -50,25 +50,25 @@ export class HttpExceptionFilter implements ExceptionFilter {
     ) {
       stack = exception.stack;
     }
-    const test: any = exception.getResponse();
+    const errorResponse: any = exception.getResponse();
 
     let responseBody: NotificationResult;
 
     switch (exception.getStatus()) {
       case 400:
-        responseBody = new BadResult(test.message);
-        if (isArray(test.message)) {
-          responseBody.extensions = test.message;
+        responseBody = new BadResult(errorResponse.message);
+        if (isArray(errorResponse.message)) {
+          responseBody.extensions = errorResponse.message;
         }
         break;
       case 401:
-        responseBody = new UnAuthorizedResult(test.message);
+        responseBody = new UnAuthorizedResult(errorResponse.message);
         break;
       case 403:
-        responseBody = new ForbiddenResult(test.message);
+        responseBody = new ForbiddenResult(errorResponse.message);
         break;
       case 404:
-        responseBody = new NotFoundResult(test.message);
+        responseBody = new NotFoundResult(errorResponse.message);
         break;
       default:
         responseBody = new InternalServerError('Oops, some error occurred');

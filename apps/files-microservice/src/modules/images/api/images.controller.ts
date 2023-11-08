@@ -16,7 +16,6 @@ import { FileDeleteUserAvatar } from '../../../../../../libs/contracts/file/file
 
 @Controller()
 export class ImagesController {
-  private readonly logger = new Logger(ImagesController.name);
   constructor(
     private commandBus: CommandBus,
     private imagesRepository: ImagesRepository,
@@ -36,6 +35,7 @@ export class ImagesController {
   async uploadPostImages(
     dto: FileUploadPostImages.Request,
   ): Promise<FileUploadPostImages.Response> {
+    console.log(dto, 'dto');
     return this.commandBus.execute<UploadPostImagesCommand, NotificationResult>(
       new UploadPostImagesCommand(dto.images, dto.postId, dto.userId),
     );

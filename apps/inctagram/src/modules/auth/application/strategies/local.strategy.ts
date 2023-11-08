@@ -33,12 +33,12 @@ export class LocalStrategy extends PassportStrategy(Strategy, 'local') {
 
     if (!candidate) {
       throw new UnauthorizedException(
-        mapErrors('login or password is not correct', 'auth'),
+        mapErrors('email or password is not correct', 'auth'),
       );
     }
 
     if (!candidate.isConfirmedEmail) {
-      throw new ForbiddenException();
+      throw new ForbiddenException('user email is not confirmed');
     }
 
     const isValidPassword = bcrypt.compareSync(
@@ -48,7 +48,7 @@ export class LocalStrategy extends PassportStrategy(Strategy, 'local') {
 
     if (!isValidPassword) {
       throw new UnauthorizedException(
-        mapErrors('login or password is not correct', 'auth'),
+        mapErrors('email or password is not correct', 'auth'),
       );
     }
 

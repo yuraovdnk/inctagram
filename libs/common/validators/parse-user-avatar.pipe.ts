@@ -8,8 +8,8 @@ export class ParseUserAvatarPipe extends ParseFilePipe {
   constructor() {
     super({
       validators: [
-        new FileTypeValidator({ fileType: '.(jpeg|png)' }),
-        new MaxFileSizeValidator({ maxSize: 1024 * 1024 * 10 }),
+        new FileTypeValidator({ fileType: '.(png|jpeg|jpg)' }),
+        new MaxFileSizeValidator({ maxSize: 1048576 * 10 }),
       ],
       fileIsRequired: true,
     });

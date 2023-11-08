@@ -36,7 +36,6 @@ import { NotificationCodesEnum } from '../../../../../../../libs/common/notifica
 import { DeleteAvatarCommand } from '../../application/use-cases/commands/delete-avatar.command.handler';
 import { ApiDeleteProfileAvatar } from '../../application/swagger/api-delete-profile-avatar.swagger.decorator';
 
-
 @ApiTags('Users')
 @ApiBearerAuth('accessToken')
 @UseGuards(JwtGuard)
@@ -87,7 +86,7 @@ export class UserController {
     @Param('id') id: string,
   ): Promise<NotificationResult<UserProfileViewDto>> {
     const user = await this.usersRepository.getUserProfile(id);
-    if (!user) {
+    if (!user || !user.profile) {
       return NotificationResult.Failure(
         NotificationCodesEnum.NOT_FOUND,
         'user or profile not found',

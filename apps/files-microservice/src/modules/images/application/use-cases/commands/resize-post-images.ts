@@ -8,7 +8,6 @@ export default async (
   const resizedImages: ResizedPostImageDto[] = [];
 
   for (let i = 0; i < originalImages.length; i++) {
-    console.log(originalImages[i].buffer['data'], 'dsfsdfds');
     const [large, medium] = await Promise.all([
       sharp(Buffer.from(originalImages[i].buffer['data']))
         .jpeg()

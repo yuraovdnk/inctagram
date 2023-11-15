@@ -9,7 +9,7 @@ export class UploadPostImagePipe extends ParseFilePipe {
     super({
       validators: [
         new FileTypeValidator({ fileType: '.(png|jpeg|jpg)' }),
-        new MaxFileSizeValidator({ maxSize: 1048576 * 20 }),
+        //new MaxFileSizeValidator({ maxSize: 1048576 * 20 }),
       ],
       fileIsRequired: true,
     });

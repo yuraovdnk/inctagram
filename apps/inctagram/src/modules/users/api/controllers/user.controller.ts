@@ -38,7 +38,6 @@ import { ApiDeleteProfileAvatar } from '../../application/swagger/api-delete-pro
 
 @ApiTags('Users')
 @ApiBearerAuth('accessToken')
-@UseGuards(JwtGuard)
 @Controller('users')
 export class UserController {
   constructor(
@@ -48,6 +47,7 @@ export class UserController {
 
   //create user profile
   @ApiCreateUserProfile()
+  @UseGuards(JwtGuard)
   @HttpCode(HttpStatus.OK)
   @Post('profile/:id')
   async createProfile(
@@ -62,6 +62,7 @@ export class UserController {
 
   //update user profile
   @ApiUpdateUserProfile()
+  @UseGuards(JwtGuard)
   @HttpCode(HttpStatus.OK)
   @Put('profile/:id')
   async updateProfile(

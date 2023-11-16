@@ -1,7 +1,7 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { FileStorageService } from '../../../infrastructure/file-storage.service';
 import { ImagesRepository } from '../../../infrastructure/images.repository';
-import { Inject } from '@nestjs/common';
+import { Inject, Logger } from '@nestjs/common';
 import Piscina from 'piscina';
 import { PostImage } from '../../../domain/entities/post-image.schema';
 import { NotificationResult } from '../../../../../../../../libs/common/notification/notification-result';
@@ -21,6 +21,7 @@ export class UploadPostImagesCommand {
 export class UploadPostImagesCommandHandler
   implements ICommandHandler<UploadPostImagesCommand>
 {
+  private logger = new Logger(UploadPostImagesCommandHandler.name);
   constructor(
     private fileService: FileStorageService,
     public imagesRepository: ImagesRepository,
@@ -52,6 +53,7 @@ export class UploadPostImagesCommandHandler
         );
         await this.imagesRepository.createPostImage(model);
       } catch (e) {
+        this.logger.error(e);
         return NotificationResult.Failure(NotificationCodesEnum.ERROR, e);
       }
     }

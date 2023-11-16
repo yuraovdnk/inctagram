@@ -88,7 +88,7 @@ describe('UserController (e2e)', () => {
         .get(`/users/profile/${users[0].id}`)
         .expect(HttpStatus.OK);
 
-      expectNotification(result, NotificationCodesEnum.UNAUTHORIZED);
+      expectNotification(result, NotificationCodesEnum.OK);
     });
 
     it('GET:[HOST]/users/profile/:id should return code 200 and users data.', async () => {

@@ -1,10 +1,15 @@
 import { INestApplication, Injectable, OnModuleInit } from '@nestjs/common';
-import { PrismaClient } from '@prisma/client';
+import { Prisma, PrismaClient } from '@prisma/client';
+import { concatS3Link } from '../../../../prisma/middlewares/concat-s3-link.prisma.middleware';
 
 @Injectable()
-export class PrismaService extends PrismaClient implements OnModuleInit {
+export class PrismaService
+  extends PrismaClient<Prisma.PrismaClientOptions, 'query'>
+  implements OnModuleInit
+{
   constructor() {
     super();
+    this.$use(concatS3Link);
   }
   async onModuleInit() {
     await this.$connect();

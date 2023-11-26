@@ -5,7 +5,7 @@ import * as runtime from '@prisma/client/runtime/library';
 import { EventBus } from '@nestjs/cqrs';
 
 export abstract class BaseUseCase<Message> {
-  protected prismaClient: Omit<PrismaClient, runtime.ITXClientDenyList>;
+  protected prismaClient: Omit<PrismaClient, runtime.ITXClientDenyList> | any;
 
   protected constructor(
     protected readonly prismaService: PrismaService,

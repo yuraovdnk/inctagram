@@ -75,10 +75,17 @@ export class AuthController {
 
   @HttpCode(HttpStatus.OK)
   @Get('email-confirm')
-  async confirmationEmailTest(@Query('code', ParseUUIDPipe) code: string) {
-    return this.commandBus.execute<EmailConfirmCommand, NotificationResult>(
-      new EmailConfirmCommand(code),
-    );
+  async confirmationEmailTest(
+    @Res() res: Response,
+    @Query('code', ParseUUIDPipe) code: string,
+  ) {
+    const notification = await this.commandBus.execute<
+      EmailConfirmCommand,
+      NotificationResult
+    >(new EmailConfirmCommand(code));
+    if (!notification.hasError()) {
+      res.redirect(`https://inctagram.space/auth/email-confirmed`);
+    }
   }
 
   //registration-confirmation
@@ -107,8 +114,9 @@ export class AuthController {
     >(new CreateAuthSessionCommand(deviceInfo, userId));
 
     res.cookie('refreshToken', result.data.refreshToken, {
-      // httpOnly: true,
-      // secure: true,
+      httpOnly: true,
+      secure: true,
+      sameSite: 'none',
     });
     res
       .status(200)
@@ -176,8 +184,9 @@ export class AuthController {
     >(new CreateAuthSessionCommand(deviceInfo, userId));
 
     res.cookie('refreshToken', result.data.refreshToken, {
-      // httpOnly: true,
-      // secure: true,
+      httpOnly: true,
+      secure: true,
+      sameSite: 'none',
     });
     res
       .status(200)

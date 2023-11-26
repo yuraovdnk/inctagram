@@ -30,6 +30,9 @@ export class PostsRepository {
         },
         take: findOptions.pageSize,
         skip: findOptions.skip,
+        orderBy: {
+          createdAt: findOptions.sortDirection,
+        },
       }),
       this.prisma.post.count({
         where: {

@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from '../../../../../../../libs/adapters/db/prisma/prisma.service';
 import { UserEntity } from '../../domain/entity/user.entity';
 import { PrismaClient, User } from '@prisma/client';
 import { UserMapper } from '../user.mapper';
 import { ExternalAccountEntity } from '../../domain/entity/external-account.entity';
 import * as runtime from '@prisma/client/runtime/library';
+import { PrismaService } from '../../../../../../../libs/adapters/db/prisma/prisma.service';
 
 @Injectable()
 export class UsersRepository {
@@ -12,7 +12,8 @@ export class UsersRepository {
 
   async create(
     entity: UserEntity,
-    prisma: Omit<PrismaClient, runtime.ITXClientDenyList> = this.prismaService,
+    prisma: Omit<PrismaClient, runtime.ITXClientDenyList> | any = this
+      .prismaService,
   ): Promise<string> {
     const userModel = UserMapper.toModel(entity);
 
@@ -195,6 +196,7 @@ export class UsersRepository {
         profile: true,
       },
     });
+    console.log(profile);
     return profile ? UserMapper.toEntity(profile) : null;
   }
 

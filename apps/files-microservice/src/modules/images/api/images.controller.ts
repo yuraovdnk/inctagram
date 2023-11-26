@@ -35,7 +35,6 @@ export class ImagesController {
   async uploadPostImages(
     dto: FileUploadPostImages.Request,
   ): Promise<FileUploadPostImages.Response> {
-    console.log(dto, 'dto');
     return this.commandBus.execute<UploadPostImagesCommand, NotificationResult>(
       new UploadPostImagesCommand(dto.images, dto.postId, dto.userId),
     );

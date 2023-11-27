@@ -7,13 +7,14 @@ import { GetPostsQueryHandler } from './application/use-cases/queries/get-posts-
 import { UserModule } from '../users/user.module';
 import { DeletePostCommandHandler } from './application/use-cases/commands/delete-post.command.handler';
 import { EditPostCommandHandler } from './application/use-cases/commands/edit-post.command.handler';
+import { GetPostByIdQueryHandler } from './application/use-cases/queries/get-post-by-id.query.handler';
 
 const commandHandlers = [
   CreatePostCommandHandler,
   DeletePostCommandHandler,
   EditPostCommandHandler,
 ];
-const queryHandlers = [GetPostsQueryHandler];
+const queryHandlers = [GetPostsQueryHandler, GetPostByIdQueryHandler];
 @Module({
   imports: [CqrsModule, UserModule],
   providers: [...commandHandlers, ...queryHandlers, PostsRepository],

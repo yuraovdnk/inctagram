@@ -1021,6 +1021,36 @@ window.onload = function() {
             }
           ]
         }
+      },
+      "/api/v1/posts/post/{id}": {
+        "get": {
+          "operationId": "PostController_getPost",
+          "parameters": [
+            {
+              "name": "id",
+              "required": true,
+              "in": "path",
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object"
+                  }
+                }
+              }
+            }
+          },
+          "tags": [
+            "Posts"
+          ]
+        }
       }
     },
     "info": {

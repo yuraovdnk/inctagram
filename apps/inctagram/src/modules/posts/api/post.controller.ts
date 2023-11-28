@@ -34,6 +34,7 @@ import { ApiDeletePost } from './swagger/api.delete-post.swagger';
 import { EditPostDto } from './dto/edit-post.dto';
 import { EditPostCommand } from '../application/use-cases/commands/edit-post.command.handler';
 import { ApiUpdatePost } from './swagger/api-update-post.swagger';
+import { GetPostQuery } from '../application/use-cases/queries/get-post-by-id.query.handler';
 
 @ApiTags('Posts')
 @Controller('posts')
@@ -91,5 +92,9 @@ export class PostController {
     return this.commandBus.execute<EditPostCommand, NotificationResult>(
       new EditPostCommand(postId, userId, editPost),
     );
+  }
+  @Get('post/:id')
+  async getPost(@Param('id', ParseUUIDPipe) postId: string) {
+    return this.queryBus.execute(new GetPostQuery(postId));
   }
 }

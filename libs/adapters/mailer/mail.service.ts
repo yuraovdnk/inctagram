@@ -26,11 +26,35 @@ export class EmailService {
         from: this.configService.get('SMTP_USER'),
         subject: 'Password recovery email',
         html: `
-          <h1>Password recovery</h1>
-          <p>password recovery code: ${recoveryCode} <br>
-          To finish password recovery please follow the link below:
-          <a href="https://somesite.com/password-recovery?recoveryCode=${recoveryCode}">recovery password</a>
-          </p>
+          <div class="subject mb-20">Finish password recovery</div>
+          <div class="overflow-auto mb-20" style="overflow-y: hidden !important">
+              <div style="width: 600px; text-align: center; font-family: Figtree,sans-serif">
+              <br>
+              <br>
+              <h2 style="color: #161616">Verify your email address</h2>
+              <br>
+              <div>
+                  <p style="font-size: 16px; color: #161616">
+                  Thanks for joining. Please click the button below and set up your account. It takes less than a minute.
+                  </p>
+                  <br>
+                  <br>
+                  <div>
+                      <a href="${this.configService.get(
+                        'FRONT_HOME_URl',
+                      )}/password-recovery?code=${recoveryCode}" style="background-color: #397DF6; color: #ffffff; border: 0;
+                                 padding: 10px 20px; border-radius: 8px; font-size: 24px; margin: 15px;
+                                 text-decoration: none;
+                                 " target="_blank">Set up your account</a>
+                   </div>
+              </div>
+              <br>
+              <br>
+              <div>
+                  <img style="width: 600px" src="https://nest-public-avatar.s3.eu-central-1.amazonaws.com/audit-g2e5a4a6f9_1280.jpg" alt="inctagram">
+              </div>
+              </div>
+           </div>
         `,
       });
     } catch (e) {
@@ -38,17 +62,40 @@ export class EmailService {
     }
   }
   async sendConfirmCode(username: string, email: string, code: string) {
-    const homeUrl = this.configService.get('API_HOME_URL');
     await this.transporter.sendMail({
       to: email,
       from: this.configService.get('SMTP_USER'),
       subject: 'Confirm Email',
       html: `
-        <h1>Confirm Email</h1>
-        <p>email confirmation code: ${code} <br>
-        To confirm your email please follow the link below:
-        <a href="${homeUrl}/auth/email-confirm?code=${code}">recovery password</a>
-        </p>
+       <div class="subject mb-20">Finish registration</div>
+        <div class="overflow-auto mb-20" style="overflow-y: hidden !important">
+            <div style="width: 600px; text-align: center; font-family: Figtree,sans-serif">
+            <br>
+            <br>
+            <h2 style="color: #161616">Verify your email address</h2>
+            <br>
+            <div>
+                <p style="font-size: 16px; color: #161616">
+                Thanks for joining. Please click the button below and set up your account. It takes less than a minute.
+                </p>
+                <br>
+                <br>
+                <div>
+                    <a href="${this.configService.get(
+                      'FRONT_HOME_URl',
+                    )}/auth/email-confirmed?code=${code}" style="background-color: #397DF6; color: #ffffff; border: 0;
+                               padding: 10px 20px; border-radius: 8px; font-size: 24px; margin: 15px;
+                               text-decoration: none;
+                               " target="_blank">Set up your account</a>
+                 </div>
+            </div>
+            <br>
+            <br>
+            <div>
+                <img style="width: 600px" src="https://nest-public-avatar.s3.eu-central-1.amazonaws.com/audit-g2e5a4a6f9_1280.jpg" alt="inctagram">
+            </div>
+            </div>
+         </div>
         `,
       text: `confirm code - ${code}`,
     });

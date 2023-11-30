@@ -1,4 +1,9 @@
-import { Module } from '@nestjs/common';
+import {
+  MiddlewareConsumer,
+  Module,
+  NestModule,
+  RequestMethod,
+} from '@nestjs/common';
 import { AuthController } from './api/controllers/auth.controller';
 import { CqrsModule } from '@nestjs/cqrs';
 import { AuthRepository } from './infrastructure/repository/auth.repository';
@@ -17,7 +22,6 @@ import { JwtCookieStrategy } from './application/strategies/jwt-cookie.strategy'
 import { KillAuthSessionCommandHandler } from './application/use-cases/command/kill-auth-session.command.handler';
 import { CacheModule } from '@nestjs/cache-manager';
 import { ResendEmailConfirmationCommandHandler } from './application/use-cases/command/resend-email-confirmation.command.handler';
-import { AlsModule } from '../../als.module';
 import { JwtStrategy } from '../../../../../libs/common/guards/jwt.guard';
 import { GoogleStrategy } from './application/strategies/google.strategy';
 import { AuthenticationByExternalAccountCommandHandler } from './application/use-cases/command/authentication-by-external-account-command.handler';
@@ -25,6 +29,7 @@ import { GithubStrategy } from './application/strategies/github.strategy';
 import { UserCreatedByExternalAccountEventHandler } from './application/use-cases/events/user-created-by-external-account-event.handler';
 import { OauthController } from './api/controllers/oauth.controller';
 import { PasswordRecoveryEventHandler } from './application/use-cases/events/password-recovery-event.handler';
+import { AsyncLocalStorage } from 'node:async_hooks';
 
 const commandHandlers = [
   PasswordRecoveryCommandHandler,
@@ -50,13 +55,7 @@ const Strategies = [
   GithubStrategy,
 ];
 @Module({
-  imports: [
-    CacheModule.register(),
-    CqrsModule,
-    EmailModule,
-    UserModule,
-    AlsModule,
-  ],
+  imports: [CacheModule.register(), CqrsModule, EmailModule, UserModule],
   controllers: [AuthController, OauthController],
   providers: [
     AuthService,
@@ -68,4 +67,20 @@ const Strategies = [
     ...Strategies,
   ],
 })
-export class AuthModule {}
+export class AuthModule implements NestModule {
+  constructor(private readonly als: AsyncLocalStorage<any>) {}
+  configure(consumer: MiddlewareConsumer): any {
+    consumer
+      .apply((req, res, next) => {
+        const store = {
+          host: req.headers.host,
+        };
+        this.als.run(store, () => next());
+      })
+      .exclude(
+        { path: 'auth', method: RequestMethod.PUT },
+        { path: 'auth', method: RequestMethod.GET },
+      )
+      .forRoutes('auth');
+  }
+}

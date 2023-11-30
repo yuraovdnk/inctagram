@@ -1,11 +1,15 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import * as nodemailer from 'nodemailer';
+import { AsyncLocalStorage } from 'node:async_hooks';
 
 @Injectable()
 export class EmailService {
   private readonly transporter;
-  constructor(private readonly configService: ConfigService) {
+  constructor(
+    private readonly configService: ConfigService,
+    private als: AsyncLocalStorage<any>,
+  ) {
     this.transporter = nodemailer.createTransport({
       host: this.configService.get('SMTP_HOST'),
       port: this.configService.get('SMTP_PORT'),
@@ -20,6 +24,7 @@ export class EmailService {
   }
 
   async sendPasswordRecoveryCodeEmail(email: string, recoveryCode: string) {
+    const referer = this.als.getStore().host;
     try {
       await this.transporter.sendMail({
         to: email,
@@ -40,9 +45,7 @@ export class EmailService {
                   <br>
                   <br>
                   <div>
-                      <a href="${this.configService.get(
-                        'FRONT_HOME_URl',
-                      )}/password-recovery?code=${recoveryCode}" style="background-color: #397DF6; color: #ffffff; border: 0;
+                      <a href="https://${referer}}/password-recovery?code=${recoveryCode}" style="background-color: #397DF6; color: #ffffff; border: 0;
                                  padding: 10px 20px; border-radius: 8px; font-size: 24px; margin: 15px;
                                  text-decoration: none;
                                  " target="_blank">Set up your account</a>
@@ -62,6 +65,7 @@ export class EmailService {
     }
   }
   async sendConfirmCode(username: string, email: string, code: string) {
+    const referer = this.als.getStore().host;
     await this.transporter.sendMail({
       to: email,
       from: this.configService.get('SMTP_USER'),
@@ -81,9 +85,7 @@ export class EmailService {
                 <br>
                 <br>
                 <div>
-                    <a href="${this.configService.get(
-                      'FRONT_HOME_URl',
-                    )}/auth/email-confirmed?code=${code}" style="background-color: #397DF6; color: #ffffff; border: 0;
+                    <a href="https://${referer}/auth/email-confirmed?code=${code}" style="background-color: #397DF6; color: #ffffff; border: 0;
                                padding: 10px 20px; border-radius: 8px; font-size: 24px; margin: 15px;
                                text-decoration: none;
                                " target="_blank">Set up your account</a>

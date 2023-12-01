@@ -11,9 +11,11 @@ import { LoggerMiddleware } from '../../../libs/logger/logger.middleware';
 import { AdminModule } from './modules/admin/admin.module';
 import { PostsModule } from './modules/posts/posts.module';
 import { ServicesModule } from './clients/services.module';
+import { AlsModule } from './als.module';
 
 @Module({
   imports: [
+    AlsModule,
     ServicesModule,
     ConfigModule.forRoot({
       load: [getEnvConfig],

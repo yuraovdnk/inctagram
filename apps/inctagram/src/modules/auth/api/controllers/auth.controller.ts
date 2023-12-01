@@ -4,10 +4,8 @@ import {
   Get,
   HttpCode,
   HttpStatus,
-  Logger,
   ParseUUIDPipe,
   Post,
-  Query,
   Res,
   UseGuards,
 } from '@nestjs/common';
@@ -71,21 +69,6 @@ export class AuthController {
     return this.commandBus.execute<SignupCommand, NotificationResult>(
       new SignupCommand(signUpDto),
     );
-  }
-
-  @HttpCode(HttpStatus.OK)
-  @Get('email-confirm')
-  async confirmationEmailTest(
-    @Res() res: Response,
-    @Query('code', ParseUUIDPipe) code: string,
-  ) {
-    const notification = await this.commandBus.execute<
-      EmailConfirmCommand,
-      NotificationResult
-    >(new EmailConfirmCommand(code));
-    if (!notification.hasError()) {
-      res.redirect(`https://inctagram.space/auth/email-confirmed`);
-    }
   }
 
   //registration-confirmation

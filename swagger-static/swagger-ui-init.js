@@ -55,29 +55,6 @@ window.onload = function() {
           ]
         }
       },
-      "/api/v1/auth/email-confirm": {
-        "get": {
-          "operationId": "AuthController_confirmationEmailTest",
-          "parameters": [
-            {
-              "name": "code",
-              "required": true,
-              "in": "query",
-              "schema": {
-                "type": "string"
-              }
-            }
-          ],
-          "responses": {
-            "200": {
-              "description": ""
-            }
-          },
-          "tags": [
-            "AUTH"
-          ]
-        }
-      },
       "/api/v1/auth/registration-confirmation": {
         "post": {
           "operationId": "AuthController_confirmationEmail",

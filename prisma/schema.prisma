@@ -95,7 +95,7 @@ model AuthSession {
   issuedAt   DateTime
   expireAt   DateTime
   ip         String
-  deviceName String
+  deviceName String   @default("")
   user       User?    @relation(fields: [userId], references: [id])
 
   @@map("auth_sessions")

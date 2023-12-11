@@ -1,15 +1,17 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpCode,
   HttpStatus,
+  Param,
   ParseUUIDPipe,
   Post,
   Res,
   UseGuards,
 } from '@nestjs/common';
-import { CommandBus } from '@nestjs/cqrs';
+import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { SignUpDto } from '../../application/dto/request/sign-up.dto';
 import { ApiTags } from '@nestjs/swagger';
 import { PasswordRecoveryDto } from '../../application/dto/request/password-recovery.dto';
@@ -52,13 +54,21 @@ import { SignUpViewDto } from '../../application/dto/response/sign-up.view.dto';
 import { LoginViewDto } from '../../application/dto/response/login.view.dto';
 import { RefreshTokenViewDto } from '../../application/dto/response/refresh-token.view.dto';
 import { NotificationCodesEnum } from '../../../../../../../libs/common/notification/notification-codes.enum';
+import { GetAuthSessionsQuery } from '../../application/use-cases/queries/get-auth-sessions.query.handler';
+import { AuthRepository } from '../../infrastructure/repository/auth.repository';
+import { ApiGetAuthSessions } from '../../application/dto/swagger/get-auth-sessions.swagger.api';
+import { AuthSessionViewDto } from '../../application/dto/response/auth-session.view.dto';
+import { ApiTerminateAuthSession } from '../../application/dto/swagger/terminate-auth-session.swagger.api';
+import { ApiTerminateAllAuthSessions } from '../../application/dto/swagger/terminate-all-auth-sessions.swagger-api';
 
 @ApiTags('AUTH')
 @Controller('auth')
 export class AuthController {
   constructor(
     private commandBus: CommandBus,
+    private queryBus: QueryBus,
     private readonly usersRepository: UsersRepository,
+    private authRepository: AuthRepository,
   ) {}
 
   //register in the system
@@ -203,5 +213,44 @@ export class AuthController {
       );
     }
     return new SuccessResult(new UserInfoViewDto(user));
+  }
+
+  @ApiGetAuthSessions(AuthSessionViewDto)
+  @UseGuards(JwtGuard)
+  @Get('sessions')
+  async getAuthSessions(@CurrentUser() userId: string) {
+    return this.queryBus.execute(new GetAuthSessionsQuery(userId));
+  }
+
+  @ApiTerminateAllAuthSessions()
+  @UseGuards(JwtCookieGuard)
+  @Delete('sessions')
+  async terminateSessions(
+    @CurrentUser() userId: string,
+    @DeviceMeta() deviceInfo: DeviceInfoType,
+  ): Promise<NotificationResult> {
+    await this.authRepository.deleteOtherAuthSession(
+      userId,
+      deviceInfo.deviceId,
+    );
+    return NotificationResult.Success();
+  }
+
+  @ApiTerminateAuthSession()
+  @UseGuards(JwtCookieGuard)
+  @Delete('session/:deviceId')
+  async terminateSession(
+    @CurrentUser() userId: string,
+    @Param('deviceId', ParseUUIDPipe) deviceId: string,
+    @DeviceMeta() deviceInfo: DeviceInfoType,
+  ): Promise<NotificationResult> {
+    if (deviceInfo.deviceId === deviceId) {
+      return NotificationResult.Failure(
+        NotificationCodesEnum.FORBIDDEN,
+        'something went wrong',
+      );
+    }
+    await this.authRepository.deleteAuthSessionByDeviceId(deviceId);
+    return NotificationResult.Success();
   }
 }

@@ -8,6 +8,7 @@ import {
   NotificationResult,
   SuccessResult,
 } from '../../../../../../../../libs/common/notification/notification-result';
+import { detectDevice } from '../../../../../../common/utils/device-detector';
 
 export class CreateAuthSessionCommand {
   constructor(
@@ -43,6 +44,10 @@ export class CreateAuthSessionCommandHandler
     );
 
     if (!authSession) {
+      // command.deviceInfo.deviceName = detectDevice(
+      //   command.deviceInfo.deviceName,
+      // );
+
       const session = AuthSessionEntity.create(
         command.deviceInfo,
         command.userId,

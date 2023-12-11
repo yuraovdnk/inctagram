@@ -23,7 +23,10 @@ function extendPrismaClient() {
             avatar: true,
           },
           compute: (userProfile) => {
-            return s3Link('user-avatars') + userProfile.avatar;
+            if (userProfile.avatar) {
+              return s3Link('user-avatars') + userProfile.avatar;
+            }
+            return userProfile.avatar;
           },
         },
       },

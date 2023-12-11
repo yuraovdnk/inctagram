@@ -14,6 +14,6 @@ export class KillAuthSessionCommandHandler
 {
   constructor(private authRepository: AuthRepository) {}
   async execute(command: KillAuthSessionCommand) {
-    return this.authRepository.killAuthSession(command.deviceId);
+    return this.authRepository.deleteAuthSessionByDeviceId(command.deviceId);
   }
 }

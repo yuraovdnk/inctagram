@@ -136,12 +136,34 @@ export class AuthRepository {
     await this.cacheManager.set(model.deviceId, model);
   }
 
-  async killAuthSession(deviceId: string): Promise<void> {
+  async deleteAuthSessionByDeviceId(deviceId: string): Promise<void> {
     await this.prismaService.authSession.delete({
       where: {
         deviceId,
       },
     });
-    await this.cacheManager.del(deviceId);
+  }
+
+  async getAuthSessions(userId: string) {
+    const sessions = await this.prismaService.authSession.findMany({
+      where: {
+        userId,
+      },
+      orderBy: {
+        issuedAt: 'desc',
+      },
+    });
+    return sessions.map((session) => AuthSessionMapper.toEntity(session));
+  }
+
+  async deleteOtherAuthSession(userId: string, deviceId: string) {
+    await this.prismaService.authSession.deleteMany({
+      where: {
+        NOT: {
+          deviceId,
+        },
+        userId,
+      },
+    });
   }
 }

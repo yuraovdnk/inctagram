@@ -105,7 +105,6 @@ export class AuthController {
       CreateAuthSessionCommand,
       NotificationResult<JwtTokens>
     >(new CreateAuthSessionCommand(deviceInfo, userId));
-
     res.cookie('refreshToken', result.data.refreshToken, {
       httpOnly: true,
       secure: true,

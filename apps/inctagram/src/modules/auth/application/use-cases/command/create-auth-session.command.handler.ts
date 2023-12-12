@@ -44,9 +44,10 @@ export class CreateAuthSessionCommandHandler
     );
 
     if (!authSession) {
-      // command.deviceInfo.deviceName = detectDevice(
-      //   command.deviceInfo.deviceName,
-      // );
+      console.log(command.deviceInfo.deviceName);
+      command.deviceInfo.deviceName = await detectDevice(
+        command.deviceInfo.deviceName,
+      );
 
       const session = AuthSessionEntity.create(
         command.deviceInfo,

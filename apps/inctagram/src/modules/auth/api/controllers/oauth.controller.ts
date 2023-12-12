@@ -7,7 +7,10 @@ import {
 } from '../../../../../../../libs/common/decorators/device-info.decorator';
 import { CurrentExternalAccount } from '../../../../../../../libs/common/decorators/external-account.decorator';
 import { AuthenticationByExternalAccountCommand } from '../../application/use-cases/command/authentication-by-external-account-command.handler';
-import { NotificationResult } from '../../../../../../../libs/common/notification/notification-result';
+import {
+  NotificationResult,
+  SuccessResult,
+} from '../../../../../../../libs/common/notification/notification-result';
 import { UserEntity } from '../../../users/domain/entity/user.entity';
 import { CreateAuthSessionCommand } from '../../application/use-cases/command/create-auth-session.command.handler';
 import { CommandBus } from '@nestjs/cqrs';
@@ -49,9 +52,11 @@ export class OauthController {
         // httpOnly: true,
         // secure: true,
       });
-      res
-        .status(200)
-        .send({ accessToken: resultCreateSession.data.accessToken });
+      res.status(200).send(
+        new SuccessResult({
+          accessToken: resultCreateSession.data.accessToken,
+        }),
+      );
     }
   }
 
@@ -82,9 +87,11 @@ export class OauthController {
         // httpOnly: true,
         // secure: true,
       });
-      res
-        .status(200)
-        .send({ accessToken: resultCreateSession.data.accessToken });
+      res.status(200).send(
+        new SuccessResult({
+          accessToken: resultCreateSession.data.accessToken,
+        }),
+      );
     }
   }
 }

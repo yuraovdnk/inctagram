@@ -17,6 +17,7 @@ CREATE TABLE "user_profiles" (
     "updatedAt" TIMESTAMP(3) NOT NULL,
     "firstName" TEXT NOT NULL,
     "lastName" TEXT NOT NULL,
+    "country" TEXT,
     "city" TEXT,
     "dateOfBirth" TIMESTAMP(3),
     "aboutMe" TEXT,
@@ -32,6 +33,7 @@ CREATE TABLE "posts" (
     "description" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP,
     "location" TEXT,
+    "deleted" BOOLEAN NOT NULL DEFAULT false,
 
     CONSTRAINT "posts_pkey" PRIMARY KEY ("id")
 );
@@ -75,6 +77,7 @@ CREATE TABLE "auth_sessions" (
     "issuedAt" TIMESTAMP(3) NOT NULL,
     "expireAt" TIMESTAMP(3) NOT NULL,
     "ip" TEXT NOT NULL,
+    "deviceName" TEXT NOT NULL DEFAULT '',
 
     CONSTRAINT "auth_sessions_pkey" PRIMARY KEY ("id")
 );

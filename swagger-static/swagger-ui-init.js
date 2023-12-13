@@ -387,6 +387,98 @@ window.onload = function() {
           ]
         }
       },
+      "/api/v1/auth/sessions": {
+        "get": {
+          "operationId": "AuthController_getAuthSessions",
+          "summary": "all auth session",
+          "parameters": [],
+          "responses": {
+            "200": {
+              "description": "",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "allOf": [
+                      {
+                        "$ref": "#/components/schemas/NotificationResult"
+                      },
+                      {
+                        "properties": {
+                          "data": {
+                            "type": "array",
+                            "items": {
+                              "$ref": "#/components/schemas/AuthSessionViewDto"
+                            }
+                          }
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "tags": [
+            "AUTH"
+          ],
+          "security": [
+            {
+              "accessToken": []
+            }
+          ]
+        },
+        "delete": {
+          "operationId": "AuthController_terminateSessions",
+          "summary": "terminate  all auth sessions",
+          "parameters": [],
+          "responses": {
+            "200": {
+              "description": "",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/NotificationResult"
+                  }
+                }
+              }
+            }
+          },
+          "tags": [
+            "AUTH"
+          ]
+        }
+      },
+      "/api/v1/auth/session/{deviceId}": {
+        "delete": {
+          "operationId": "AuthController_terminateSession",
+          "summary": "terminate auth session",
+          "parameters": [
+            {
+              "name": "deviceId",
+              "required": true,
+              "in": "path",
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/NotificationResult"
+                  }
+                }
+              }
+            }
+          },
+          "tags": [
+            "AUTH"
+          ]
+        }
+      },
       "/api/v1/oauth/github": {
         "get": {
           "operationId": "OauthController_githubSignup",
@@ -835,6 +927,19 @@ window.onload = function() {
           "summary": "Get all user`s posts",
           "parameters": [
             {
+              "name": "sortDirection",
+              "required": true,
+              "in": "query",
+              "schema": {
+                "default": "desc",
+                "enum": [
+                  "asc",
+                  "desc"
+                ],
+                "type": "string"
+              }
+            },
+            {
               "name": "userId",
               "required": true,
               "in": "path",
@@ -843,8 +948,26 @@ window.onload = function() {
               }
             },
             {
-              "name": "sortDirection",
               "required": true,
+              "name": "pageNumber",
+              "in": "query",
+              "schema": {
+                "default": 1,
+                "type": "object"
+              }
+            },
+            {
+              "required": true,
+              "name": "pageSize",
+              "in": "query",
+              "schema": {
+                "default": 10,
+                "type": "object"
+              }
+            },
+            {
+              "required": true,
+              "name": "sortDirection",
               "in": "query",
               "schema": {
                 "default": "desc",
@@ -1270,6 +1393,30 @@ window.onload = function() {
             "userId",
             "username",
             "email"
+          ]
+        },
+        "AuthSessionViewDto": {
+          "type": "object",
+          "properties": {
+            "deviceId": {
+              "type": "string"
+            },
+            "deviceName": {
+              "type": "string"
+            },
+            "ip": {
+              "type": "string"
+            },
+            "lastVisit": {
+              "format": "date-time",
+              "type": "string"
+            }
+          },
+          "required": [
+            "deviceId",
+            "deviceName",
+            "ip",
+            "lastVisit"
           ]
         },
         "UserProfileDto": {

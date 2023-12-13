@@ -6562,6 +6562,13 @@ node-addon-api@^6.1.0:
   resolved "https://registry.yarnpkg.com/node-addon-api/-/node-addon-api-6.1.0.tgz#ac8470034e58e67d0c6f1204a18ae6995d9c0d76"
   integrity sha512-+eawOlIgy680F0kBzPUNFhMZGtJ1YmqM6l4+Crf4IkImjYrO/mqPwRMh352g23uIaQKFItcQ64I7KMaJxHgAVA==
 
+node-device-detector@^2.0.17:
+  version "2.0.17"
+  resolved "https://registry.yarnpkg.com/node-device-detector/-/node-device-detector-2.0.17.tgz#3d77f571990d8c1b8e3655ca7c9808372d295cac"
+  integrity sha512-qCptR7eGo6t/YydsOOj3v28XL7FK1sEAeNx7hahJjEirxwWI5ykfEg5CiWLMzBNZpnV40+lNvGaJYA67Saztyg==
+  dependencies:
+    js-yaml "^4.1.0"
+
 node-emoji@1.11.0:
   version "1.11.0"
   resolved "https://registry.yarnpkg.com/node-emoji/-/node-emoji-1.11.0.tgz#69a0150e6946e2f115e9d7ea4df7971e2628301c"

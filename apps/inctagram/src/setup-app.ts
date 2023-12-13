@@ -27,6 +27,7 @@ export const setupApp = (app: INestApplication) => {
     new ValidationPipe({
       stopAtFirstError: true,
       transform: true,
+
       exceptionFactory: (errors) => {
         const errorsForResponse: NotificationExtension[] = [];
         for (const e of errors) {

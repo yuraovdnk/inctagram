@@ -30,6 +30,7 @@ import { UserCreatedByExternalAccountEventHandler } from './application/use-case
 import { OauthController } from './api/controllers/oauth.controller';
 import { PasswordRecoveryEventHandler } from './application/use-cases/events/password-recovery-event.handler';
 import { AsyncLocalStorage } from 'node:async_hooks';
+import { GetAuthSessionsQueryHandler } from './application/use-cases/queries/get-auth-sessions.query.handler';
 
 const commandHandlers = [
   PasswordRecoveryCommandHandler,
@@ -46,6 +47,7 @@ const eventHandlers = [
   SendConfirmCodeEventHandler,
   UserCreatedByExternalAccountEventHandler,
   PasswordRecoveryEventHandler,
+  GetAuthSessionsQueryHandler,
 ];
 const Strategies = [
   LocalStrategy,

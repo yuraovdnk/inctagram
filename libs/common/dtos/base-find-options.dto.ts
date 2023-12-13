@@ -1,14 +1,14 @@
 import { IsEnum, IsInt, IsOptional } from 'class-validator';
-
-import { Injectable } from '@nestjs/common';
+import { ApiProperty } from '@nestjs/swagger';
 
 export enum Order {
   ASC = 'asc',
   DESC = 'desc',
 }
-@Injectable()
+
 export abstract class BaseFindOptionsDto {
   @IsInt()
+  @ApiProperty()
   @IsOptional()
   pageNumber = 1;
 
@@ -18,7 +18,7 @@ export abstract class BaseFindOptionsDto {
 
   @IsEnum(Order, { each: true })
   @IsOptional()
-  readonly sortDirection: Order = Order.DESC;
+  sortDirection: Order = Order.DESC;
 
   get skip(): number {
     return this.pageSize * (this.pageNumber - 1);

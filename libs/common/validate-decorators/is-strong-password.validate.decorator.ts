@@ -20,7 +20,7 @@ export function IsStrongPassword(
       validator: {
         validate(value: string) {
           const passwordRegex =
-            /^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!"#$%&'()*+,-./:;<=>?@[\]^_`{|}〜])[a-zA-Z\d!"#$%&'()*+,-./:;<=>?@[\]^_`{|}〜]+$/;
+            /^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!"#$%&'()*+,-./:;<=>?@\\[\]^_`{|}〜])[a-zA-Z\d!"#$%&'()*+,-./:;<=>?@\\[\]^_`{|}〜]+$/;
           if (typeof value !== 'string' || !value) {
             return false;
           }

@@ -143,7 +143,7 @@ describe('UserController (e2e)', () => {
         username: updateUserProfileDtoMock.username,
         aboutMe: null,
         city: null,
-        avatar: expect.any(String),
+        avatar: null,
         country: null,
         dateOfBirth: updateUserProfileDtoMock.dateOfBirth,
         firstName: updateUserProfileDtoMock.firstName,

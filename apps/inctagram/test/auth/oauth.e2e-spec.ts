@@ -12,6 +12,8 @@ import request from 'supertest';
 import { EventBus } from '@nestjs/cqrs';
 import { EmailService } from '../../../../libs/adapters/mailer/mail.service';
 import { setupApp } from '../../src/setup-app';
+import { NotificationCodesEnum } from '../../../../libs/common/notification/notification-codes.enum';
+import { NotificationResult } from '../../../../libs/common/notification/notification-result';
 
 describe('oauth', () => {
   jest.setTimeout(20000);
@@ -43,7 +45,14 @@ describe('oauth', () => {
     githubGuard = app.get(GithubGuard);
     usersRepository = app.get(UsersRepository);
   });
-
+  function expectNotification(
+    result: request.Response,
+    resultCode: NotificationCodesEnum,
+  ) {
+    expect(result.body).toMatchObject<Partial<NotificationResult>>({
+      resultCode,
+    });
+  }
   function mockGuard(
     guard: GoogleGuard | GithubGuard,
     mockExternalAccountDto: OauthExternalAccountDto,
@@ -66,11 +75,15 @@ describe('oauth', () => {
     it('registration via github', async () => {
       mockGuard(googleGuard, mockExternalAccount);
 
-      const res = await request(app.getHttpServer()).get(
-        '/oauth/google/callback',
-      );
+      const res = await request(app.getHttpServer())
+        .get('/oauth/google/callback')
+        .set(
+          'user-agent',
+          'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+        );
+      expectNotification(res, NotificationCodesEnum.OK);
 
-      expect(res.body).toHaveProperty('accessToken');
+      expect(res.body.data).toHaveProperty('accessToken');
 
       const user = await usersRepository.findUserByProviderId(
         mockExternalAccount.providerId,
@@ -121,7 +134,12 @@ describe('oauth', () => {
       mockGuard(googleGuard, mockGoogleAccount);
 
       //callback from google
-      await request(app.getHttpServer()).get('/oauth/google/callback');
+      await request(app.getHttpServer())
+        .get('/oauth/google/callback')
+        .set(
+          'user-agent',
+          'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+        );
 
       const userByGoogleAcc = await usersRepository.findUserByProviderId(
         mockGoogleAccount.providerId,
@@ -138,7 +156,12 @@ describe('oauth', () => {
       } as UserEntity);
 
       //callback from google
-      await request(app.getHttpServer()).get('/oauth/github/callback');
+      await request(app.getHttpServer())
+        .get('/oauth/github/callback')
+        .set(
+          'user-agent',
+          'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+        );
       const userByGithubAcc = await usersRepository.findUserByProviderId(
         mockGithubAccount.providerId,
       );

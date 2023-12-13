@@ -20,10 +20,8 @@ import { FilesInterceptor } from '@nestjs/platform-express';
 import { NotificationResult } from '../../../../../../libs/common/notification/notification-result';
 import { JwtGuard } from '../../auth/application/strategies/jwt.strategy';
 import { CurrentUser } from '../../../../../../libs/common/decorators/current-user.decorator';
-import { GetPostsQuery } from '../application/use-cases/queries/get-posts-query.handler';
 import { GetPostsFindOptions } from './dto/get-posts-find.options';
-import { PageDto } from '../../../../../../libs/common/dtos/pagination.dto';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiQuery, ApiTags } from '@nestjs/swagger';
 import { CreatePostCommand } from '../application/use-cases/commands/create-post.command.handler';
 import { ApiCreatePost } from './swagger/api-create-post.swagger';
 import { ApiGetPosts } from './swagger/api-get-posts.swagger';
@@ -35,6 +33,8 @@ import { EditPostDto } from './dto/edit-post.dto';
 import { EditPostCommand } from '../application/use-cases/commands/edit-post.command.handler';
 import { ApiUpdatePost } from './swagger/api-update-post.swagger';
 import { GetPostQuery } from '../application/use-cases/queries/get-post-by-id.query.handler';
+import { GetPostsQuery } from '../application/use-cases/queries/get-posts-query.handler';
+import { PageDto } from '../../../../../../libs/common/dtos/pagination.dto';
 
 @ApiTags('Posts')
 @Controller('posts')
@@ -60,8 +60,8 @@ export class PostController {
   @ApiGetPosts(PostViewModel)
   @Get(':userId')
   async getPosts(
-    @Param('userId', new ParseUUIDPipe()) userId: string,
     @Query() findOptions: GetPostsFindOptions,
+    @Param('userId', new ParseUUIDPipe()) userId: string,
   ) {
     return this.queryBus.execute<
       GetPostsQuery,

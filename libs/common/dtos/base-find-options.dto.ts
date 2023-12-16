@@ -1,5 +1,6 @@
 import { IsEnum, IsInt, IsOptional } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
+import { Type } from 'class-transformer';
 
 export enum Order {
   ASC = 'asc',
@@ -7,12 +8,12 @@ export enum Order {
 }
 
 export abstract class BaseFindOptionsDto {
-  @IsInt()
+  @Type(() => Number)
   @ApiProperty()
   @IsOptional()
   pageNumber = 1;
 
-  @IsInt()
+  @Type(() => Number)
   @IsOptional()
   pageSize = 10;
 

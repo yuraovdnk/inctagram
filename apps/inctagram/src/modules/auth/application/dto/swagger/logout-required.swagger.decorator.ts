@@ -1,6 +1,6 @@
 import { applyDecorators } from '@nestjs/common';
 import { ApiCookieAuth, ApiOperation } from '@nestjs/swagger';
-import { ApiNotificationResult } from './nofication-result.swagger';
+import { ApiNotificationResult } from '../../../../../../common/decorators/swagger/nofication-result.swagger';
 
 export const LogoutRequired = () =>
   applyDecorators(

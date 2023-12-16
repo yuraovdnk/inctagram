@@ -5,7 +5,7 @@ import {
   ApiTooManyRequestsResponse,
 } from '@nestjs/swagger';
 import { NewPasswordDto } from '../request/new-password.dto';
-import { ApiNotificationResult } from './nofication-result.swagger';
+import { ApiNotificationResult } from '../../../../../../common/decorators/swagger/nofication-result.swagger';
 
 export const ApiNewPassword = () =>
   applyDecorators(

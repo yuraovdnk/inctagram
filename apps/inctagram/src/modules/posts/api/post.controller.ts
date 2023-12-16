@@ -21,7 +21,7 @@ import { NotificationResult } from '../../../../../../libs/common/notification/n
 import { JwtGuard } from '../../auth/application/strategies/jwt.strategy';
 import { CurrentUser } from '../../../../../../libs/common/decorators/current-user.decorator';
 import { GetPostsFindOptions } from './dto/get-posts-find.options';
-import { ApiQuery, ApiTags } from '@nestjs/swagger';
+import { ApiTags } from '@nestjs/swagger';
 import { CreatePostCommand } from '../application/use-cases/commands/create-post.command.handler';
 import { ApiCreatePost } from './swagger/api-create-post.swagger';
 import { ApiGetPosts } from './swagger/api-get-posts.swagger';
@@ -93,6 +93,7 @@ export class PostController {
       new EditPostCommand(postId, userId, editPost),
     );
   }
+
   @Get('post/:id')
   async getPost(@Param('id', ParseUUIDPipe) postId: string) {
     return this.queryBus.execute(new GetPostQuery(postId));

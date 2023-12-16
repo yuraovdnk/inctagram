@@ -1,6 +1,6 @@
 import { applyDecorators, Type } from '@nestjs/common';
 import { ApiOperation } from '@nestjs/swagger';
-import { ApiNotificationResult } from '../../../auth/application/dto/swagger/nofication-result.swagger';
+import { ApiNotificationResult } from '../../../../../common/decorators/swagger/nofication-result.swagger';
 
 export const ApiGetAllLogFiles = <T extends Type<any>>(
   notificationDataType?: T,

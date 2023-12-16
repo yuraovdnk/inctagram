@@ -17,7 +17,8 @@ export class PageDto<T> {
     queryParams: BaseFindOptionsDto,
     totalCount?: number,
   ) {
-    this.pagesCount = Math.ceil(totalCount / queryParams.pageSize);
+    const calculatedPages = Math.ceil(totalCount / queryParams.pageSize);
+    this.pagesCount = !Number.isFinite(calculatedPages) ? 0 : calculatedPages;
     this.page = queryParams.pageNumber;
     this.totalCount = totalCount;
     this.pageSize = queryParams.pageSize;

@@ -5,7 +5,7 @@ import {
   ApiConsumes,
   ApiOperation,
 } from '@nestjs/swagger';
-import { ApiNotificationResult } from '../../../auth/application/dto/swagger/nofication-result.swagger';
+import { ApiNotificationResult } from '../../../../../common/decorators/swagger/nofication-result.swagger';
 import { CreatePostDto } from '../dto/create-post.dto';
 
 export const ApiCreatePost = () =>

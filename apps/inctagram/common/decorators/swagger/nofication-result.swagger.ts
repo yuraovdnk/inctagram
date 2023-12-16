@@ -5,7 +5,7 @@ import {
   ApiResponseOptions,
   getSchemaPath,
 } from '@nestjs/swagger';
-import { NotificationResult } from '../../../../../../../../libs/common/notification/notification-result';
+import { NotificationResult } from '../../../../../libs/common/notification/notification-result';
 
 export const ApiNotificationResult = <T extends Type<any>>(
   notificationData?: T,

@@ -36,7 +36,7 @@ export class PostsRepository {
       }),
       this.prisma.post.count({
         where: {
-          userId,
+          AND: [{ userId }, { deleted: false }],
         },
       }),
     ]);

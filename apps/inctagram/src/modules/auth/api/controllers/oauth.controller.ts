@@ -49,8 +49,8 @@ export class OauthController {
       >(new CreateAuthSessionCommand(deviceInfo, resultAuth.data.id));
 
       res.cookie('refreshToken', resultCreateSession.data.refreshToken, {
-        // httpOnly: true,
-        // secure: true,
+        httpOnly: true,
+        secure: true,
       });
       res.status(200).send(
         new SuccessResult({
@@ -84,8 +84,8 @@ export class OauthController {
       >(new CreateAuthSessionCommand(deviceInfo, resultAuth.data.id));
 
       res.cookie('refreshToken', resultCreateSession.data.refreshToken, {
-        // httpOnly: true,
-        // secure: true,
+        httpOnly: true,
+        secure: true,
       });
       res.status(200).send(
         new SuccessResult({

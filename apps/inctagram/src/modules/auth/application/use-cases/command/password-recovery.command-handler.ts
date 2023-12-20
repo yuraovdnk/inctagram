@@ -26,8 +26,8 @@ export class PasswordRecoveryCommandHandler
     const { email } = command;
     const userEntity = await this.usersRepository.findByEmail(email);
     if (!userEntity || !userEntity.isConfirmedEmail) {
-      return new SuccessResult();
-    } //according to security requirements, in any case, we return a success result
+      return NotificationResult.Success();
+    }
     const passwordRecoveryEntity = PasswordRecoveryEntity.create(userEntity);
     await this.authRepository.createPasswordRecoveryCode(
       passwordRecoveryEntity,
@@ -35,6 +35,6 @@ export class PasswordRecoveryCommandHandler
     passwordRecoveryEntity.getUncommittedEvents().forEach((event) => {
       this.eventBus.publish(event);
     });
-    return new SuccessResult();
+    return NotificationResult.Success();
   }
 }

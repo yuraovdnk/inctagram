@@ -84,15 +84,4 @@ export class UserProfileDto {
   @MaxLength(200)
   @IsOptional()
   aboutMe: string;
-
-  @ApiProperty({
-    description: 'avatar',
-    required: false,
-    nullable: true,
-    format: 'url',
-    example: 'https://s3.eu-central-1.amazonaws.com/example-bucket/avatar.png',
-  })
-  @IsUrl()
-  @IsOptional()
-  avatar: string;
 }

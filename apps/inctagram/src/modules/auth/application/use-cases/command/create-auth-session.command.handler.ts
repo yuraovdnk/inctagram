@@ -44,7 +44,6 @@ export class CreateAuthSessionCommandHandler
     );
 
     if (!authSession) {
-      console.log(command.deviceInfo.deviceName);
       command.deviceInfo.deviceName = await detectDevice(
         command.deviceInfo.deviceName,
       );

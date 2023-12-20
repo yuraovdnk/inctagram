@@ -16,7 +16,11 @@ export const setupApp = (app: INestApplication) => {
   app.use(cookieParser());
   useContainer(app.select(AppModule), { fallbackOnErrors: true });
   app.enableCors({
-    origin: ['http://localhost:3000', 'https://inctagram.space'],
+    origin: [
+      'http://localhost:3000',
+      'https://inctagram.space',
+      'https://inctagram-ruby.vercel.app',
+    ],
     methods: 'GET, HEAD, PUT, PATCH, POST, DELETE, OPTIONS',
     preflightContinue: false,
     optionsSuccessStatus: 204,

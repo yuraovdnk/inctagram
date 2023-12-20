@@ -1,7 +1,7 @@
 import { applyDecorators } from '@nestjs/common';
 import { ApiBody, ApiOperation } from '@nestjs/swagger';
 import { ConfirmEmailDto } from '../request/confirm-email.dto';
-import { ApiNotificationResult } from './nofication-result.swagger';
+import { ApiNotificationResult } from '../../../../../../common/decorators/swagger/nofication-result.swagger';
 
 export const RegistrationConfirmationRequired = () =>
   applyDecorators(

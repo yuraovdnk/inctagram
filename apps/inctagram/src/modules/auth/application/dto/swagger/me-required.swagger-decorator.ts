@@ -1,7 +1,7 @@
 import { applyDecorators, Type } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
 
-import { ApiNotificationResult } from './nofication-result.swagger';
+import { ApiNotificationResult } from '../../../../../../common/decorators/swagger/nofication-result.swagger';
 
 export const ApiGetUserInfo = <T extends Type<any>>(notificationData: T) =>
   applyDecorators(

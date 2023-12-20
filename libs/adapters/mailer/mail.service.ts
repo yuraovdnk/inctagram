@@ -45,7 +45,7 @@ export class EmailService {
                   <br>
                   <br>
                   <div>
-                      <a href="https://${referer}}/password-recovery?code=${recoveryCode}" style="background-color: #397DF6; color: #ffffff; border: 0;
+                      <a href="https://${referer}/auth/create-new-password?code=${recoveryCode}" style="background-color: #397DF6; color: #ffffff; border: 0;
                                  padding: 10px 20px; border-radius: 8px; font-size: 24px; margin: 15px;
                                  text-decoration: none;
                                  " target="_blank">Set up your account</a>

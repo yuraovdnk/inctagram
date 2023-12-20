@@ -246,10 +246,12 @@ export class AuthController {
     if (deviceInfo.deviceId === deviceId) {
       return NotificationResult.Failure(
         NotificationCodesEnum.FORBIDDEN,
-        'something went wrong',
+        'You can not terminate active session',
+        'auth sessions',
       );
     }
-    await this.authRepository.deleteAuthSessionByDeviceId(deviceId);
-    return NotificationResult.Success();
+    return this.commandBus.execute(
+      new KillAuthSessionCommand(userId, deviceId),
+    );
   }
 }

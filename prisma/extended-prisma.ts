@@ -1,9 +1,23 @@
-import { PrismaClient } from '@prisma/client';
+import { Prisma, PrismaClient } from '@prisma/client';
 import { s3Link } from '../apps/files-microservice/src/utils/generateS3Url';
 
 function extendPrismaClient() {
   const prisma = new PrismaClient();
   return prisma.$extends({
+    model: {
+      $allModels: {
+        async save<T>(this: T, where: Prisma.Args<T, 'update'>['where']) {
+          const context = Prisma.getExtensionContext(this);
+          const result = await (context as any).upsert({
+            where: {
+              id: where.id,
+            },
+            update: where,
+            create: where,
+          });
+        },
+      },
+    },
     result: {
       user: {
         save: {

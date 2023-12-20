@@ -16,7 +16,6 @@ export class UsersRepository {
       .prismaService,
   ): Promise<string> {
     const userModel = UserMapper.toModel(entity);
-
     const user = await prisma.user.create({
       data: userModel,
     });
@@ -196,7 +195,6 @@ export class UsersRepository {
         profile: true,
       },
     });
-    console.log(profile);
     return profile ? UserMapper.toEntity(profile) : null;
   }
 

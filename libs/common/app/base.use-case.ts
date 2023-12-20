@@ -33,7 +33,6 @@ export abstract class BaseUseCase<Message> {
         if (notificationResult.hasError()) {
           throw new Error();
         }
-
         notificationResult.events.forEach((event) => {
           this.eventBus.publish(event);
         });
@@ -44,7 +43,6 @@ export abstract class BaseUseCase<Message> {
     } finally {
       console.log('transaction ended');
     }
-    console.log(notificationResult, 'notificationResult');
     return notificationResult.toViewResponse();
   }
 }

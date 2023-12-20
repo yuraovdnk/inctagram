@@ -1466,13 +1466,6 @@ window.onload = function() {
               "description": "aboutMe",
               "nullable": true,
               "example": "Some text..."
-            },
-            "avatar": {
-              "type": "string",
-              "description": "avatar",
-              "nullable": true,
-              "format": "url",
-              "example": "https://s3.eu-central-1.amazonaws.com/example-bucket/avatar.png"
             }
           },
           "required": [

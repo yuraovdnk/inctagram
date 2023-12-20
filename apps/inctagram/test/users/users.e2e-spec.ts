@@ -97,12 +97,14 @@ describe('UserController (e2e)', () => {
         .auth(accessTokenUser, { type: 'bearer' })
         .expect(HttpStatus.OK);
       expectNotification(result, NotificationCodesEnum.OK);
+
+      console.log(result, 'result1235');
       expect(result.body.data).toMatchObject({
         userId: users[0].id,
         username: createUserProfileDtoMock.username,
         aboutMe: createUserProfileDtoMock.aboutMe,
         city: createUserProfileDtoMock.city,
-        avatar: expect.any(String),
+        avatar: null,
         country: createUserProfileDtoMock.country,
         dateOfBirth: createUserProfileDtoMock.dateOfBirth,
         firstName: createUserProfileDtoMock.firstName,
@@ -124,7 +126,6 @@ describe('UserController (e2e)', () => {
       updateUserProfileDtoMock.city = null;
       updateUserProfileDtoMock.country = null;
       updateUserProfileDtoMock.aboutMe = null;
-      updateUserProfileDtoMock.avatar = null;
 
       const result = await request(app.getHttpServer())
         .put(`/users/profile/${users[0].id}`)

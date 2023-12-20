@@ -12,8 +12,7 @@ describe(`Testing for ${dtoTitle}`, () => {
     mockDto.city = 'London';
     mockDto.dateOfBirth = '2003-09-01T20:22:39.762Z';
     mockDto.aboutMe = 'About me text...';
-    mockDto.avatar =
-      'https://s3.eu-central-1.amazonaws.com/example-bucket/avatar.png';
+
     return mockDto;
   };
   it('should validate a valid Dto', async () => {
@@ -24,7 +23,6 @@ describe(`Testing for ${dtoTitle}`, () => {
   it('should validate a valid Dto if city, avatar, aboutMe equal null', async () => {
     const changedMockDto = getMockDto();
     changedMockDto.city = null;
-    changedMockDto.avatar = null;
     changedMockDto.aboutMe = null;
 
     const errors = await validate(changedMockDto);
@@ -114,14 +112,5 @@ describe(`Testing for ${dtoTitle}`, () => {
       'About me. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip sdlsdslg,saserd',
     ];
     dtoFieldTest('aboutMe', getMockDto(), validValues, invalidValues);
-  });
-  describe('field: avatar', () => {
-    const validValues = [
-      null,
-      undefined,
-      'https://s3.eu-central-1.amazonaws.com/example-bucket/avatar.png',
-    ];
-    const invalidValues = [1, true, 'About me. ', 'https:/s3.eu'];
-    dtoFieldTest('avatar', getMockDto(), validValues, invalidValues);
   });
 });

@@ -34,7 +34,6 @@ export const createUserProfileDtoMock: UserProfileDto = {
   username: 'Username1',
   aboutMe: 'About Me text ...',
   city: 'London',
-  avatar: 'https://s3.eu-central-1.amazonaws.com/example-bucket/avatar.png',
   dateOfBirth: '2003-09-01T20:22:39.762Z',
   firstName: 'John',
   country: 'England',

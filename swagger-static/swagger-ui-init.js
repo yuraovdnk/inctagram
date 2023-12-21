@@ -1155,7 +1155,7 @@ window.onload = function() {
     },
     "info": {
       "title": "Inctagram",
-      "description": "The Inctagram API description",
+      "description": "\n## Коды ответов API:\n\n```json\n{\n  \"OK\": 0,\n  \"ERROR\": 1,\n  \"BAD_REQUEST\": 2,\n  \"UNAUTHORIZED\": 3,\n  \"FORBIDDEN\": 4,\n  \"NOT_FOUND\": 5,\n  \"NOT_CONFIRMED\": 6,\n  \"NOT_EXIST\": 7,\n  \"CREATED\": 8,\n  \"UPLOADED\": 9\n}\n```\n",
       "version": "1.0",
       "contact": {}
     },

@@ -25,6 +25,7 @@ export class EmailService {
 
   async sendPasswordRecoveryCodeEmail(email: string, recoveryCode: string) {
     const referer = this.als.getStore().host;
+    console.log(referer);
     try {
       await this.transporter.sendMail({
         to: email,
@@ -66,6 +67,7 @@ export class EmailService {
   }
   async sendConfirmCode(username: string, email: string, code: string) {
     const referer = this.als.getStore().host;
+    console.log(referer);
     await this.transporter.sendMail({
       to: email,
       from: this.configService.get('SMTP_USER'),

@@ -3,12 +3,32 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { createWriteStream } from 'fs';
 import { get } from 'http';
 import process from 'process';
+import { NotificationCodesEnumSwagger } from '../../common/notification/notification-codes.enum';
 
 export class SwaggerConfig {
   static setup(app: INestApplication) {
     const config = new DocumentBuilder()
       .setTitle('Inctagram')
-      .setDescription('The Inctagram API description')
+      .setDescription(
+        `
+## Коды ответов API:
+
+\`\`\`json
+{
+  "OK": 0,
+  "ERROR": 1,
+  "BAD_REQUEST": 2,
+  "UNAUTHORIZED": 3,
+  "FORBIDDEN": 4,
+  "NOT_FOUND": 5,
+  "NOT_CONFIRMED": 6,
+  "NOT_EXIST": 7,
+  "CREATED": 8,
+  "UPLOADED": 9
+}
+\`\`\`
+`,
+      )
       .setVersion('1.0')
       .addBearerAuth(
         {

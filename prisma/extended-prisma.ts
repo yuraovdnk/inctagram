@@ -38,7 +38,11 @@ function extendPrismaClient() {
           },
           compute: (userProfile) => {
             if (userProfile.avatar) {
-              return s3Link('user-avatars') + userProfile.avatar;
+              return (
+                s3Link('user-avatars') +
+                userProfile.avatar +
+                `?nocache=${Math.random()}`
+              );
             }
             return userProfile.avatar;
           },

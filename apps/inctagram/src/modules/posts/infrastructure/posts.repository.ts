@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../../../../../libs/adapters/db/prisma/prisma.service';
 import { CreatePostDto } from '../api/dto/create-post.dto';
 import { PostMapper } from './post.mapper';
-import { GetPostsFindOptions } from '../api/dto/get-posts-find.options';
+import { GetUsersPostsFindOptions } from '../api/dto/get-users-posts.dto';
 import { PostEntity } from '../domain/post.entity';
 
 @Injectable()
@@ -18,9 +18,9 @@ export class PostsRepository {
     });
   }
 
-  async getAll(
+  async getAllByUserId(
     userId: string,
-    findOptions: GetPostsFindOptions,
+    findOptions: GetUsersPostsFindOptions,
   ): Promise<[PostEntity[], number]> {
     const [posts, totalCount] = await Promise.all([
       this.prisma.post.findMany({
@@ -73,5 +73,29 @@ export class PostsRepository {
       },
       data: model,
     });
+  }
+
+  async getAll(
+    findOptions: GetUsersPostsFindOptions,
+  ): Promise<[PostEntity[], number]> {
+    const [posts, totalCount] = await Promise.all([
+      this.prisma.post.findMany({
+        where: {
+          deleted: false,
+        },
+        take: findOptions.pageSize,
+        skip: findOptions.skip,
+        orderBy: {
+          createdAt: findOptions.sortDirection,
+        },
+      }),
+      this.prisma.post.count({
+        where: {
+          deleted: false,
+        },
+      }),
+    ]);
+
+    return [posts.map((post) => PostMapper.toEntity(post)), totalCount];
   }
 }

@@ -224,4 +224,12 @@ export class UsersRepository {
       },
     });
   }
+
+  async getCountUsers() {
+    return this.prismaService.user.count({
+      where: {
+        isEmailConfirmed: true,
+      },
+    });
+  }
 }

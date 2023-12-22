@@ -20,11 +20,11 @@ import { FilesInterceptor } from '@nestjs/platform-express';
 import { NotificationResult } from '../../../../../../libs/common/notification/notification-result';
 import { JwtGuard } from '../../auth/application/strategies/jwt.strategy';
 import { CurrentUser } from '../../../../../../libs/common/decorators/current-user.decorator';
-import { GetPostsFindOptions } from './dto/get-posts-find.options';
+import { GetUsersPostsFindOptions } from './dto/get-users-posts.dto';
 import { ApiTags } from '@nestjs/swagger';
 import { CreatePostCommand } from '../application/use-cases/commands/create-post.command.handler';
 import { ApiCreatePost } from './swagger/api-create-post.swagger';
-import { ApiGetPosts } from './swagger/api-get-posts.swagger';
+import { ApiGetUsersPosts } from './swagger/api-get-users-posts.swagger';
 import { PostViewModel } from './dto/post.view-model';
 import { UploadPostImagePipe } from './pipes/upload-post-image.pipe';
 import { DeletePostCommand } from '../application/use-cases/commands/delete-post.command.handler';
@@ -33,8 +33,12 @@ import { EditPostDto } from './dto/edit-post.dto';
 import { EditPostCommand } from '../application/use-cases/commands/edit-post.command.handler';
 import { ApiUpdatePost } from './swagger/api-update-post.swagger';
 import { GetPostQuery } from '../application/use-cases/queries/get-post-by-id.query.handler';
-import { GetPostsQuery } from '../application/use-cases/queries/get-posts-query.handler';
+import { GetUsersPostsQuery } from '../application/use-cases/queries/get-users-posts-query.handler';
 import { PageDto } from '../../../../../../libs/common/dtos/pagination.dto';
+import { GetAllPostsQuery } from '../application/use-cases/queries/get-all-posts.query.handler';
+import { ApiGetPosts } from './swagger/api-get-all-posts.swagger';
+import { ApiGetPostById } from './swagger/api-get-post-by-id.swagger';
+import { GetAllPostsFindOptions } from './dto/get-all-posts.dto';
 
 @ApiTags('Posts')
 @Controller('posts')
@@ -57,16 +61,16 @@ export class PostController {
     );
   }
 
-  @ApiGetPosts(PostViewModel)
+  @ApiGetUsersPosts(PostViewModel)
   @Get(':userId')
-  async getPosts(
-    @Query() findOptions: GetPostsFindOptions,
+  async getUsersPosts(
+    @Query() findOptions: GetUsersPostsFindOptions,
     @Param('userId', new ParseUUIDPipe()) userId: string,
   ) {
     return this.queryBus.execute<
-      GetPostsQuery,
+      GetUsersPostsQuery,
       NotificationResult<PageDto<PostViewModel>>
-    >(new GetPostsQuery(userId, findOptions));
+    >(new GetUsersPostsQuery(userId, findOptions));
   }
 
   @ApiDeletePost()
@@ -88,14 +92,25 @@ export class PostController {
     @Param('postId', ParseUUIDPipe) postId: string,
     @CurrentUser() userId: string,
     @Body() editPost: EditPostDto,
-  ) {
+  ): Promise<NotificationResult> {
     return this.commandBus.execute<EditPostCommand, NotificationResult>(
       new EditPostCommand(postId, userId, editPost),
     );
   }
 
+  @ApiGetPostById(PostViewModel)
   @Get('post/:id')
-  async getPost(@Param('id', ParseUUIDPipe) postId: string) {
+  async getPost(
+    @Param('id', ParseUUIDPipe) postId: string,
+  ): Promise<NotificationResult> {
     return this.queryBus.execute(new GetPostQuery(postId));
+  }
+
+  @ApiGetPosts(PostViewModel)
+  @Get()
+  async getAllPosts(
+    @Query() findOptions: GetAllPostsFindOptions,
+  ): Promise<NotificationResult> {
+    return this.queryBus.execute(new GetAllPostsQuery(findOptions));
   }
 }

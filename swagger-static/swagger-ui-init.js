@@ -782,6 +782,25 @@ window.onload = function() {
           ]
         }
       },
+      "/api/v1/users/count": {
+        "get": {
+          "operationId": "UserController_totalCountUsers",
+          "parameters": [],
+          "responses": {
+            "200": {
+              "description": ""
+            }
+          },
+          "tags": [
+            "Users"
+          ],
+          "security": [
+            {
+              "accessToken": []
+            }
+          ]
+        }
+      },
       "/api/v1/admin/logs/download/all": {
         "get": {
           "operationId": "AdminController_getAllLogFiles",
@@ -923,7 +942,7 @@ window.onload = function() {
       },
       "/api/v1/posts/{userId}": {
         "get": {
-          "operationId": "PostController_getPosts",
+          "operationId": "PostController_getUsersPosts",
           "summary": "Get all user`s posts",
           "parameters": [
             {
@@ -961,7 +980,7 @@ window.onload = function() {
               "name": "pageSize",
               "in": "query",
               "schema": {
-                "default": 10,
+                "default": 8,
                 "type": "object"
               }
             },
@@ -1125,6 +1144,7 @@ window.onload = function() {
       "/api/v1/posts/post/{id}": {
         "get": {
           "operationId": "PostController_getPost",
+          "summary": "Get post",
           "parameters": [
             {
               "name": "id",
@@ -1137,11 +1157,110 @@ window.onload = function() {
           ],
           "responses": {
             "200": {
+              "description": "Returns ResultNotification",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "allOf": [
+                      {
+                        "$ref": "#/components/schemas/NotificationResult"
+                      },
+                      {
+                        "properties": {
+                          "data": {
+                            "$ref": "#/components/schemas/PostViewModel",
+                            "nullable": true
+                          }
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "tags": [
+            "Posts"
+          ]
+        }
+      },
+      "/api/v1/posts": {
+        "get": {
+          "operationId": "PostController_getAllPosts",
+          "summary": "Get all public posts",
+          "parameters": [
+            {
+              "name": "sortDirection",
+              "required": true,
+              "in": "query",
+              "schema": {
+                "default": "desc",
+                "enum": [
+                  "asc",
+                  "desc"
+                ],
+                "type": "string"
+              }
+            },
+            {
+              "required": true,
+              "name": "pageNumber",
+              "in": "query",
+              "schema": {
+                "default": 1,
+                "type": "object"
+              }
+            },
+            {
+              "required": true,
+              "name": "pageSize",
+              "in": "query",
+              "schema": {
+                "default": 8,
+                "type": "object"
+              }
+            },
+            {
+              "required": true,
+              "name": "sortDirection",
+              "in": "query",
+              "schema": {
+                "default": "desc",
+                "enum": [
+                  "asc",
+                  "desc"
+                ],
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
               "description": "",
               "content": {
                 "application/json": {
                   "schema": {
-                    "type": "object"
+                    "allOf": [
+                      {
+                        "$ref": "#/components/schemas/NotificationResult"
+                      },
+                      {
+                        "properties": {
+                          "data": {
+                            "type": "object",
+                            "$ref": "#/components/schemas/PageDto",
+                            "properties": {
+                              "items": {
+                                "type": "array",
+                                "items": {
+                                  "$ref": "#/components/schemas/PostViewModel"
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    ]
                   }
                 }
               }

@@ -118,4 +118,12 @@ export class UserController {
       new DeleteAvatarCommand(userId),
     );
   }
+
+  @Get('count')
+  async totalCountUsers() {
+    const count = await this.usersRepository.getCountUsers();
+    return NotificationResult.Success({
+      totalCount: count,
+    });
+  }
 }

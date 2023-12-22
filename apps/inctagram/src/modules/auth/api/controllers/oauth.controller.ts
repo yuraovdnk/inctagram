@@ -1,16 +1,13 @@
 import { Controller, Get, Req, Res, UseGuards } from '@nestjs/common';
 import { GithubGuard } from '../../application/strategies/github.strategy';
-import { Response } from 'express';
+import { Request, Response } from 'express';
 import {
   DeviceInfoType,
   DeviceMeta,
 } from '../../../../../../../libs/common/decorators/device-info.decorator';
 import { CurrentExternalAccount } from '../../../../../../../libs/common/decorators/external-account.decorator';
 import { AuthenticationByExternalAccountCommand } from '../../application/use-cases/command/authentication-by-external-account-command.handler';
-import {
-  NotificationResult,
-  SuccessResult,
-} from '../../../../../../../libs/common/notification/notification-result';
+import { NotificationResult } from '../../../../../../../libs/common/notification/notification-result';
 import { UserEntity } from '../../../users/domain/entity/user.entity';
 import { CreateAuthSessionCommand } from '../../application/use-cases/command/create-auth-session.command.handler';
 import { CommandBus } from '@nestjs/cqrs';
@@ -33,6 +30,7 @@ export class OauthController {
   @Get('github/callback')
   @UseGuards(GithubGuard)
   async githubAuthCallback(
+    @Req() req: Request,
     @Res({ passthrough: true }) res: Response,
     @DeviceMeta() deviceInfo: DeviceInfoType,
     @CurrentExternalAccount() account: OauthExternalAccountDto,
@@ -52,10 +50,8 @@ export class OauthController {
         httpOnly: true,
         secure: true,
       });
-      res.status(200).send(
-        new SuccessResult({
-          accessToken: resultCreateSession.data.accessToken,
-        }),
+      return res.redirect(
+        `http://${req.headers.host}/oauth/success?token=${resultCreateSession.data.accessToken}`,
       );
     }
   }
@@ -68,6 +64,7 @@ export class OauthController {
   @Get('google/callback')
   @UseGuards(GoogleGuard)
   async googleSignupRedirect(
+    @Req() req: Request,
     @Res() res,
     @DeviceMeta() deviceInfo: DeviceInfoType,
     @CurrentExternalAccount() account: OauthExternalAccountDto,
@@ -87,10 +84,8 @@ export class OauthController {
         httpOnly: true,
         secure: true,
       });
-      res.status(200).send(
-        new SuccessResult({
-          accessToken: resultCreateSession.data.accessToken,
-        }),
+      return res.redirect(
+        `http://${req.headers.host}/oauth/success?token=${resultCreateSession.data.accessToken}`,
       );
     }
   }

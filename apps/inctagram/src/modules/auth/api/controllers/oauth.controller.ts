@@ -35,6 +35,7 @@ export class OauthController {
     @DeviceMeta() deviceInfo: DeviceInfoType,
     @CurrentExternalAccount() account: OauthExternalAccountDto,
   ) {
+    console.log(req.headers.host, 'host');
     const resultAuth = await this.commandBus.execute<
       AuthenticationByExternalAccountCommand,
       NotificationResult<UserEntity>

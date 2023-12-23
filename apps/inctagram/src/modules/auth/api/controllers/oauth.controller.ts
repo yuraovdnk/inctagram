@@ -52,7 +52,7 @@ export class OauthController {
         secure: true,
       });
       return res.redirect(
-        `${req.headers.host}/oauth/success?token=${resultCreateSession.data.accessToken}`,
+        `https://inctagram.space/oauth/success?token=${resultCreateSession.data.accessToken}`,
       );
     }
   }

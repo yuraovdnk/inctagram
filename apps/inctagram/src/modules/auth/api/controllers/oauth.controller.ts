@@ -35,7 +35,6 @@ export class OauthController {
     @DeviceMeta() deviceInfo: DeviceInfoType,
     @CurrentExternalAccount() account: OauthExternalAccountDto,
   ) {
-    console.log(req.headers.host, 'host');
     const resultAuth = await this.commandBus.execute<
       AuthenticationByExternalAccountCommand,
       NotificationResult<UserEntity>
@@ -52,7 +51,9 @@ export class OauthController {
         secure: true,
       });
       return res.redirect(
-        `https://inctagram.space/oauth/success?token=${resultCreateSession.data.accessToken}`,
+        `${req.protocol}://${req.get('host')}/oauth/success?token=${
+          resultCreateSession.data.accessToken
+        }`,
       );
     }
   }
@@ -86,7 +87,9 @@ export class OauthController {
         secure: true,
       });
       return res.redirect(
-        `${req.headers.host}/oauth/success?token=${resultCreateSession.data.accessToken}`,
+        `${req.protocol}://${req.get('host')}/oauth/success?token=${
+          resultCreateSession.data.accessToken
+        }`,
       );
     }
   }

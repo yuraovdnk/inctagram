@@ -51,7 +51,7 @@ export class OauthController {
         secure: true,
       });
       return res.redirect(
-        `${req.protocol}://${req.get('host')}/oauth/success?token=${
+        `${req.protocol}://${req.get('host')}/auth/success?token=${
           resultCreateSession.data.accessToken
         }`,
       );
@@ -87,7 +87,7 @@ export class OauthController {
         secure: true,
       });
       return res.redirect(
-        `${req.protocol}://${req.get('host')}/oauth/success?token=${
+        `${req.protocol}://${req.get('host')}/auth/success?token=${
           resultCreateSession.data.accessToken
         }`,
       );

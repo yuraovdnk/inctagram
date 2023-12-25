@@ -50,4 +50,18 @@ export class AuthService {
 
     return bcrypt.hashSync(password, 10);
   }
+  async getUsersPrimaryEmail(accessToken: string): Promise<string> {
+    const apiUrl = 'https://api.github.com/user/emails';
+    const res = await fetch(apiUrl, {
+      method: 'GET',
+      headers: {
+        Accept: 'application/json',
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+    const emailData = await res.json();
+
+    const { email } = emailData.find((email) => email.primary);
+    return email;
+  }
 }

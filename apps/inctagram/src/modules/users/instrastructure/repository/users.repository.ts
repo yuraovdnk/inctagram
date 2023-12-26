@@ -168,7 +168,6 @@ export class UsersRepository {
       dateOfBirth: user.profile.dateOfBirth ?? null,
       lastName: user.profile.lastName,
       firstName: user.profile.firstName,
-      avatar: user.profile.avatar ?? null,
     };
 
     await this.prismaService.user.update({

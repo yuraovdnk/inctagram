@@ -98,7 +98,6 @@ describe('UserController (e2e)', () => {
         .expect(HttpStatus.OK);
       expectNotification(result, NotificationCodesEnum.OK);
 
-      console.log(result, 'result1235');
       expect(result.body.data).toMatchObject({
         userId: users[0].id,
         username: createUserProfileDtoMock.username,

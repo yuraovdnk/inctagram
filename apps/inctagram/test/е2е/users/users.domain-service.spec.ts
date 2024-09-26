@@ -1,7 +1,7 @@
-import { UsersRepository } from '../../src/modules/users/instrastructure/repository/users.repository';
-import { UserDomainService } from '../../src/modules/users/domain/service/user.domain-service';
+import { UsersRepository } from '../../../src/modules/users/instrastructure/repository/users.repository';
+import { UserDomainService } from '../../../src/modules/users/domain/service/user.domain-service';
 import { Test, TestingModule } from '@nestjs/testing';
-import { OauthExternalAccountDto } from '../../src/modules/auth/application/dto/request/oauth-external-account.dto';
+import { OauthExternalAccountDto } from '../../../src/modules/auth/application/dto/request/oauth-external-account.dto';
 
 ///test
 describe('UserDomainService', () => {

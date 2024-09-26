@@ -33,6 +33,15 @@
       "compilerOptions": {
         "tsConfigPath": "apps/files-microservice/tsconfig.app.json"
       }
+    },
+    "billing-service": {
+      "type": "application",
+      "root": "apps/billing-service",
+      "entryFile": "main",
+      "sourceRoot": "apps/billing-service/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/billing-service/tsconfig.app.json"
+      }
     }
   }
 }

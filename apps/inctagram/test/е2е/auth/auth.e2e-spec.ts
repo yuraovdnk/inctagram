@@ -1,28 +1,31 @@
 import { HttpStatus, INestApplication } from '@nestjs/common';
 import request from 'supertest';
-import { DbTestHelper } from '../test-helpers/db-test-helper';
-import { ExtendedUser, UserTestHelper } from '../test-helpers/user.test.helper';
+import { DbTestHelper } from '../../test-helpers/db-test-helper';
+import {
+  ExtendedUser,
+  UserTestHelper,
+} from '../../test-helpers/user.test.helper';
 import {
   emailServiceMock,
   eventBusMock,
   mockToken,
   userMock,
   userMock2,
-} from '../mocks/mocks';
-import { UsersRepository } from '../../src/modules/users/instrastructure/repository/users.repository';
-import { AuthTestHelper } from '../test-helpers/auth-test.helper';
+} from '../../mocks/mocks';
+import { UsersRepository } from '../../../src/modules/users/instrastructure/repository/users.repository';
+import { AuthTestHelper } from '../../test-helpers/auth-test.helper';
 
 import { Test, TestingModule } from '@nestjs/testing';
-import { AppModule } from '../../src/app.module';
-import { NotificationResult } from '../../../../libs/common/notification/notification-result';
-import { NotificationCodesEnum } from '../../../../libs/common/notification/notification-codes.enum';
-import { EmailService } from '../../../../libs/adapters/mailer/mail.service';
+import { AppModule } from '../../../src/app.module';
+import { NotificationResult } from '../../../../../libs/common/notification/notification-result';
+import { NotificationCodesEnum } from '../../../../../libs/common/notification/notification-codes.enum';
+import { EmailService } from '../../../../../libs/adapters/mailer/mail.service';
 import { EventBus } from '@nestjs/cqrs';
-import { EmailConfirmationEntity } from '../../src/modules/auth/domain/entity/email-confirmation.entity';
+import { EmailConfirmationEntity } from '../../../src/modules/auth/domain/entity/email-confirmation.entity';
 import crypto from 'crypto';
-import { GoogleGuard } from '../../src/modules/auth/application/strategies/google.strategy';
-import { GithubGuard } from '../../src/modules/auth/application/strategies/github.strategy';
-import { setupApp } from '../../src/setup-app';
+import { GoogleGuard } from '../../../src/modules/auth/application/strategies/google.strategy';
+import { GithubGuard } from '../../../src/modules/auth/application/strategies/github.strategy';
+import { setupApp } from '../../../src/setup-app';
 import process from 'process';
 
 describe('AuthController (e2e)', () => {

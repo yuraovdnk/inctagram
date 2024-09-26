@@ -1,19 +1,19 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { UsersRepository } from '../../src/modules/users/instrastructure/repository/users.repository';
-import { AppModule } from '../../src/app.module';
+import { UsersRepository } from '../../../src/modules/users/instrastructure/repository/users.repository';
+import { AppModule } from '../../../src/app.module';
 import { INestApplication } from '@nestjs/common';
-import { DbTestHelper } from '../test-helpers/db-test-helper';
-import { GoogleGuard } from '../../src/modules/auth/application/strategies/google.strategy';
-import { OauthExternalAccountDto } from '../../src/modules/auth/application/dto/request/oauth-external-account.dto';
-import { GithubGuard } from '../../src/modules/auth/application/strategies/github.strategy';
-import { emailServiceMock, eventBusMock, userMock } from '../mocks/mocks';
-import { UserEntity } from '../../src/modules/users/domain/entity/user.entity';
+import { DbTestHelper } from '../../test-helpers/db-test-helper';
+import { GoogleGuard } from '../../../src/modules/auth/application/strategies/google.strategy';
+import { OauthExternalAccountDto } from '../../../src/modules/auth/application/dto/request/oauth-external-account.dto';
+import { GithubGuard } from '../../../src/modules/auth/application/strategies/github.strategy';
+import { emailServiceMock, eventBusMock, userMock } from '../../mocks/mocks';
+import { UserEntity } from '../../../src/modules/users/domain/entity/user.entity';
 import request from 'supertest';
 import { EventBus } from '@nestjs/cqrs';
-import { EmailService } from '../../../../libs/adapters/mailer/mail.service';
-import { setupApp } from '../../src/setup-app';
-import { NotificationCodesEnum } from '../../../../libs/common/notification/notification-codes.enum';
-import { NotificationResult } from '../../../../libs/common/notification/notification-result';
+import { EmailService } from '../../../../../libs/adapters/mailer/mail.service';
+import { setupApp } from '../../../src/setup-app';
+import { NotificationCodesEnum } from '../../../../../libs/common/notification/notification-codes.enum';
+import { NotificationResult } from '../../../../../libs/common/notification/notification-result';
 
 describe('oauth', () => {
   jest.setTimeout(20000);

@@ -5,16 +5,11 @@ import { PasswordRecoveryEntity } from '../../domain/entity/password-recovery.en
 import { EmailConfirmationCodeMapper } from '../mappers/email-confirmation-code.mapper';
 import { AuthSessionMapper } from '../mappers/auth-session.mapper';
 import { AuthSessionEntity } from '../../domain/entity/auth-session.entity';
-import {
-  AuthSession,
-  PasswordRecoveryCode,
-  Prisma,
-  PrismaClient,
-} from '@prisma/client';
+import { AuthSession, PasswordRecoveryCode, Prisma } from '@prisma/client';
 import { PasswordRecoveryMapper } from '../password-recovery.mapper';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Cache } from 'cache-manager';
-import * as runtime from '@prisma/client/runtime/library';
+import { PrismaClientManager } from '../../../../../../../libs/adapters/db/prisma/prisma-client-manager';
 
 export type EmailConfirmationCodeFullType =
   Prisma.EmailConfirmationCodeGetPayload<{
@@ -26,14 +21,11 @@ export class AuthRepository {
   constructor(
     private readonly prismaService: PrismaService,
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
+    private prismaClientManager: PrismaClientManager,
   ) {}
 
-  async createEmailConfirmCode(
-    entity: EmailConfirmationEntity,
-    prisma: Omit<PrismaClient, runtime.ITXClientDenyList> | any = this
-      .prismaService,
-  ) {
-    return prisma.emailConfirmationCode.upsert({
+  async createEmailConfirmCode(entity: EmailConfirmationEntity) {
+    return this.prismaClientManager.getClient.emailConfirmationCode.upsert({
       where: {
         userId: entity.userId,
       },
@@ -80,7 +72,7 @@ export class AuthRepository {
   async findByConfirmCode(
     code: string,
   ): Promise<EmailConfirmationEntity | null> {
-    const confirmCode: EmailConfirmationCodeFullType =
+    const confirmCode =
       await this.prismaService.emailConfirmationCode.findFirst({
         where: { code },
         include: {

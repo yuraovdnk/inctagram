@@ -1,17 +1,20 @@
 import { HttpStatus, INestApplication } from '@nestjs/common';
 import request from 'supertest';
-import { DbTestHelper } from '../test-helpers/db-test-helper';
-import { ExtendedUser, UserTestHelper } from '../test-helpers/user.test.helper';
-import { createUserProfileDtoMock } from '../mocks/mocks';
-import { AuthTestHelper } from '../test-helpers/auth-test.helper';
+import { DbTestHelper } from '../../test-helpers/db-test-helper';
+import {
+  ExtendedUser,
+  UserTestHelper,
+} from '../../test-helpers/user.test.helper';
+import { createUserProfileDtoMock } from '../../mocks/mocks';
+import { AuthTestHelper } from '../../test-helpers/auth-test.helper';
 import { Test, TestingModule } from '@nestjs/testing';
-import { AppModule } from '../../src/app.module';
-import { NotificationResult } from '../../../../libs/common/notification/notification-result';
-import { NotificationCodesEnum } from '../../../../libs/common/notification/notification-codes.enum';
-import { setupApp } from '../../src/setup-app';
-import { AuthModule } from '../../src/modules/auth/auth.module';
-import { FilesServiceFacade } from '../../src/clients/files-ms/files-service.fasade';
-import { FilesServiceFacadeMock } from '../mocks/files-service.facade.mock';
+import { AppModule } from '../../../src/app.module';
+import { NotificationResult } from '../../../../../libs/common/notification/notification-result';
+import { NotificationCodesEnum } from '../../../../../libs/common/notification/notification-codes.enum';
+import { setupApp } from '../../../src/setup-app';
+import { AuthModule } from '../../../src/modules/auth/auth.module';
+import { FilesServiceFacade } from '../../../src/clients/files-ms/files-service.fasade';
+import { FilesServiceFacadeMock } from '../../mocks/files-service.facade.mock';
 
 describe('UserController (e2e)', () => {
   jest.setTimeout(20000);

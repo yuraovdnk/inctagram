@@ -1,19 +1,22 @@
 import { INestApplication } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
-import { AppModule } from '../../src/app.module';
-import { setupApp } from '../../src/setup-app';
+import { AppModule } from '../../../src/app.module';
+import { setupApp } from '../../../src/setup-app';
 import request from 'supertest';
-import { DbTestHelper } from '../test-helpers/db-test-helper';
-import { ExtendedUser, UserTestHelper } from '../test-helpers/user.test.helper';
-import { AuthTestHelper } from '../test-helpers/auth-test.helper';
-import { UsersRepository } from '../../src/modules/users/instrastructure/repository/users.repository';
-import { FilesServiceFacade } from '../../src/clients/files-ms/files-service.fasade';
-import { NotificationResult } from '../../../../libs/common/notification/notification-result';
-import { NotificationCodesEnum } from '../../../../libs/common/notification/notification-codes.enum';
+import { DbTestHelper } from '../../test-helpers/db-test-helper';
+import {
+  ExtendedUser,
+  UserTestHelper,
+} from '../../test-helpers/user.test.helper';
+import { AuthTestHelper } from '../../test-helpers/auth-test.helper';
+import { UsersRepository } from '../../../src/modules/users/instrastructure/repository/users.repository';
+import { FilesServiceFacade } from '../../../src/clients/files-ms/files-service.fasade';
+import { NotificationResult } from '../../../../../libs/common/notification/notification-result';
+import { NotificationCodesEnum } from '../../../../../libs/common/notification/notification-codes.enum';
 import crypto from 'crypto';
-import { FilesServiceFacadeMock } from '../mocks/files-service.facade.mock';
-import { PageDto } from '../../../../libs/common/dtos/pagination.dto';
-import { PostViewModel } from '../../src/modules/posts/api/dto/post.view-model';
+import { FilesServiceFacadeMock } from '../../mocks/files-service.facade.mock';
+import { PageDto } from '../../../../../libs/common/dtos/pagination.dto';
+import { PostViewModel } from '../../../src/modules/posts/api/dto/post.view-model';
 
 describe('Posts', () => {
   let app: INestApplication;

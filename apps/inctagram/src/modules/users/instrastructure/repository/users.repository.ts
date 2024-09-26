@@ -1,22 +1,21 @@
 import { Injectable } from '@nestjs/common';
 import { UserEntity } from '../../domain/entity/user.entity';
-import { PrismaClient, User } from '@prisma/client';
+import { User } from '@prisma/client';
 import { UserMapper } from '../user.mapper';
 import { ExternalAccountEntity } from '../../domain/entity/external-account.entity';
-import * as runtime from '@prisma/client/runtime/library';
 import { PrismaService } from '../../../../../../../libs/adapters/db/prisma/prisma.service';
+import { PrismaClientManager } from '../../../../../../../libs/adapters/db/prisma/prisma-client-manager';
 
 @Injectable()
 export class UsersRepository {
-  constructor(private prismaService: PrismaService) {}
+  constructor(
+    private prismaService: PrismaService,
+    private prismaClientManager: PrismaClientManager,
+  ) {}
 
-  async create(
-    entity: UserEntity,
-    prisma: Omit<PrismaClient, runtime.ITXClientDenyList> | any = this
-      .prismaService,
-  ): Promise<string> {
+  async create(entity: UserEntity): Promise<string> {
     const userModel = UserMapper.toModel(entity);
-    const user = await prisma.user.create({
+    const user = await this.prismaClientManager.getClient.user.create({
       data: userModel,
     });
     return user.id;
@@ -49,7 +48,7 @@ export class UsersRepository {
   }
 
   async findByConfirmedEmail(email: string): Promise<UserEntity | null> {
-    const user = await this.prismaService.user.findUnique({
+    const user = await this.prismaClientManager.getClient.user.findUnique({
       where: {
         email,
         isEmailConfirmed: true,
@@ -64,10 +63,10 @@ export class UsersRepository {
 
   async deleteUserUnconfirmedEmail(email: string, username: string) {
     const deleteUser = async (userId: string) => {
-      await this.prismaService.emailConfirmationCode.delete({
+      await this.prismaClientManager.getClient.emailConfirmationCode.delete({
         where: { userId },
       });
-      await this.prismaService.user.delete({
+      await this.prismaClientManager.getClient.user.delete({
         where: {
           id: userId,
           isEmailConfirmed: false,
@@ -75,24 +74,26 @@ export class UsersRepository {
       });
     };
 
-    const userByEmail = await this.prismaService.user.findUnique({
-      where: {
-        email,
-        isEmailConfirmed: false,
-      },
-    });
+    const userByEmail =
+      await this.prismaClientManager.getClient.user.findUnique({
+        where: {
+          email,
+          isEmailConfirmed: false,
+        },
+      });
     if (userByEmail) await deleteUser(userByEmail.id);
-    const userByUserName = await this.prismaService.user.findUnique({
-      where: {
-        username,
-        isEmailConfirmed: false,
-      },
-    });
+    const userByUserName =
+      await this.prismaClientManager.getClient.user.findUnique({
+        where: {
+          username,
+          isEmailConfirmed: false,
+        },
+      });
     if (userByUserName) await deleteUser(userByUserName.id);
   }
 
   async findByUsername(username: string) {
-    return this.prismaService.user.findUnique({
+    return this.prismaClientManager.getClient.user.findUnique({
       where: {
         username,
       },
@@ -100,7 +101,7 @@ export class UsersRepository {
   }
 
   async findByUsernameConfirmedEmail(username: string) {
-    return this.prismaService.user.findUnique({
+    return this.prismaClientManager.getClient.user.findUnique({
       where: {
         username,
         isEmailConfirmed: true,

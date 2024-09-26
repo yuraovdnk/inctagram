@@ -10,7 +10,8 @@ import { AuthService } from '../../service/auth.service';
 import { EmailConfirmationEntity } from '../../../domain/entity/email-confirmation.entity';
 import { AuthRepository } from '../../../infrastructure/repository/auth.repository';
 import { BaseUseCase } from '../../../../../../../../libs/common/app/base.use-case';
-import { PrismaService } from '../../../../../../../../libs/adapters/db/prisma/prisma.service';
+import { TransactionScope } from '../../../../../../../../libs/adapters/db/transaction-scope';
+
 export class SignupCommand {
   constructor(public readonly signupDto: SignUpDto) {}
 }
@@ -24,10 +25,10 @@ export class SignupCommandHandler
     private usersRepository: UsersRepository,
     private authRepository: AuthRepository,
     private authService: AuthService,
-    protected eventBus: EventBus,
-    protected prismaService: PrismaService,
+    eventBus: EventBus,
+    prismaTransactionScope: TransactionScope,
   ) {
-    super(prismaService, eventBus);
+    super(eventBus, prismaTransactionScope);
   }
 
   protected async onExecute(message: SignupCommand) {
@@ -44,27 +45,27 @@ export class SignupCommandHandler
         'email or username',
       );
     }
+
     await this.usersRepository.deleteUserUnconfirmedEmail(
       message.signupDto.email,
       message.signupDto.username,
     );
+
     const passwordHash = this.authService.getPasswordHash(
       message.signupDto.password,
     );
+
     const user = UserEntity.create(
       message.signupDto.username,
       message.signupDto.email,
       passwordHash,
     );
 
-    await this.usersRepository.create(user, this.prismaClient);
+    await this.usersRepository.create(user);
 
     const codeEntityRes = EmailConfirmationEntity.create(user);
 
-    await this.authRepository.createEmailConfirmCode(
-      codeEntityRes.data,
-      this.prismaClient,
-    );
+    await this.authRepository.createEmailConfirmCode(codeEntityRes.data);
 
     const events = user.getUncommittedEvents();
 

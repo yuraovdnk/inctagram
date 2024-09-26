@@ -1,5 +1,5 @@
 import { Prisma, PrismaClient } from '@prisma/client';
-import { s3Link } from '../apps/files-microservice/src/utils/generateS3Url';
+import { s3Link } from '../../../../apps/files-microservice/src/utils/generateS3Url';
 
 function extendPrismaClient() {
   const prisma = new PrismaClient();
@@ -52,8 +52,10 @@ function extendPrismaClient() {
   });
 }
 
+export type ExtendedPrismaClient = ReturnType<typeof extendPrismaClient>;
+
 export const ExtendedPrismaClient = class {
   constructor() {
     return extendPrismaClient();
   }
-} as new () => ReturnType<typeof extendPrismaClient>;
+} as new () => ExtendedPrismaClient;

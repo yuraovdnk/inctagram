@@ -16,7 +16,14 @@ export class UsersRepository {
   async create(entity: UserEntity): Promise<string> {
     const userModel = UserMapper.toModel(entity);
     const user = await this.prismaClientManager.getClient.user.create({
-      data: userModel,
+      data: {
+        ...userModel,
+        account: {
+          create: {
+            type: 'Personal',
+          },
+        },
+      },
     });
     return user.id;
   }
@@ -63,6 +70,10 @@ export class UsersRepository {
 
   async deleteUserUnconfirmedEmail(email: string, username: string) {
     const deleteUser = async (userId: string) => {
+      await this.prismaClientManager.getClient.account.delete({
+        where: { userId },
+      });
+
       await this.prismaClientManager.getClient.emailConfirmationCode.delete({
         where: { userId },
       });
@@ -127,6 +138,7 @@ export class UsersRepository {
       },
       include: {
         profile: true,
+        account: true,
       },
     });
     return user ? UserMapper.toEntity(user) : null;
@@ -229,6 +241,17 @@ export class UsersRepository {
     return this.prismaService.user.count({
       where: {
         isEmailConfirmed: true,
+      },
+    });
+  }
+
+  async getAccountPlans() {
+    return this.prismaClientManager.getClient.accountPlan.findMany();
+  }
+  async getAccountPlanById(planId: string) {
+    return this.prismaClientManager.getClient.accountPlan.findUnique({
+      where: {
+        id: planId,
       },
     });
   }

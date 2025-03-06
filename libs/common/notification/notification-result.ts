@@ -20,7 +20,7 @@ export class NotificationResult<T = null> {
   })
   extensions: NotificationExtension[] = [];
 
-  @ApiProperty({ type: {} })
+  //@ApiProperty({ type: {} })
   data: T | null;
 
   @Exclude()
@@ -49,10 +49,15 @@ export class NotificationResult<T = null> {
   static Success<T>(
     data: T = null,
     code: NotificationCodesEnum = NotificationCodesEnum.OK,
+    events: IEvent[] = [],
   ) {
     const notificationResult = new NotificationResult<T>();
     notificationResult.data = data;
     notificationResult.resultCode = code;
+    if (events.length) {
+      notificationResult.events = events;
+    }
+
     return notificationResult;
   }
 }

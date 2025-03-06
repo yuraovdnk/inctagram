@@ -7,15 +7,19 @@ import { CqrsModule } from '@nestjs/cqrs';
 import { UpdateUserProfileCommandHandler } from './application/use-cases/commands/update-user-profile.command-handler';
 import { UploadUserAvatarCommandHandler } from './application/use-cases/commands/upload-user-avatar.command.handler';
 import { DeleteAvatarCommandHandler } from './application/use-cases/commands/delete-avatar.command.handler';
+import { AccountController } from './api/controllers/account.controller';
+import { GetAccountPlansQueryHandler } from './application/use-cases/queries/get-account-plans.query-handler';
+import { UpgradeAccountPlanCommandHandler } from './application/use-cases/commands/upgrade-plan.command-handler';
 
 const commandHandlers = [
   CreateUserProfileCommandHandler,
   UpdateUserProfileCommandHandler,
   UploadUserAvatarCommandHandler,
   DeleteAvatarCommandHandler,
+  UpgradeAccountPlanCommandHandler,
 ];
 const queryHandlers = [];
-const eventsHandler = [];
+const eventsHandler = [GetAccountPlansQueryHandler];
 @Module({
   imports: [CqrsModule],
   providers: [
@@ -25,7 +29,7 @@ const eventsHandler = [];
     UsersRepository,
     UserDomainService,
   ],
-  controllers: [UserController],
+  controllers: [UserController, AccountController],
   exports: [UsersRepository, UserDomainService],
 })
 export class UserModule {}

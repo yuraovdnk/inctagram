@@ -1,0 +1,14 @@
+  version: "3.8"
+  services:
+    rabbitmq:
+      image: rabbitmq:4.0.5-management
+      ports:
+        - 15672:15672
+        - 5672:5672
+    ngrok:
+      image: ngrok/ngrok:latest
+      environment:
+        NGROK_AUTHTOKEN: "2bMhPfDlQoReHmSUerKiLVLRPmi_34jBi1pt9pf6mJuZoLE27"
+      command: http host.docker.internal:3001
+      ports:
+        - "4040:4040"

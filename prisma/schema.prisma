@@ -4,6 +4,7 @@
 generator client {
   provider      = "prisma-client-js"
   binaryTargets = ["native", "rhel-openssl-1.0.x", "windows"]
+  //output        = "../../node_modules/@prisma/inctagram"
 }
 
 datasource db {
@@ -24,6 +25,7 @@ model User {
   authSessions          AuthSession[]
   externalAccounts      ExternalAccount[]
   profile               UserProfile?
+  account               Account?
 
   @@map("users")
 }
@@ -99,4 +101,42 @@ model AuthSession {
   user       User?    @relation(fields: [userId], references: [id])
 
   @@map("auth_sessions")
+}
+
+enum AccountType {
+  Personal
+  Business
+}
+
+model Account {
+  id        String      @id @default(uuid())
+  type      AccountType @default(Personal)
+  userId    String      @unique
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+  planId    String?
+
+  user User         @relation(fields: [userId], references: [id])
+  plan AccountPlan? @relation(fields: [planId], references: [id])
+
+  @@map("accounts")
+}
+
+enum DurationUnit {
+  MONTH
+  YEAR
+}
+
+model AccountPlan {
+  id           String       @id @default(uuid())
+  name         String       @unique
+  description  String
+  price        Decimal
+  type         AccountType
+  duration     Int
+  durationUnit DurationUnit
+  createdAt    DateTime     @default(now())
+  Account      Account[]
+
+  @@map("account_plans")
 }

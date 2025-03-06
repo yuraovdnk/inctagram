@@ -2,15 +2,12 @@ import { CommandHandler, EventBus, ICommandHandler } from '@nestjs/cqrs';
 import { UserEntity } from '../../../../users/domain/entity/user.entity';
 import { UsersRepository } from '../../../../users/instrastructure/repository/users.repository';
 import { SignUpDto } from '../../dto/request/sign-up.dto';
-import {
-  BadResult,
-  SuccessResult,
-} from '../../../../../../../../libs/common/notification/notification-result';
+import { NotificationResult } from '../../../../../../../../libs/common/notification/notification-result';
 import { AuthService } from '../../service/auth.service';
-import { EmailConfirmationEntity } from '../../../domain/entity/email-confirmation.entity';
 import { AuthRepository } from '../../../infrastructure/repository/auth.repository';
 import { BaseUseCase } from '../../../../../../../../libs/common/app/base.use-case';
 import { TransactionScope } from '../../../../../../../../libs/adapters/db/transaction-scope';
+import { NotificationCodesEnum } from '../../../../../../../../libs/common/notification/notification-codes.enum';
 
 export class SignupCommand {
   constructor(public readonly signupDto: SignUpDto) {}
@@ -32,7 +29,7 @@ export class SignupCommandHandler
   }
 
   protected async onExecute(message: SignupCommand) {
-    const [userByEmail, userByUsername] = await Promise.all([
+    const { 0: userByEmail, 1: userByUsername } = await Promise.all([
       this.usersRepository.findByConfirmedEmail(message.signupDto.email),
       this.usersRepository.findByUsernameConfirmedEmail(
         message.signupDto.username,
@@ -40,7 +37,8 @@ export class SignupCommandHandler
     ]);
 
     if (userByEmail || userByUsername) {
-      return new BadResult(
+      return NotificationResult.Failure(
+        NotificationCodesEnum.BAD_REQUEST,
         'User with this email or username is already registered',
         'email or username',
       );
@@ -60,15 +58,18 @@ export class SignupCommandHandler
       message.signupDto.email,
       passwordHash,
     );
+    user.createEmailConfirmation();
 
     await this.usersRepository.create(user);
 
-    const codeEntityRes = EmailConfirmationEntity.create(user);
-
-    await this.authRepository.createEmailConfirmCode(codeEntityRes.data);
+    await this.authRepository.createEmailConfirmCode(user.emailConfirmation);
 
     const events = user.getUncommittedEvents();
 
-    return new SuccessResult({ email: user.email }, events);
+    return NotificationResult.Success(
+      { email: user.email },
+      NotificationCodesEnum.OK,
+      events,
+    );
   }
 }

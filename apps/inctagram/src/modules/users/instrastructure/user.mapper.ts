@@ -36,7 +36,7 @@ export class UserMapper {
     entity.username = user.username;
     entity.createdAt = user.createdAt;
     entity.isConfirmedEmail = user.isEmailConfirmed;
-    entity.externalAccounts.push(...(user.externalAccounts || []));
+    entity.externalAccounts = user.externalAccounts || [];
     entity.profile = user.profile;
     return entity;
   }

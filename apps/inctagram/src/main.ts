@@ -17,7 +17,5 @@ async function bootstrap() {
   await app.listen(process.env.PORT || 3000, () => {
     console.log(`App listening at:${process.env.PORT || 3000} `);
   });
-
-  SwaggerConfig.writeSwaggerFile();
 }
 bootstrap();

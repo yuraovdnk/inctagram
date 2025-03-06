@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from './prisma.service';
 import { AsyncLocalStorage } from 'node:async_hooks';
-import { ExtendedPrismaClient } from './extended-prisma';
+import { PrismaClient } from '@prisma/client';
 
 @Injectable()
 export class PrismaClientManager {
@@ -10,7 +10,7 @@ export class PrismaClientManager {
     private als: AsyncLocalStorage<any>,
   ) {}
 
-  get getClient(): ExtendedPrismaClient {
+  get getClient(): PrismaClient {
     return this.als.getStore()?.prisma ?? this.prismaService;
   }
 }

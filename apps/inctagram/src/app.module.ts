@@ -4,17 +4,28 @@ import { ConfigModule } from '@nestjs/config';
 import { getEnvConfig } from '../../../libs/common/config/env.config';
 import { ThrottlerModule } from '@nestjs/throttler';
 import { PrismaModule } from '../../../libs/adapters/db/prisma/prisma.module';
-import { ServeStaticModule } from '@nestjs/serve-static';
-import { join } from 'path';
-import process from 'process';
 import { LoggerMiddleware } from '../../../libs/logger/logger.middleware';
 import { AdminModule } from './modules/admin/admin.module';
 import { PostsModule } from './modules/posts/posts.module';
 import { ServicesModule } from './clients/services.module';
 import { AlsModule } from './als.module';
+import { RMQModule } from 'nestjs-rmq';
 
 @Module({
   imports: [
+    RMQModule.forRoot({
+      exchangeName: 'incta',
+      connections: [
+        {
+          login: 'guest',
+          password: 'guest',
+          host: 'localhost',
+        },
+      ],
+      queueName: 'MyQueue',
+      prefetchCount: 32,
+      serviceName: 'inctagram',
+    }),
     AlsModule,
     ServicesModule,
     ConfigModule.forRoot({
@@ -22,15 +33,11 @@ import { AlsModule } from './als.module';
       envFilePath: ['.env', '.env.test'],
       isGlobal: true,
     }),
-    ServeStaticModule.forRoot({
-      rootPath: join(__dirname, '..', 'swagger-static'),
-      serveRoot: process.env.NODE_ENV === 'development' ? '/' : '/swagger',
-    }),
-    PrismaModule,
     ThrottlerModule.forRoot({
       ttl: 10,
       limit: 5,
     }),
+    PrismaModule,
     AuthModule,
     AdminModule,
     PostsModule,

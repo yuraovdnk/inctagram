@@ -2,10 +2,10 @@ import { ApiProperty } from '@nestjs/swagger';
 import { UserEntity } from '../../../domain/entity/user.entity';
 
 export class UserProfileViewDto {
-  @ApiProperty({
-    type: 'uuid',
-    example: 'ad813e6f-90be-46ed-a0ce-2f094885f253',
-  })
+  // @ApiProperty({
+  //   type: 'uuid',
+  //   example: 'ad813e6f-90be-46ed-a0ce-2f094885f253',
+  // })
   userId: string;
 
   @ApiProperty({ example: 'Username' })

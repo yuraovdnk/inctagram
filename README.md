@@ -34,21 +34,6 @@ To ensure responsiveness and optimal performance, we employ Piscina for parallel
 
 Inctagram relies on PostgreSQL as the primary relational database management system. PrismaORM streamlines database interactions, making development more efficient.
 
-### 7. Agile Development
-
-Our development process follows agile methodologies, ensuring rapid development, flexibility, and alignment with evolving requirements.
-
-### 8. Testing with Jest
-
-Thorough testing is conducted using Jest to cover all aspects of the backend, guaranteeing stability and reliability.
-
-## Meet the Developers
-
-Our talented team of developers brings the Inctagram backend to life:
-
-- **Yuriy Ovdienko**: Lead Backend Developer
-- **Sergey Yurchenko**: Backend Developer
-
 ## Getting Started
 
 To set up the Inctagram backend on your local machine, follow these steps:
@@ -76,17 +61,3 @@ To set up the Inctagram backend on your local machine, follow these steps:
    ```bash
    npm start
    ```
-
-Now, the Inctagram backend is up and running, ready to support the amazing features of our social media platform.
-
-## Contributing
-
-We welcome contributions from the community to enhance and improve the Inctagram backend. Feel free to submit pull requests, report issues, or collaborate with our development team to make this project even better.
-
-## License
-
-This project is licensed under the [MIT License](LICENSE), allowing you to use and modify the code for your purposes.
-
-Thank you for exploring the Inctagram backend project! We look forward to delivering a fantastic user experience with your support.
-
-Happy coding! 🚀📸
